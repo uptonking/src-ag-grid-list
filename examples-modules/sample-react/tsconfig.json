@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "module": "es6",
+    "target": "es5",
+    "sourceMap": true,
+    "allowJs": false,
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "removeComments": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
+    "importHelpers": true,
+    "pretty": true,
+    "lib": ["es2015", "esnext", "dom"]
+  },
+  "exclude": [
+    "node_modules/**/*",
+    "src/**/*.tests.tsx",
+    "src/**/*.stories.tsx",
+    "bak/**/*"
+  ]
+}

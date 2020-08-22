@@ -1,0 +1,70 @@
+{
+  "editor.insertSpaces": true,
+  "editor.tabSize": 4,
+  "[scss]": {
+    "editor.tabSize": 2
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/build": true,
+    "**/dist": true
+  },
+  "cSpell.language": "en-GB",
+  "files.exclude": {
+    "grid-packages/ag-grid-community": false,
+    "grid-packages/ag-grid-enterprise": false,
+    "grid-packages/ag-grid-angular": false,
+    "grid-packages/ag-grid-react": false,
+    "grid-packages/ag-grid-vue": false,
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "packages": false
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+  "eslint.enable": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.options": {
+    "extensions": [".js", ".jsx", ".ts", ".tsx"]
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "markdownFormatter.enable": true,
+  "markdownFormatter.fullWidthTurnHalfWidth": "auto",
+  "markdownFormatter.codeAreaToBlock": "",
+  "markdownFormatter.formatCodes": false,
+  "markdownFormatter.formatULSymbol": false,
+  "markdownFormatter.formatOpt": {
+    "indent_size": 2,
+    "indent_with_tabs": false,
+    "space_after_anon_function": false,
+    "space_after_named_function": false,
+    "e4x": true
+  },
+  "[markdown]": {
+    "editor.formatOnSave": false,
+    "editor.renderWhitespace": "all",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": true,
+      "strings": true
+    },
+    "editor.snippetSuggestions": "top",
+    "editor.tabCompletion": "on",
+    "editor.acceptSuggestionOnEnter": "on",
+    "editor.defaultFormatter": "mervin.markdown-formatter"
+  },
+  "bookmarks.saveBookmarksInProject": true,
+  "git.ignoreLimitWarning": true
+}

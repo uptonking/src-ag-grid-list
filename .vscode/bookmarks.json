@@ -1,0 +1,52 @@
+[
+  {
+    "path": "$ROOTPATH$/community-modules/all-modules/src/main.ts",
+    "bookmarks": [
+      {
+        "line": 5,
+        "column": 13,
+        "label": ""
+      }
+    ]
+  },
+  {
+    "path": "$ROOTPATH$/grid-packages/ag-grid-community/src/main.ts",
+    "bookmarks": [
+      {
+        "line": 9,
+        "column": 0,
+        "label": ""
+      }
+    ]
+  },
+  {
+    "path": "$ROOTPATH$/community-modules/core/src/ts/grid.ts",
+    "bookmarks": [
+      {
+        "line": 114,
+        "column": 13,
+        "label": ""
+      }
+    ]
+  },
+  {
+    "path": "$ROOTPATH$/scripts/release/copy-community-dist-to-root.sh",
+    "bookmarks": [
+      {
+        "line": 9,
+        "column": 0,
+        "label": ""
+      }
+    ]
+  },
+  {
+    "path": "$ROOTPATH$/community-modules/core/src/ts/main.ts",
+    "bookmarks": [
+      {
+        "line": 234,
+        "column": 0,
+        "label": ""
+      }
+    ]
+  }
+]

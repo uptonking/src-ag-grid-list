@@ -1,0 +1,11 @@
+{
+  "extends": "./module-build/tsconfig.json",
+  "references": [
+    { "path": "community-modules/core" },
+    { "path": "community-modules/client-side-row-model" },
+    { "path": "community-modules/csv-export" },
+    { "path": "community-modules/infinite-row-model" },
+    { "path": "community-modules/all-modules" }
+  ],
+  "files": []
+}

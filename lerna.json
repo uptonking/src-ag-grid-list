@@ -1,0 +1,19 @@
+{
+  "packages": [
+    "community-modules/*",
+    "enterprise-modules/*",
+    "charts-packages/*",
+    "grid-packages/*",
+    "examples-charts/*",
+    "examples-grid/*",
+    "examples-modules/*"
+  ],
+  "command": {
+    "bootstrap": {
+      "npmClientArgs": ["--no-package-lock"]
+    }
+  },
+  "version": "23.2.1",
+  "npmClient": "yarn",
+  "useWorkspaces": true
+}
