@@ -36,4 +36,4 @@ export class SimpleGrid {
   }
 }
 
-export default SimpleGrid
+export default SimpleGrid;

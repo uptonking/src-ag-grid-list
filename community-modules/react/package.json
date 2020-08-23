@@ -23,7 +23,7 @@
   "typings": "./main.d.ts",
   "scripts": {
     "build-1": "gulp && npm run hash",
-    "build-es": "gulp",
+    "build-es": "yarn run clean && gulp",
     "clean": "rimraf -rf lib",
     "cypress": "cypress run --spec 'cypress/integration/**/*spec.js'",
     "cypress:open": "cypress open",
@@ -95,7 +95,7 @@
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "babel-preset-react-app": "^9.0.1",
-    "cypress": "3.0.1",
+    "cypress": "^4.3.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "gulp": "^4.0.0",
@@ -118,9 +118,9 @@
     "rollup-plugin-typescript": "^1.0.0",
     "rollup-plugin-uglify": "^6.0.0",
     "rollup-stream": "^1.24.0",
-    "serialize-javascript": "2.1.0",
+    "serialize-javascript": "^2.1.0",
     "tslib": "^1.10.0",
-    "typescript": "3.6.3",
+    "typescript": "~3.6.5",
     "vinyl-source-stream": "^2.0.0"
   },
   "peerDependencies": {

@@ -42,6 +42,6 @@
     "@ag-grid-community/core": ""
   },
   "devDependencies": {
-    "typescript": "^3.6.3"
+    "typescript": "~3.6.5"
   }
 }

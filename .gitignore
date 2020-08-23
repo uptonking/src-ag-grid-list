@@ -27,6 +27,6 @@ docs_are_running
 .hash
 
 dist/
-community-modules/react/lib
+lib/
 
 

@@ -14,12 +14,12 @@
     "scripts/"
   ],
   "scripts": {
-    "build-es": "webpack --config ./config/webpack.config.demo.js",
+    "build-es": "yarn run clean && webpack --config ./config/webpack.config.demo.js",
     "build-ts": "babel src --out-dir lib --watch",
-    "build1": "npm run build:types && npm run build:js",
+    "build-1": "npm run build:types && npm run build:js",
     "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
     "build:types": "tsc --emitDeclarationOnly",
-    "clean": "rimraf -rf ./dist/",
+    "clean": "rimraf -rf dist",
     "demo": "webpack-cli serve --hot --config ./config/webpack.config.demo.js",
     "demo-vanilla": "webpack-cli serve --hot --config ./config/webpack.config.vanilla.js",
     "lint": "eslint src --ext .ts,.tsx --fix -o eslint-log.log",

@@ -1,3 +1,5 @@
 # ignore files for prettier
 
 *.md
+
+dist/
