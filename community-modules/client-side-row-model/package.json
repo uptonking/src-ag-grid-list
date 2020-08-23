@@ -24,8 +24,7 @@
   },
   "license": "MIT",
   "author": "Sean Landsman <sean@thelandsmans.com>",
-  "main": "./src/main.ts",
-  "module": "./src/main.ts",
+  "main": "./dist/es6/main",
   "types": "./dist/es6/main.d.ts",
   "scripts": {
     "build-1": "npm run build-cjs && npm run build-es6 && npm run hash",

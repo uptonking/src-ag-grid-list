@@ -4,9 +4,9 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
-  entry: path.join(__dirname, '../src/simple/A0VanillaGrid.ts'),
+  entry: path.join(__dirname, '../src/render.ts'),
   output: {
-    filename: 'bundle.js',
+    filename: 'main.js',
     path: path.resolve(__dirname, '../dist'),
   },
   module: {

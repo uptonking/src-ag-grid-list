@@ -65,6 +65,5 @@
     "editor.acceptSuggestionOnEnter": "on",
     "editor.defaultFormatter": "mervin.markdown-formatter"
   },
-  "bookmarks.saveBookmarksInProject": true,
-  "git.ignoreLimitWarning": true
+  "bookmarks.saveBookmarksInProject": true
 }

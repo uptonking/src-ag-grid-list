@@ -56,7 +56,7 @@ const tscSrcTask = () => {
   ]);
 };
 
-/** 基于gulp-typescript编译ts源码到js和类型声明文件 */
+/** tsc-no-clean-es6, 基于gulp-typescript编译ts源码到js和类型声明文件 */
 const tscSrcEs6Task = () => {
   const tsProject = gulpTypescript.createProject('./tsconfig.es6.json', {
     typescript: typescript,

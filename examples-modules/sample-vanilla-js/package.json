@@ -1,7 +1,7 @@
 {
   "name": "sample-grid-vanilla-js",
   "version": "23.2.1",
-  "description": "sample react app for ag-grid",
+  "description": "sample vanilla app for ag-grid",
   "keywords": [
     "datagrid"
   ],
@@ -15,13 +15,13 @@
     "scripts/"
   ],
   "scripts": {
-    "build-es": "webpack --config ./config/webpack.config.demo.js",
+    "build-es": "webpack --config ./config/webpack.config.vanilla.js",
     "build-ts": "babel src --out-dir lib --watch",
     "build1": "npm run build:types && npm run build:js",
     "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
     "build:types": "tsc --emitDeclarationOnly",
     "clean": "rimraf -rf ./dist/",
-    "demo": "webpack-cli serve --hot --config ./config/webpack.config.demo.js",
+    "demo": "webpack-cli serve --hot --config ./config/webpack.config.vanilla.js",
     "demo-vanilla": "webpack-cli serve --hot --config ./config/webpack.config.vanilla.js",
     "lint": "eslint src --ext .ts,.tsx --fix -o eslint-log.log",
     "prettier": "prettier --config ./.prettierrc.js --loglevel log --write '**/*.{ts,tsx,js,jsx,json,css}'",
@@ -42,7 +42,7 @@
     "@babel/plugin-proposal-decorators": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.10.4",
-    "@babel/preset-typescript": "^7.7.0",
+    "@babel/preset-typescript": "^7.10.4",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.1",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",

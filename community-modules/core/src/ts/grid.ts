@@ -136,6 +136,8 @@ export class Grid {
       return;
     }
 
+    console.log('==src-gridOptions, ', gridOptions);
+
     const debug = !!gridOptions.debug;
 
     this.gridOptions = gridOptions;

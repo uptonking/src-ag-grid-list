@@ -42,10 +42,10 @@ module.exports = function (api) {
         debug: false,
       },
     ],
-    // [
-    //   '@babel/preset-react',
-    //   { development: process.env.BABEL_ENV !== 'production' },
-    // ],
+    [
+      '@babel/preset-react',
+      { development: process.env.BABEL_ENV !== 'production' },
+    ],
     [
       '@babel/preset-typescript',
       {

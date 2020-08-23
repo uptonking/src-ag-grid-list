@@ -11,6 +11,8 @@ globalObj.HTMLInputElement =
 globalObj.Node = typeof Node === 'undefined' ? {} : Node;
 globalObj.MouseEvent = typeof MouseEvent === 'undefined' ? {} : MouseEvent;
 
+console.log('==src-core-main.ts, start');
+
 // columnController
 export { ColumnFactory } from './columnController/columnFactory';
 export {

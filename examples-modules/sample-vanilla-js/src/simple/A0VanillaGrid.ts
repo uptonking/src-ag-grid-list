@@ -1,9 +1,11 @@
 import { Grid, GridOptions, ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import '@ag-grid-community/core/dist-copy/styles/ag-grid.scss';
+import '@ag-grid-community/core/dist-copy/styles/ag-theme-alpine/sass/ag-theme-alpine.scss';
 
 ModuleRegistry.register(ClientSideRowModelModule);
 
-class SimpleGrid {
+export class SimpleGrid {
   private gridOptions: GridOptions = <GridOptions>{};
 
   constructor() {
@@ -27,11 +29,9 @@ class SimpleGrid {
   // specify the data
   private createRowData() {
     return [
-      { make: 'Toyota', model: 'Celica', price: 35000 },
-      { make: 'Ford', model: 'Mondeo', price: 32000 },
-      { make: 'Porsche', model: 'Boxter', price: 72000 },
+      { make: 'Toyota 丰田', model: 'Celica', price: 240000 },
+      { make: 'Ford 福特', model: 'Mondeo', price: 220000 },
+      { make: 'Porsche 保时捷', model: 'Boxter', price: 500000 },
     ];
   }
 }
-
-new SimpleGrid();
