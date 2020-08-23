@@ -26,6 +26,7 @@ docs_are_running
 
 .hash
 
-sample/dist-copy/
-
 dist/
+community-modules/react/lib
+
+
