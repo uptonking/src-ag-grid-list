@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
-    "module": "es6",
     "target": "es5",
+    "module": "es6",
     "sourceMap": true,
     "allowJs": false,
     "jsx": "preserve",
@@ -15,14 +15,15 @@
     "removeComments": true,
     "declaration": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": false,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
     "importHelpers": true,
     "pretty": true,
     "lib": ["es2015", "esnext", "dom"]
   },
+  "include": ["src/**/*"],
   "exclude": [
     "node_modules/**/*",
     "src/**/*.tests.tsx",

@@ -1,34 +1,50 @@
-// default webpack config for dev, build & storybook
+// default webpack config for dev, build
 
 const path = require('path');
+const webpack = require('webpack');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  // entry: './src/index.ts',
-  entry: path.join(__dirname, './src/index.ts'),
+  entry: path.join(__dirname, '../src/index.ts'),
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'build'),
+    filename: 'main.js',
+    path: path.resolve(__dirname, '../dist'),
   },
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
+        test: /\.(ts|js)x?$/,
+        use: 'babel-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.(sa|sc|c)ss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
     ],
   },
-  plugins: [],
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', 'jsx'],
+    extensions: ['.tsx', '.ts', '.js'],
   },
+  plugins: [
+    // new HtmlWebpackPlugin({
+    //   template: './demo.html',
+    //   filename: 'index.html',
+    // }),
+    new webpack.HotModuleReplacementPlugin(),
+  ],
   mode: 'development',
   devtool: 'eval-source-map',
+  // devServer config flags are only read by WDS but not Webpack
+  // 若要使用热加载，还需要在cli上传入 --hot
   devServer: {
-    contentBase: path.resolve(__dirname, 'public'),
-    compress: true,
+    contentBase: path.resolve(__dirname, '../dist'),
     host: '0.0.0.0',
     port: 8999,
     // open: true,
+    compress: true,
+    inline: true,
+    hot: true,
+    historyApiFallback: true,
   },
 };

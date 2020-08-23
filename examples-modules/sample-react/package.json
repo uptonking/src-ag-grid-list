@@ -9,7 +9,6 @@
   "main": "dist/main.js",
   "files": [
     "CHANGELOG.md",
-    "src/**/*.js",
     "dist",
     "README.md",
     "scripts/"
@@ -33,7 +32,8 @@
   },
   "dependencies": {
     "@ag-grid-community/client-side-row-model": "23.2.1",
-    "@ag-grid-community/core": "23.2.1"
+    "@ag-grid-community/core": "23.2.1",
+    "sample-grid-vanilla-js": "23.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.4",

@@ -6,7 +6,7 @@
     "datagrid"
   ],
   "license": "MIT",
-  "main": "dist/main.js",
+  "main": "dist/index.js",
   "files": [
     "CHANGELOG.md",
     "src/**/*.js",
@@ -15,11 +15,13 @@
     "scripts/"
   ],
   "scripts": {
-    "build-es": "webpack --config ./config/webpack.config.vanilla.js",
-    "build-ts": "babel src --out-dir lib --watch",
-    "build1": "npm run build:types && npm run build:js",
+    "build-babel": "babel src --out-dir dist --config-file ./babel.config.js --extensions \".ts,.js\"  --source-maps inline",
+    "build-demo": "webpack --config ./config/webpack.config.vanilla.js",
+    "build-es": "yarn run build-tsc",
+    "build-tsc": "tsc -p ./tsconfig.json",
+    "build-types": "tsc --emitDeclarationOnly",
+    "build1": "yarn run build:types && npm run build:js",
     "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
-    "build:types": "tsc --emitDeclarationOnly",
     "clean": "rimraf -rf ./dist/",
     "demo": "webpack-cli serve --hot --config ./config/webpack.config.vanilla.js",
     "demo-vanilla": "webpack-cli serve --hot --config ./config/webpack.config.vanilla.js",

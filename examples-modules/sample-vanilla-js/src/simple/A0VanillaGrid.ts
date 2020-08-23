@@ -35,3 +35,5 @@ export class SimpleGrid {
     ];
   }
 }
+
+export default SimpleGrid
