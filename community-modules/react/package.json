@@ -19,7 +19,7 @@
   },
   "license": "MIT",
   "author": "Niall Crosby <niall.crosby@ag-grid.com>",
-  "main": "main.js",
+  "main": "./lib/main.js",
   "typings": "./main.d.ts",
   "scripts": {
     "build-1": "gulp && npm run hash",

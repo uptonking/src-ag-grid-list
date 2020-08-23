@@ -109,7 +109,7 @@ export interface GridParams {
   modules?: Module[];
 
   // Alternative UI root class. Default is GridCore.
-  rootComponent?: { new (): Component };
+  rootComponent?: { new(): Component };
 }
 
 /**
@@ -446,11 +446,11 @@ export class Grid {
       rowModelType = Constants.ROW_MODEL_TYPE_CLIENT_SIDE;
     }
 
-    const rowModelClasses: { [name: string]: { new (): IRowModel } } = {};
+    const rowModelClasses: { [name: string]: { new(): IRowModel } } = {};
     registeredModules.forEach((module) => {
       _.iterateObject(
         module.rowModels,
-        (key: string, value: { new (): IRowModel }) => {
+        (key: string, value: { new(): IRowModel }) => {
           rowModelClasses[key] = value;
         },
       );
@@ -467,7 +467,7 @@ export class Grid {
       }
       console.error(
         'ag-Grid: could not find matching row model for rowModelType ' +
-          rowModelType,
+        rowModelType,
       );
       if (rowModelType === Constants.ROW_MODEL_TYPE_VIEWPORT) {
         console.error(

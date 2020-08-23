@@ -28,7 +28,7 @@
   },
   "license": "MIT",
   "author": "Sean Landsman <sean@thelandsmans.com>",
-  "main": "./src/ts/main",
+  "main": "./dist/es6/main",
   "types": "./dist/es6/main.d.ts",
   "scripts": {
     "build-1": "npm run precheck && gulp && tsc -p tsconfig.typings.json && npm run hash",
