@@ -14,9 +14,9 @@
     "scripts/"
   ],
   "scripts": {
+    "build-1": "npm run build:types && npm run build:js",
     "build-es": "yarn run clean && webpack --config ./config/webpack.config.demo.js",
     "build-ts": "babel src --out-dir lib --watch",
-    "build-1": "npm run build:types && npm run build:js",
     "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
     "build:types": "tsc --emitDeclarationOnly",
     "clean": "rimraf -rf dist",
@@ -33,6 +33,7 @@
   "dependencies": {
     "@ag-grid-community/client-side-row-model": "23.2.1",
     "@ag-grid-community/core": "23.2.1",
+    "ag-grid-react": "23.2.1",
     "sample-grid-vanilla-js": "23.2.1"
   },
   "devDependencies": {
