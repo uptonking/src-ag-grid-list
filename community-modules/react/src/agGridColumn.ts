@@ -4,14 +4,14 @@ import * as PropTypes from 'prop-types';
 import * as AgGrid from '@ag-grid-community/core';
 import { ColDef, ColGroupDef } from '@ag-grid-community/core';
 
-export interface AgGridColumnProps extends ColDef {}
+export interface AgGridColumnProps extends ColDef { }
 
-export interface AgGridColumnGroupProps extends ColGroupDef {}
+export interface AgGridColumnGroupProps extends ColGroupDef { }
 
 export class AgGridColumn extends Component<
   AgGridColumnProps | AgGridColumnGroupProps,
   {}
-> {
+  > {
   constructor(public props: any, public state: any) {
     super(props, state);
   }
@@ -60,7 +60,7 @@ export class AgGridColumn extends Component<
     // effectively Object.assign - here for IE compatibility
     return [from].reduce(function (r, o) {
       Object.keys(o).forEach(function (k) {
-        r[k] = o[k];
+        r[k] = (o as any)[k];
       });
       return r;
     }, colDef);
@@ -76,6 +76,6 @@ addProperties(AgGrid.ColDefUtil.FUNCTION_PROPERTIES, PropTypes.func);
 
 function addProperties(listOfProps: string[], propType: any) {
   listOfProps.forEach((propKey: string) => {
-    AgGridColumn[propKey] = propType;
+    (AgGridColumn as any)[propKey] = propType;
   });
 }

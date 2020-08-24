@@ -4,9 +4,10 @@ import * as examples from './index';
 const exampleNameArr = Object.keys(examples);
 
 export function ExampleListApp() {
-  const [curName, setCurName] = useState('');
+  // const [curName, setCurName] = useState('');
   // const [curName, setCurName] = useState('AbsoluteLayoutTable');
   // const [curName, setCurName] = useState('AbsoluteGridApp');
+  const [curName, setCurName] = useState('A1MinimalApp');
 
   const handleClick = (name) => {
     setCurName(name);

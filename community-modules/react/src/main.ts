@@ -1,6 +1,6 @@
 export { AgGridReact } from './agGridReact';
 export { AgGridColumn } from './agGridColumn';
-
+export { girdSolutions } from './bakUtil';
 // https://github.com/rollup/rollup-plugin-typescript/issues/109
 // export {ICellEditorReactComp} from './interfaces';
 // export {AgReactFrameworkComponent}  from './interfaces';

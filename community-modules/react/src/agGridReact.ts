@@ -51,6 +51,7 @@ export class AgGridReact extends Component<AgGridReactProps, {}> {
   }
 
   render() {
+    // console.log('==rdrAgGridReact1')
     return React.createElement<any>(
       'div',
       {
@@ -63,6 +64,7 @@ export class AgGridReact extends Component<AgGridReactProps, {}> {
     );
   }
 
+  // 会在ag-root-wrapper外层加一个div，设置height为100%
   createStyleForDiv() {
     const style: any = { height: '100%' };
     // allow user to override styles
@@ -75,6 +77,7 @@ export class AgGridReact extends Component<AgGridReactProps, {}> {
     return style;
   }
 
+  // 在这里创建Grid对象
   componentDidMount() {
     const modules = this.props.modules || [];
     const gridParams = {
@@ -119,7 +122,7 @@ export class AgGridReact extends Component<AgGridReactProps, {}> {
       if (runningTime >= AgGridReact.MAX_COMPONENT_CREATION_TIME) {
         console.error(
           `ag-Grid: React Component '${reactComponent.getReactComponentName()}' not created within ${
-            AgGridReact.MAX_COMPONENT_CREATION_TIME
+          AgGridReact.MAX_COMPONENT_CREATION_TIME
           }ms`,
         );
         return;
@@ -322,7 +325,7 @@ class ReactFrameworkComponentWrapper
   }
 
   createWrapper(
-    UserReactComponent: { new (): any },
+    UserReactComponent: { new(): any },
     componentType: ComponentType,
   ): WrapableInterface {
     return new ReactComponent(

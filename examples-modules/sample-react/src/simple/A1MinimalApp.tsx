@@ -1,39 +1,41 @@
-import React from 'react';
-import { AgGridReact } from 'ag-grid-react';
-
+import React, { useState } from 'react';
+import { ModuleRegistry } from '@ag-grid-community/core';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { AgGridReact, girdSolutions } from '@ag-grid-community/react';
 import '@ag-grid-community/core/dist-copy/styles/ag-grid.css';
 import '@ag-grid-community/core/dist-copy/styles/ag-theme-alpine.css';
 
-export class App extends React.Component<{}, any> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      columnDefs: [
-        { headerName: 'Make', field: 'make' },
-        { headerName: 'Model', field: 'model' },
-        { headerName: 'Price', field: 'price' },
-      ],
-      rowData: [
-        { make: 'Toyota', model: 'Celica', price: 35000 },
-        { make: 'Ford', model: 'Mondeo', price: 32000 },
-        { make: 'Porsche', model: 'Boxter', price: 72000 },
-      ],
-    };
-  }
+ModuleRegistry.register(ClientSideRowModelModule);
 
-  render() {
-    return (
+export function App() {
+  const [state, setState] = useState({
+    columnDefs: [
+      { headerName: 'Make', field: 'make' },
+      { headerName: 'Model', field: 'model' },
+      { headerName: 'Price', field: 'price' },
+    ],
+    rowData: [
+      { make: 'Toyota', model: 'Celica', price: 35000 },
+      { make: 'Ford', model: 'Mondeo', price: 32000 },
+      { make: 'Porsche', model: 'Boxter', price: 72000 },
+    ],
+  });
+
+  return (
+    <div>
+      {girdSolutions.ag ? girdSolutions.ag : 'undefinedGrid'}
       <div
         className='ag-theme-alpine'
-        style={{ height: '200px', width: '600px' }}
+        style={{ height: 200, width: 600 }}
+        id='IDMinimalApp'
       >
         <AgGridReact
-          columnDefs={this.state.columnDefs}
-          rowData={this.state.rowData}
+          columnDefs={state.columnDefs}
+          rowData={state.rowData}
         ></AgGridReact>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;

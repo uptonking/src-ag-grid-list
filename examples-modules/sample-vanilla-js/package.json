@@ -6,7 +6,8 @@
     "datagrid"
   ],
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "src/index",
+  "types": "dist/index.d.ts",
   "files": [
     "CHANGELOG.md",
     "src/**/*.js",

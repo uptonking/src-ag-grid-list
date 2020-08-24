@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { covidTill0721 } from 'sample-grid-vanilla-js/src/common/mockData';
+import { covidTill0721 } from 'sample-grid-vanilla-js';
 
 export const App: FC = () => {
   return (
