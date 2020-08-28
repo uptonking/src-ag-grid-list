@@ -1,4 +1,4 @@
-// to satisfy server side compilation
+// to satisfy server side compilation，本文件全是export，包括类型接口和表格相关class
 declare let global: any;
 const globalObj = typeof global === 'undefined' ? {} : global;
 globalObj.HTMLElement = typeof HTMLElement === 'undefined' ? {} : HTMLElement;
@@ -10,8 +10,6 @@ globalObj.HTMLInputElement =
   typeof HTMLInputElement === 'undefined' ? {} : HTMLInputElement;
 globalObj.Node = typeof Node === 'undefined' ? {} : Node;
 globalObj.MouseEvent = typeof MouseEvent === 'undefined' ? {} : MouseEvent;
-
-console.log('==src-core-main.ts, start');
 
 // columnController
 export { ColumnFactory } from './columnController/columnFactory';

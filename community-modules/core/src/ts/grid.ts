@@ -109,11 +109,11 @@ export interface GridParams {
   modules?: Module[];
 
   // Alternative UI root class. Default is GridCore.
-  rootComponent?: { new(): Component };
+  rootComponent?: { new (): Component };
 }
 
 /**
- * Core of Grid Component.
+ * Grid数据及操作的入口。本文件全部是这一个class的内容。
  */
 export class Grid {
   private context: Context;
@@ -145,6 +145,7 @@ export class Grid {
     const registeredModules = this.getRegisteredModules(params);
 
     const beanClasses = this.createBeansList(registeredModules);
+
     const providedBeanInstances = this.createProvidedBeans(eGridDiv, params);
 
     if (!beanClasses) {
@@ -159,6 +160,8 @@ export class Grid {
 
     this.logger = new Logger('ag-Grid', () => gridOptions.debug);
     const contextLogger = new Logger('Context', () => contextParams.debug);
+
+    // 这里创建所有bean的实例
     this.context = new Context(contextParams, contextLogger);
 
     this.registerModuleUserComponents(registeredModules);
@@ -167,6 +170,8 @@ export class Grid {
 
     const gridCoreClass = (params && params.rootComponent) || GridCore;
     const gridCore = new gridCoreClass();
+
+    // 给gridCore添加
     this.context.createBean(gridCore);
 
     this.setColumnsAndData();
@@ -187,6 +192,7 @@ export class Grid {
     agStackComponentsRegistry.setupComponents(agStackComponents);
   }
 
+  /** 获取向ag-grid core中注册的模块 */
   private getRegisteredModules(params: GridParams): Module[] {
     const passedViaConstructor: Module[] = params ? params.modules : null;
     const registered = ModuleRegistry.getRegisteredModules();
@@ -243,6 +249,7 @@ export class Grid {
     });
   }
 
+  /** 创建一个bean对象，包含gridOptions, eGridDiv等属性*/
   private createProvidedBeans(eGridDiv: HTMLElement, params: GridParams): any {
     let frameworkOverrides = params ? params.frameworkOverrides : null;
     if (_.missing(frameworkOverrides)) {
@@ -303,6 +310,7 @@ export class Grid {
     return components;
   }
 
+  /** 准备好要创建bean的class */
   private createBeansList(registeredModules: Module[]): any[] {
     const rowModelClass = this.getRowModelClass(registeredModules);
     if (!rowModelClass) {
@@ -372,6 +380,7 @@ export class Grid {
       AgStackComponentsRegistry,
     ];
 
+    //
     const moduleBeans = this.extractModuleEntity(registeredModules, (module) =>
       module.beans ? module.beans : [],
     );
@@ -446,11 +455,11 @@ export class Grid {
       rowModelType = Constants.ROW_MODEL_TYPE_CLIENT_SIDE;
     }
 
-    const rowModelClasses: { [name: string]: { new(): IRowModel } } = {};
+    const rowModelClasses: { [name: string]: { new (): IRowModel } } = {};
     registeredModules.forEach((module) => {
       _.iterateObject(
         module.rowModels,
-        (key: string, value: { new(): IRowModel }) => {
+        (key: string, value: { new (): IRowModel }) => {
           rowModelClasses[key] = value;
         },
       );
@@ -467,7 +476,7 @@ export class Grid {
       }
       console.error(
         'ag-Grid: could not find matching row model for rowModelType ' +
-        rowModelType,
+          rowModelType,
       );
       if (rowModelType === Constants.ROW_MODEL_TYPE_VIEWPORT) {
         console.error(

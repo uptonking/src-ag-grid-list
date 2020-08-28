@@ -27,7 +27,9 @@ interface BeanWrapper {
   beanInstance: any;
   beanName: any;
 }
-
+/**
+ * context上下文，负责创建所有bean
+ */
 export class Context {
   private beanWrappers: { [key: string]: BeanWrapper } = {};
   private contextParams: ContextParams;
@@ -60,6 +62,7 @@ export class Context {
     );
   }
 
+  /** 给输入的bean对象添加属性，实际不在这里创建 */
   public createBean<T extends any>(
     bean: T,
     afterPreCreateCallback?: (comp: Component) => void,
@@ -89,8 +92,9 @@ export class Context {
     this.callLifeCycleMethods(beanInstances, 'postConstructMethods');
   }
 
+  /** 创建所有bean */
   private createBeans(): void {
-    // register all normal beans
+    // register all normal beans，bind(o)方法会创建一个函数的实例，函数中的this会指向参数o
     this.contextParams.beanClasses.forEach(this.createBeanWrapper.bind(this));
     // register override beans, these will overwrite beans above of same name
 
@@ -107,10 +111,12 @@ export class Context {
           constructorParamsMeta =
             beanEntry.bean.__agBeanMetaData.autowireMethods.agConstructor;
         }
+
         const constructorParams = this.getBeansForParameters(
           constructorParamsMeta,
           beanEntry.bean.name,
         );
+
         const newInstance = applyToConstructor(
           beanEntry.bean,
           constructorParams,
@@ -123,7 +129,7 @@ export class Context {
     this.logger.log(`created beans: ${createdBeanNames}`);
   }
 
-  // tslint:disable-next-line
+  /** 给beanWrappers属性添加beanName到class的映射 */
   private createBeanWrapper(Bean: new () => Object): void {
     const metaData = (Bean as any).__agBeanMetaData;
 
@@ -225,6 +231,7 @@ export class Context {
     return beanName;
   }
 
+  /** 获取参数中的bean */
   private getBeansForParameters(parameters: any, beanName: string): any[] {
     const beansList: any[] = [];
     if (parameters) {
@@ -348,13 +355,16 @@ export class Context {
 }
 
 // taken from: http://stackoverflow.com/questions/3362471/how-can-i-call-a-javascript-constructor-using-call-or-apply
-// allows calling 'apply' on a constructor
+// allows calling 'apply' on a constructor，根据构造函数创建对象的通用方法
 function applyToConstructor(constructor: Function, argArray: any[]) {
   const args = [null].concat(argArray);
   const factoryFunction = constructor.bind.apply(constructor, args);
   return new factoryFunction();
 }
-
+// 另一种实现
+// function applyConstructor(ctor, args) {
+//   return new ctor(...args);
+// }
 export function PreConstruct(
   target: Object,
   methodName: string,

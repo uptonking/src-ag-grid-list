@@ -1,6 +1,7 @@
 import { missing, exists, values } from './generic';
 import { forEach } from './array';
 
+/** 遍历object的元素，并将各元素作为参数传入callback方法，自定义实现的性能比Array.prototype.forEach更高 */
 export function iterateObject<T>(
   object: { [p: string]: T } | T[] | undefined,
   callback: (key: string, value: T) => void,
