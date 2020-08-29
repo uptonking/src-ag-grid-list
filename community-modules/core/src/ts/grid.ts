@@ -171,10 +171,12 @@ export class Grid {
     const gridCoreClass = (params && params.rootComponent) || GridCore;
     const gridCore = new gridCoreClass();
 
-    // 给gridCore添加
+    // 给gridCore对象添加属性
     this.context.createBean(gridCore);
 
     this.setColumnsAndData();
+
+    //
     this.dispatchGridReadyEvent(gridOptions);
     const isEnterprise = ModuleRegistry.isRegistered(
       ModuleNames.EnterpriseCoreModule,
@@ -249,7 +251,7 @@ export class Grid {
     });
   }
 
-  /** 创建一个bean对象，包含gridOptions, eGridDiv等属性*/
+  /** 返回一个对象，包含gridOptions, eGridDiv等各种配置属性 */
   private createProvidedBeans(eGridDiv: HTMLElement, params: GridParams): any {
     let frameworkOverrides = params ? params.frameworkOverrides : null;
     if (_.missing(frameworkOverrides)) {

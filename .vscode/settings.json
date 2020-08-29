@@ -9,7 +9,7 @@
     "**/build": true,
     "**/dist": true
   },
-  "cSpell.language": "en-GB",
+  "cSpell.language": "en-GB,en-US",
   "files.exclude": {
     "grid-packages/ag-grid-community": false,
     "grid-packages/ag-grid-enterprise": false,

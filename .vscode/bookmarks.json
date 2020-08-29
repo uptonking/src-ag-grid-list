@@ -23,7 +23,7 @@
 		"path": "$ROOTPATH$/community-modules/core/src/ts/grid.ts",
 		"bookmarks": [
 			{
-				"line": 114,
+				"line": 123,
 				"column": 13,
 				"label": ""
 			}
@@ -43,7 +43,7 @@
 		"path": "$ROOTPATH$/community-modules/core/src/ts/main.ts",
 		"bookmarks": [
 			{
-				"line": 234,
+				"line": 236,
 				"column": 0,
 				"label": ""
 			}
