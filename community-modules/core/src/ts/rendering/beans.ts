@@ -41,11 +41,16 @@ import { CellPositionUtils } from '../entities/cellPosition';
 import { RowPositionUtils } from '../entities/rowPosition';
 import { SelectionController } from '../selectionController';
 
-/** Using the IoC has a slight performance consideration, which is no problem most of the
+/**
+ * Using the IoC has a slight performance consideration, which is no problem most of the
  * time, unless we are trashing objects - which is the case when scrolling and rowComp
- * and cellComp. So for performance reasons, RowComp and CellComp do not get autowired
- * with the IoC. Instead they get passed this object which is all the beans the RowComp
- * and CellComp need. Not autowiring all the cells gives performance improvement. */
+ * and cellComp.
+ * So for performance reasons, RowComp and CellComp do not get autowired
+ * with the IoC.
+ * Instead they get passed this object which is all the beans the RowComp
+ * and CellComp need.
+ * Not autowiring all the cells gives performance improvement.
+ * */
 @Bean('beans')
 export class Beans {
   @Autowired('paginationProxy') public paginationProxy: PaginationProxy;
@@ -100,6 +105,7 @@ export class Beans {
   public doingMasterDetail: boolean;
   public gridPanel: GridPanel;
 
+  /** 注入gridPanel对象 */
   public registerGridComp(gridPanel: GridPanel): void {
     this.gridPanel = gridPanel;
   }

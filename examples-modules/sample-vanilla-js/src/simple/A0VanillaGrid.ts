@@ -12,6 +12,7 @@ export class SimpleGrid {
     this.gridOptions = {
       columnDefs: this.createColumnDefs(),
       rowData: this.createRowData(),
+      debug: true,
     };
 
     let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#app');

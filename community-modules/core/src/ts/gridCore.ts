@@ -25,6 +25,9 @@ import { ColumnGroup } from './entities/columnGroup';
 import { Column } from './entities/column';
 import { _ } from './utils';
 
+/**
+ * 包含grid配置、数据、操作的核心类
+ */
 export class GridCore extends ManagedFocusComponent {
   @Autowired('gridOptions') private gridOptions: GridOptions;
   @Autowired('gridOptionsWrapper')

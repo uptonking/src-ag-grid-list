@@ -6,6 +6,9 @@ import { IEventEmitter } from './interfaces/iEventEmitter';
 import { GridOptionsWrapper } from './gridOptionsWrapper';
 import { AgEvent } from './events';
 
+/**
+ * 处理事件监听器的add/remove，以及通过dispatchEvent触发事件
+ */
 @Bean('eventService')
 export class EventService implements IEventEmitter {
   private allSyncListeners = new Map<string, Set<Function>>();
@@ -84,6 +87,7 @@ export class EventService implements IEventEmitter {
     );
   }
 
+  /** 触发event，注意这里默认触发2次 */
   public dispatchEvent(event: AgEvent): void {
     this.dispatchToListeners(event, true);
     this.dispatchToListeners(event, false);
@@ -97,6 +101,11 @@ export class EventService implements IEventEmitter {
     }
   }
 
+  /**
+   * 根据event.type查找监听器，并触发监听的事件处理函数
+   * @param event 事件
+   * @param async 是否异步
+   */
   private dispatchToListeners(event: AgEvent, async: boolean) {
     const eventType = event.type;
     const processEventListeners = (listeners: Set<Function>) =>

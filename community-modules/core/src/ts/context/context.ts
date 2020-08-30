@@ -27,16 +27,23 @@ interface BeanWrapper {
   beanInstance: any;
   beanName: any;
 }
+
 /**
- * context上下文，负责创建所有bean
+ * Context是创建Grid的上下文，负责创建并存放所有bean
  */
 export class Context {
-  private beanWrappers: { [key: string]: BeanWrapper } = {};
-  private contextParams: ContextParams;
   private logger: ILogger;
 
+  /** 存放所有bean对象实例的容器，数据类型是映射表 */
+  private beanWrappers: { [key: string]: BeanWrapper } = {};
+
+  /** 创建Grid时传入的上下文参数，主要包含所有bean对应的class */
+  private contextParams: ContextParams;
+
+  /** 所有bean对象是否已调用过destroy()方法 */
   private destroyed = false;
 
+  /** Context初始化时的任务，创建所有bean对象并给bean添加属性 */
   public constructor(params: ContextParams, logger: ILogger) {
     if (!params || !params.beanClasses) {
       return;
@@ -47,22 +54,26 @@ export class Context {
     this.logger = logger;
     this.logger.log('>> creating ag-Application Context');
 
+    // 创建所有bean对象
     this.createBeans();
 
+    // 获取所有bean对象存放到到数组
     const beanInstances = this.getBeanInstances();
 
+    // 给所有bean对象添加属性
     this.wireBeans(beanInstances);
 
     this.logger.log('>> ag-Application Context ready - component is alive');
   }
 
+  /** 从beanWrappers容器中取出所有bean对象实例构成的数组 */
   private getBeanInstances(): any[] {
     return _.values(this.beanWrappers).map(
       (beanEntry) => beanEntry.beanInstance,
     );
   }
 
-  /** 给输入的bean对象添加属性，实际不在这里创建 */
+  /** 给输入的bean对象添加属性，bean对象实际不在这里创建 */
   public createBean<T extends any>(
     bean: T,
     afterPreCreateCallback?: (comp: Component) => void,
@@ -74,25 +85,32 @@ export class Context {
     return bean;
   }
 
+  /**
+   * 给所有beanInstances对象添加和注入属性，并调用生命周期方法pre/postConstructMethods
+   */
   private wireBeans(
     beanInstances: any[],
     afterPreCreateCallback?: (comp: Component) => void,
   ): void {
     this.autoWireBeans(beanInstances);
+
     this.methodWireBeans(beanInstances);
 
+    // 调用 preConstructMethods
     this.callLifeCycleMethods(beanInstances, 'preConstructMethods');
 
+    // 调用 afterPreCreateCallback，在这里可设置属性
     // the callback sets the attributes, so the component has access to attributes
     // before postConstruct methods in the component are executed
     if (_.exists(afterPreCreateCallback)) {
       beanInstances.forEach(afterPreCreateCallback);
     }
 
+    // 调用 postConstructMethods
     this.callLifeCycleMethods(beanInstances, 'postConstructMethods');
   }
 
-  /** 创建所有bean */
+  /** 创建所有bean对象，存放到beanWrappers映射表容器 */
   private createBeans(): void {
     // register all normal beans，bind(o)方法会创建一个函数的实例，函数中的this会指向参数o
     this.contextParams.beanClasses.forEach(this.createBeanWrapper.bind(this));
@@ -117,10 +135,12 @@ export class Context {
           beanEntry.bean.name,
         );
 
+        // 通过工具方法创建对象实例
         const newInstance = applyToConstructor(
           beanEntry.bean,
           constructorParams,
         );
+
         beanEntry.beanInstance = newInstance;
       },
     );
@@ -129,10 +149,11 @@ export class Context {
     this.logger.log(`created beans: ${createdBeanNames}`);
   }
 
-  /** 给beanWrappers属性添加beanName到class的映射 */
+  /** 向beanWrappers容器添加beanName到beanEntry的映射 */
   private createBeanWrapper(Bean: new () => Object): void {
     const metaData = (Bean as any).__agBeanMetaData;
 
+    // 若元数据不存在，则打印error
     if (!metaData) {
       let beanName: string;
       if (Bean.prototype.constructor) {
@@ -153,6 +174,7 @@ export class Context {
     this.beanWrappers[metaData.beanName] = beanEntry;
   }
 
+  /** 查找beanInstance的class的元数据包含的属性，并添加到其上 */
   private autoWireBeans(beanInstances: any[]): void {
     beanInstances.forEach((beanInstance) => {
       this.forEachMetaDataInHierarchy(
@@ -176,6 +198,7 @@ export class Context {
     });
   }
 
+  /** 查找beanInstance的元数据中包含的方法，并调用该方法 */
   private methodWireBeans(beanInstances: any[]): void {
     beanInstances.forEach((beanInstance) => {
       this.forEachMetaDataInHierarchy(
@@ -192,6 +215,7 @@ export class Context {
                 wireParams,
                 beanName,
               );
+              // 调用方法
               beanInstance[methodName].apply(beanInstance, initParams);
             },
           );
@@ -200,11 +224,14 @@ export class Context {
     });
   }
 
+  /** 会执行 callback(metaData, beanName);  */
   private forEachMetaDataInHierarchy(
     beanInstance: any,
     callback: (metaData: any, beanName: string) => void,
   ): void {
     let prototype: any = Object.getPrototypeOf(beanInstance);
+
+    // 循环查找bean对象及其父对象原型的constructor，检查__agBeanMetaData属性
     while (prototype != null) {
       const constructor: any = prototype.constructor;
 
@@ -231,7 +258,7 @@ export class Context {
     return beanName;
   }
 
-  /** 获取参数中的bean */
+  /** 根据参数元数据创建beansList */
   private getBeansForParameters(parameters: any, beanName: string): any[] {
     const beansList: any[] = [];
     if (parameters) {
@@ -246,6 +273,12 @@ export class Context {
     return beansList;
   }
 
+  /**
+   * 根据bean名称查找bean对象实例
+   * @param wiringBean 作用是,在未找到bean时,打印wiringBean的错误信息
+   * @param beanName 名称
+   * @param optional bean实例是否可空,默认false,默认情况下,若未找到bean会在console打印error
+   */
   private lookupBeanInstance(
     wiringBean: string,
     beanName: string,
@@ -275,6 +308,7 @@ export class Context {
     }
   }
 
+  /** 循环调用所有bean的lifeCycleMethod，入口方法 */
   private callLifeCycleMethods(
     beanInstances: any[],
     lifeCycleMethod: string,
@@ -284,6 +318,7 @@ export class Context {
     });
   }
 
+  /** 调用一个bean对象的声明周期方法 */
   private callLifeCycleMethodsOneBean(
     beanInstance: any,
     lifeCycleMethod: string,
@@ -308,10 +343,12 @@ export class Context {
     allMethodsList.forEach((methodName) => beanInstance[methodName]());
   }
 
+  /** 从bean容器中根据名称,查找bean对象实例 */
   public getBean(name: string): any {
     return this.lookupBeanInstance('getBean', name, true);
   }
 
+  /** 调用所有bean对象的destroy()方法及destroy声明周期相关方法 */
   public destroy(): void {
     // should only be able to destroy once
     if (this.destroyed) {
@@ -336,6 +373,7 @@ export class Context {
     return undefined;
   }
 
+  /** 调用所有bean对象的preDestroyMethods和destroy()方法 */
   public destroyBeans<T extends any>(beans: T[]): T[] {
     if (!beans) {
       return [];
@@ -345,8 +383,8 @@ export class Context {
       this.callLifeCycleMethodsOneBean(bean, 'preDestroyMethods', 'destroy');
 
       // call destroy() explicitly if it exists
-      if (bean.destroy) {
-        bean.destroy();
+      if ((bean as any).destroy) {
+        (bean as any).destroy();
       }
     });
 
@@ -355,7 +393,7 @@ export class Context {
 }
 
 // taken from: http://stackoverflow.com/questions/3362471/how-can-i-call-a-javascript-constructor-using-call-or-apply
-// allows calling 'apply' on a constructor，根据构造函数创建对象的通用方法
+/** allows calling 'apply' on a constructor，根据构造函数创建对象的通用方法，使用apply调用构造函数 */
 function applyToConstructor(constructor: Function, argArray: any[]) {
   const args = [null].concat(argArray);
   const factoryFunction = constructor.bind.apply(constructor, args);

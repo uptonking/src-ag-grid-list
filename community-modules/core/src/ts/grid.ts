@@ -113,7 +113,8 @@ export interface GridParams {
 }
 
 /**
- * Grid数据及操作的入口。本文件全部是这一个class的内容。
+ * Grid数据及操作的入口。
+ * 本文件全部是这一个class的内容。
  */
 export class Grid {
   private context: Context;
@@ -122,6 +123,7 @@ export class Grid {
 
   private readonly gridOptions: GridOptions;
 
+  /** Grid初始化, 准备创建bean的class及配置, 创建各种bean, 注册ag-grid module, */
   constructor(
     eGridDiv: HTMLElement,
     gridOptions: GridOptions,
@@ -144,6 +146,7 @@ export class Grid {
 
     const registeredModules = this.getRegisteredModules(params);
 
+    // 准备要创建bean的class，存放到数组
     const beanClasses = this.createBeansList(registeredModules);
 
     const providedBeanInstances = this.createProvidedBeans(eGridDiv, params);
@@ -168,22 +171,26 @@ export class Grid {
 
     this.registerStackComponents(registeredModules);
 
+    // 创建gridCore对象，包含grid数据及操作实现的核心部分
     const gridCoreClass = (params && params.rootComponent) || GridCore;
     const gridCore = new gridCoreClass();
 
-    // 给gridCore对象添加属性
+    // 给gridCore对象添加和注入属性，会从context的bean容器中取出相关bean来初始化core的属性
     this.context.createBean(gridCore);
 
+    // 设置columnDefs和rowModel
     this.setColumnsAndData();
 
-    //
+    // 触发gridReady事件
     this.dispatchGridReadyEvent(gridOptions);
+
     const isEnterprise = ModuleRegistry.isRegistered(
       ModuleNames.EnterpriseCoreModule,
     );
     this.logger.log(`initialised successfully, enterprise = ${isEnterprise}`);
   }
 
+  /** 给agStackComponentsRegistry设置agStackComponents */
   private registerStackComponents(registeredModules: Module[]): void {
     const agStackComponents = this.createAgStackComponentsList(
       registeredModules,
@@ -191,6 +198,7 @@ export class Grid {
     const agStackComponentsRegistry = this.context.getBean(
       'agStackComponentsRegistry',
     ) as AgStackComponentsRegistry;
+
     agStackComponentsRegistry.setupComponents(agStackComponents);
   }
 
@@ -231,6 +239,7 @@ export class Grid {
     return allModules;
   }
 
+  /** 注册模块中的userComponents */
   private registerModuleUserComponents(registeredModules: Module[]): void {
     const userComponentRegistry: UserComponentRegistry = this.context.getBean(
       'userComponentRegistry',
@@ -407,6 +416,7 @@ export class Grid {
     return [].concat(...moduleEntities.map(extractor));
   }
 
+  /** 设置columnDefs和rowModel */
   private setColumnsAndData(): void {
     const gridOptionsWrapper: GridOptionsWrapper = this.context.getBean(
       'gridOptionsWrapper',
@@ -414,8 +424,8 @@ export class Grid {
     const columnController: ColumnController = this.context.getBean(
       'columnController',
     );
-    const columnDefs = gridOptionsWrapper.getColumnDefs();
 
+    const columnDefs = gridOptionsWrapper.getColumnDefs();
     if (_.exists(columnDefs)) {
       columnController.setColumnDefs(columnDefs, 'gridInitializing');
     }
@@ -424,6 +434,7 @@ export class Grid {
     rowModel.start();
   }
 
+  /** 通过eventService触发readyEvent事件 */
   private dispatchGridReadyEvent(gridOptions: GridOptions): void {
     const eventService: EventService = this.context.getBean('eventService');
     const readyEvent: GridReadyEvent = {

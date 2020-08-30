@@ -136,10 +136,14 @@ export function find<T>(
 
   return firstMatchingItem;
 }
-
+/**
+ *取出对象的各key对应的value，返回value构成的数组
+ * @param object 对象
+ */
 export function values<T>(
   object: { [key: string]: T } | Set<T> | Map<any, T>,
 ): T[] {
+  // 若对象是Set或Map，则直接遍历所有value并取出
   if (object instanceof Set || object instanceof Map) {
     const values: T[] = [];
 
@@ -148,5 +152,6 @@ export function values<T>(
     return values;
   }
 
+  // 若是普通对象，则通过遍历key取出所有value
   return Object.keys(object).map((key) => object[key]);
 }
