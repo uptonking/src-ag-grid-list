@@ -2,11 +2,16 @@ import { Module } from '../interfaces/iModule';
 import { ModuleNames } from './moduleNames';
 import { _ } from '../utils';
 
+/**
+ * 负责注册ag-grid的社区版或企业版的module，是一个static工具类
+ */
 export class ModuleRegistry {
   // having in a map a) removes duplicates and b) allows fast lookup
   private static modulesMap: { [name: string]: Module } = {};
+  /** 是否基于module，如使用ag-grid-community包就不是module，使用@ag-grid-community/core包就是 */
   private static moduleBased: boolean | undefined;
 
+  /** 注册一个module，存放到modulesMap映射表 */
   public static register(module: Module, moduleBased = true): void {
     ModuleRegistry.modulesMap[module.moduleName] = module;
 
@@ -27,6 +32,7 @@ export class ModuleRegistry {
   }
 
   // noinspection JSUnusedGlobalSymbols
+  /** 注册多个modules */
   public static registerModules(modules: Module[], moduleBased = true): void {
     if (!modules) {
       return;
@@ -56,6 +62,7 @@ export class ModuleRegistry {
     return !!ModuleRegistry.modulesMap[moduleName];
   }
 
+  /** 从modulesMap映射表中获取注册的所有模块对象 */
   public static getRegisteredModules(): Module[] {
     return _.values(ModuleRegistry.modulesMap);
   }

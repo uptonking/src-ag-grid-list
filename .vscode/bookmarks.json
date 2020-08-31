@@ -23,7 +23,7 @@
 		"path": "$ROOTPATH$/community-modules/core/src/ts/grid.ts",
 		"bookmarks": [
 			{
-				"line": 123,
+				"line": 126,
 				"column": 13,
 				"label": ""
 			}
@@ -44,6 +44,16 @@
 		"bookmarks": [
 			{
 				"line": 236,
+				"column": 0,
+				"label": ""
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$/community-modules/client-side-row-model/src/clientSideRowModel/clientSideRowModel.ts",
+		"bookmarks": [
+			{
+				"line": 54,
 				"column": 0,
 				"label": ""
 			}

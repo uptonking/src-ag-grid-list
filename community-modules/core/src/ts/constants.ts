@@ -1,3 +1,6 @@
+/**
+ * 全部是常量的通用工具类，包括键盘按键对应的数值，rowModel名称，排序名称
+ */
 export class Constants {
   static STEP_EVERYTHING = 0;
   static STEP_FILTER = 1;

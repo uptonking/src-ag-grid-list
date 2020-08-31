@@ -3,6 +3,9 @@ import { AgGridRegisteredComponentInput } from '../components/framework/userComp
 import { IComponent } from './iComponent';
 import { IRowModel } from './iRowModel';
 
+/**
+ * 定义ag-grid module的类型
+ */
 export interface Module {
   moduleName: string;
   beans?: any[];

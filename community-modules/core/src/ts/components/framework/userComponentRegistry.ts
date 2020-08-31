@@ -61,6 +61,9 @@ export class UserComponentRegistry extends BeanStub {
   @Autowired('gridOptions')
   private gridOptions: GridOptions;
 
+  /**
+   * 指定ag-grid使用的各种默认组件的映射表
+   */
   private agGridDefaults: {
     [key: string]: AgGridRegisteredComponentInput<any>;
   } = {
@@ -180,6 +183,7 @@ export class UserComponentRegistry extends BeanStub {
     }
   }
 
+  /** 将component添加到agGridDefaults映射表 */
   public registerDefaultComponent<A extends IComponent<any>>(
     rawName: string,
     component: AgGridRegisteredComponentInput<A>,

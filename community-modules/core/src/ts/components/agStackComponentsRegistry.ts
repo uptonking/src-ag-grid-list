@@ -1,8 +1,12 @@
 import { Bean, ComponentMeta } from '../context/context';
 import { BeanStub } from '../context/beanStub';
 
+/**
+ *
+ */
 @Bean('agStackComponentsRegistry')
 export class AgStackComponentsRegistry extends BeanStub {
+  /** 存放component名称和定义class的映射表 */
   private componentsMappedByName: { [key: string]: any } = {};
 
   public setupComponents(components: ComponentMeta[]): void {

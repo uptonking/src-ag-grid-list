@@ -1,3 +1,6 @@
+/**
+ * 预定义的模块名称，如ClientSideRowModelModule=@ag-grid-community/client-side-row-model
+ */
 export enum ModuleNames {
   // when using modules, user references this
   CommunityCoreModule = '@ag-grid-community/core', // should this be grid-community-core?
@@ -5,8 +8,8 @@ export enum ModuleNames {
   CommunityAllModules = '@ag-grid-community/all', // should this be grid-community-all
 
   // community modules
-  InfiniteRowModelModule = '@ag-grid-community/infinite-row-model',
   ClientSideRowModelModule = '@ag-grid-community/client-side-row-model',
+  InfiniteRowModelModule = '@ag-grid-community/infinite-row-model',
   CsvExportModule = '@ag-grid-community/csv-export',
   RowNodeCache = '@ag-grid-community/row-node-cache',
 

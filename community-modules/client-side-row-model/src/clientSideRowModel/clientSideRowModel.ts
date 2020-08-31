@@ -48,8 +48,12 @@ export interface RowNodeMap {
   [id: string]: RowNode;
 }
 
+/**
+ * 最常用的rowModel，不涉及服务端数据通信
+ */
 @Bean('rowModel')
-export class ClientSideRowModel extends BeanStub
+export class ClientSideRowModel
+  extends BeanStub
   implements IClientSideRowModel {
   @Autowired('gridOptionsWrapper')
   private gridOptionsWrapper: GridOptionsWrapper;
@@ -165,9 +169,13 @@ export class ClientSideRowModel extends BeanStub
     this.createBean(this.rootNode);
   }
 
+  /**
+   * 开始将输入的rowData处理成grid内部的数据结构
+   */
   public start(): void {
     const rowData = this.gridOptionsWrapper.getRowData();
     if (rowData) {
+      // 对rowData进行计算处理的入口
       this.setRowData(rowData);
     }
   }
@@ -483,6 +491,10 @@ export class ClientSideRowModel extends BeanStub
     return changedPath;
   }
 
+  /**
+   * 更新数据rowModel，基于无break的switch选择分支，实现从某一步开始一直执行到结束的流程
+   * @param params 更新参数
+   */
   public refreshModel(params: RefreshModelParams): void {
     // this goes through the pipeline of stages. what's in my head is similar
     // to the diagram on this page:
@@ -491,8 +503,7 @@ export class ClientSideRowModel extends BeanStub
     // each step rather than have them chain each other.
 
     // fallthrough in below switch is on purpose,
-    // eg if STEP_FILTER, then all steps below this
-    // step get done
+    // eg if STEP_FILTER, then all steps below this step get done
     // let start: number;
     // console.log('======= start =======');
 
@@ -967,7 +978,7 @@ export class ClientSideRowModel extends BeanStub
     return this.nodeManager.getRowNode(id);
   }
 
-  // rows: the rows to put into the model
+  /** rows: the rows to put into the model，只是处理rowData的入口 */
   public setRowData(rowData: any[]): void {
     // no need to invalidate cache, as the cache is stored on the rowNode,
     // so new rowNodes means the cache is wiped anyway.
@@ -986,6 +997,8 @@ export class ClientSideRowModel extends BeanStub
       api: this.gridApi,
       columnApi: this.columnApi,
     };
+
+    // 触发 rowDataChanged 事件
     this.eventService.dispatchEvent(rowDataChangedEvent);
 
     this.refreshModel({

@@ -7,6 +7,9 @@ import { SortService } from './clientSideRowModel/sortService';
 import { FilterService } from './clientSideRowModel/filterService';
 import { ImmutableService } from './clientSideRowModel/immutableService';
 
+/**
+ * 包含最常用的rowModel的module
+ */
 export const ClientSideRowModelModule: Module = {
   moduleName: ModuleNames.ClientSideRowModelModule,
   beans: [

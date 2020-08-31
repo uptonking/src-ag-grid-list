@@ -62,7 +62,8 @@ export interface IRowModel {
     endLimitIndex: number,
   ): boolean;
 
-  /** Gets called after grid is initialised. What happens depends on row model. Client Side will take rowData
-   * from gridOptions, the other row models will start calling their datasources. */
+  /** Gets called after grid is initialised. What happens depends on row model.
+   * Client Side will take rowData from gridOptions, the other row models will
+   * start calling their datasources. */
   start(): void;
 }

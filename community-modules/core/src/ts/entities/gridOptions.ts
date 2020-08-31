@@ -105,6 +105,9 @@ import {
   ChartType,
 } from '../interfaces/iChartOptions';
 
+/**
+ * Grid所有配置项，主要包括 gird properties, onEvents, callbacks
+ */
 export interface GridOptions {
   /*******************************************************************************************************
    * If you change the properties on this interface, you must also update PropertyKeys to be consistent. *
