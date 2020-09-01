@@ -11,18 +11,20 @@ import { AgEvent } from './events';
  */
 @Bean('eventService')
 export class EventService implements IEventEmitter {
+  private logger: Logger;
+
   private allSyncListeners = new Map<string, Set<Function>>();
   private allAsyncListeners = new Map<string, Set<Function>>();
 
   private globalSyncListeners = new Set<Function>();
   private globalAsyncListeners = new Set<Function>();
 
-  private logger: Logger;
-
+  /** 需要异步执行的事件处理函数的列表 */
   private asyncFunctionsQueue: Function[] = [];
   private scheduled = false;
 
   // using an object performs better than a Set for the number of different events we have
+  /** 触发过的events的映射表 */
   private firedEvents: { [key: string]: boolean } = {};
 
   // because this class is used both inside the context and outside the context, we do not
@@ -47,6 +49,7 @@ export class EventService implements IEventEmitter {
     }
   }
 
+  /** 查找eventType类型的listeners列表 */
   private getListeners(eventType: string, async: boolean): Set<Function> {
     const listenerMap = async ? this.allAsyncListeners : this.allSyncListeners;
     let listeners = listenerMap.get(eventType);
@@ -87,7 +90,7 @@ export class EventService implements IEventEmitter {
     );
   }
 
-  /** 触发event，注意这里默认触发2次 */
+  /** 触发event，注意这里会触发2次，todo, 为什么是2次 */
   public dispatchEvent(event: AgEvent): void {
     this.dispatchToListeners(event, true);
     this.dispatchToListeners(event, false);
@@ -95,6 +98,7 @@ export class EventService implements IEventEmitter {
     this.firedEvents[event.type] = true;
   }
 
+  /** 触发event，这里只会触发1次 */
   public dispatchEventOnce(event: AgEvent): void {
     if (!this.firedEvents[event.type]) {
       this.dispatchEvent(event);
@@ -108,6 +112,8 @@ export class EventService implements IEventEmitter {
    */
   private dispatchToListeners(event: AgEvent, async: boolean) {
     const eventType = event.type;
+
+    /** 事件处理，若是异步，则使用setTimeOut分批调用，若是同步，则直接调用事件处理函数 */
     const processEventListeners = (listeners: Set<Function>) =>
       listeners.forEach((listener) => {
         if (async) {
@@ -133,17 +139,21 @@ export class EventService implements IEventEmitter {
   }
 
   // this gets called inside the grid's thread, for each event that it
-  // wants to set async. the grid then batches the events into one setTimeout()
-  // because setTimeout() is an expensive operation. ideally we would have
+  // wants to set async.
+  // the grid then batches the events into one setTimeout().
+  // because setTimeout() is an expensive operation, ideally we would have
   // each event in it's own setTimeout(), but we batch for performance.
+  /** 异步触发的event会在setTimeOut中批量执行 */
   private dispatchAsync(func: Function): void {
     // add to the queue for executing later in the next VM turn
     this.asyncFunctionsQueue.push(func);
 
-    // check if timeout is already scheduled. the first time the grid calls
-    // this within it's thread turn, this should be false, so it will schedule
-    // the 'flush queue' method the first time it comes here. then the flag is
-    // set to 'true' so it will know it's already scheduled for subsequent calls.
+    // check if timeout is already scheduled.
+    // the first time the grid calls this within it's thread turn, this should
+    // be false, so it will schedule the 'flush queue' method the first time
+    // it comes here.
+    // then the flag is set to 'true' so it will know it's already scheduled
+    //  for subsequent calls.
     if (!this.scheduled) {
       // if not scheduled, schedule one
       window.setTimeout(this.flushAsyncQueue.bind(this), 0);
@@ -151,6 +161,7 @@ export class EventService implements IEventEmitter {
       this.scheduled = true;
     }
   }
+  // queue as we are flushing it.
 
   // this happens in the next VM turn only, and empties the queue of events
   private flushAsyncQueue(): void {
