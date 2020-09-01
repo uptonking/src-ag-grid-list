@@ -2,6 +2,9 @@ import { Autowired } from './context/context';
 import { Bean } from './context/context';
 import { BeanStub } from './context/beanStub';
 
+/**
+ * 处理angular框架中的template
+ */
 @Bean('templateService')
 export class TemplateService extends BeanStub {
   @Autowired('$scope') private $scope: any;

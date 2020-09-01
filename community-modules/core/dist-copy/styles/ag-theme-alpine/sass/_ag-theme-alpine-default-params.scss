@@ -3,8 +3,8 @@
 
 $ag-theme-alpine-default-params: (
   // COLOURS
-    // main colours (overridden by alpine-dark)
-    alpine-active-color: #2196f3,
+  // main colours (overridden by alpine-dark)
+  alpine-active-color: #2196f3,
   background-color: #fff,
   foreground-color: #181d1f,
   secondary-border-color: #dde2eb,
@@ -17,7 +17,7 @@ $ag-theme-alpine-default-params: (
   checkbox-unchecked-color: #999,
   checkbox-background-color: ag-derived(background-color),
   // derived colours (shared by alpine-dark)
-    subheader-toolbar-background-color:
+  subheader-toolbar-background-color:
     ag-derived(subheader-background-color, $opacity: 0.5),
   selected-row-background-color: ag-derived(alpine-active-color, $opacity: 0.3),
   row-hover-color: ag-derived(alpine-active-color, $opacity: 0.1),
@@ -30,7 +30,7 @@ $ag-theme-alpine-default-params: (
   header-cell-moving-background-color: ag-derived(background-color),
   range-selection-border-color: #2196f3,
   // BORDERS
-    borders: true,
+  borders: true,
   borders-side-button: false,
   border-radius: 3px,
   selected-tab-underline-transition-speed: 0.3s,
@@ -38,15 +38,15 @@ $ag-theme-alpine-default-params: (
   header-column-resize-handle-width: 2px,
   header-column-resize-handle-height: 30%,
   // SIZING
-    grid-size: 6px,
+  grid-size: 6px,
   icon-size: 16px,
   row-height: ag-derived(grid-size, $times: 7),
   // if changed, update environment.ts
-    header-height: ag-derived(grid-size, $times: 8),
+  header-height: ag-derived(grid-size, $times: 8),
   // if changed, update environment.ts
-    list-item-height: ag-derived(grid-size, $times: 5),
+  list-item-height: ag-derived(grid-size, $times: 5),
   // if changed, update environment.ts
-    column-select-indent-size: ag-derived(icon-size),
+  column-select-indent-size: ag-derived(icon-size),
   cell-horizontal-padding: ag-derived(grid-size, $times: 3),
   cell-widget-spacing: ag-derived(grid-size, $times: 2),
   widget-container-vertical-padding: ag-derived(grid-size, $times: 2),
@@ -58,7 +58,7 @@ $ag-theme-alpine-default-params: (
   input-focus-border-color: ag-derived(alpine-active-color, $opacity: 0.4),
   input-focus-box-shadow: 0 0 2px 0.1rem ag-derived(input-focus-border-color),
   // FONTS
-    font-family:
+  font-family:
     (
       -apple-system,
       BlinkMacSystemFont,
@@ -75,7 +75,7 @@ $ag-theme-alpine-default-params: (
   icons-data: $ag-theme-alpine-icons-data,
   icons-font-codes: $ag-theme-alpine-icons-font-codes,
   // MISC
-    selected-tab-underline-color: ag-derived(alpine-active-color),
+  selected-tab-underline-color: ag-derived(alpine-active-color),
   selected-tab-underline-width: 2px,
   full-width-tabs: true,
   card-shadow: 0 1px 4px 1px rgba(186, 191, 199, 0.4),

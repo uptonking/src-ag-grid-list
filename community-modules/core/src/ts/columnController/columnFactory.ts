@@ -11,7 +11,10 @@ import { DefaultColumnTypes } from '../entities/defaultColumnTypes';
 import { _ } from '../utils';
 import { BeanStub } from '../context/beanStub';
 
-// takes ColDefs and ColGroupDefs and turns them into Columns and OriginalGroups
+/**
+ * 根据表头列定义信息计算表头列对象和表头分组对象。
+ * takes ColDefs and ColGroupDefs and turns them into Columns and OriginalGroups
+ */
 @Bean('columnFactory')
 export class ColumnFactory extends BeanStub {
   @Autowired('gridOptionsWrapper')

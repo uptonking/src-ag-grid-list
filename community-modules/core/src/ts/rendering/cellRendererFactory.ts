@@ -11,6 +11,9 @@ import { AnimateShowChangeCellRenderer } from './cellRenderers/animateShowChange
 import { GroupCellRenderer } from './cellRenderers/groupCellRenderer';
 import { _ } from '../utils';
 
+/**
+ * cellRenderer的get和add
+ */
 @Bean('cellRendererFactory')
 export class CellRendererFactory {
   public static ANIMATE_SLIDE = 'animateSlide';

@@ -10,6 +10,9 @@ export interface HorizontalResizeParams {
   onResizeEnd: (delta: number) => void;
 }
 
+/**
+ * 水平宽度改变计算相关的service
+ */
 @Bean('horizontalResizeService')
 export class HorizontalResizeService extends BeanStub {
   @Autowired('dragService') private dragService: DragService;

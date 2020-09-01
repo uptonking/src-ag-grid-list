@@ -276,9 +276,9 @@ const extractCssBuildChain = (buildChainInfo) => {
       .map((path) => `${path}/src/styles`),
     buildChains: {
       '@ag-grid-community/core': {
-        '0': ['@ag-grid-community/core'],
-        '1': ['@ag-grid-community/all-modules'],
-        '2': ['@ag-grid-enterprise/all-modules'],
+        0: ['@ag-grid-community/core'],
+        1: ['@ag-grid-community/all-modules'],
+        2: ['@ag-grid-enterprise/all-modules'],
       },
     },
   };

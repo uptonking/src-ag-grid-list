@@ -23,6 +23,12 @@ import { PostConstruct } from './context/context';
 import { OriginalColumnGroup } from './entities/originalColumnGroup';
 import { BeanStub } from './context/beanStub';
 
+/**
+ * 将操作同步到多个grid的计算service。
+ * Aligning two or more grids means columns will be kept aligned in all grids.
+ * In other words, column changes to one grid (column width, column order,
+ *  column visibility etc) are reflected in the other grid.
+ */
 @Bean('alignedGridsService')
 export class AlignedGridsService extends BeanStub {
   @Autowired('gridOptionsWrapper')

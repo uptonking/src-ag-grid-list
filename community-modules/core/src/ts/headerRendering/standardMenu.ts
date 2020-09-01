@@ -9,6 +9,9 @@ import { Constants } from '../constants';
 import { FocusController } from '../focusController';
 import { _ } from '../utils';
 
+/**
+ * 创建表头菜单popup的工厂类
+ */
 @Bean('menuFactory')
 export class StandardMenuFactory extends BeanStub implements IMenuFactory {
   @Autowired('filterManager') private filterManager: FilterManager;

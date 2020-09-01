@@ -11,6 +11,9 @@ export interface HeaderPosition {
   column: Column | ColumnGroup;
 }
 
+/**
+ * header操作类，包括 findHeader，findColAtEdgeForHeaderRow
+ */
 @Bean('headerPositionUtils')
 export class HeaderPositionUtils extends BeanStub {
   @Autowired('columnController') private columnController: ColumnController;

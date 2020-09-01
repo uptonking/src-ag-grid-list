@@ -6,6 +6,7 @@ import { Constants } from '../constants';
 import { BeanStub } from '../context/beanStub';
 
 /**
+ * detail子表的状态缓存，展开折叠再次展开后，可以恢复子表的状态，如排好序。
  * For Master Detail, it is required to keep components between expanding & collapsing parents.
  * For example a user expands row A (and shows a detail grid for this row), then when row A
  * is closed, we want to keep the detail grid, so next time row A is expanded the detail grid

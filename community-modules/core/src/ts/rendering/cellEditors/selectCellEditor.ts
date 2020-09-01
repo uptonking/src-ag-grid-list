@@ -15,7 +15,8 @@ export interface ISelectCellEditorParams extends ICellEditorParams {
   values: any[];
 }
 
-export class SelectCellEditor extends PopupComponent
+export class SelectCellEditor
+  extends PopupComponent
   implements ICellEditorComp {
   private focusAfterAttached: boolean;
 

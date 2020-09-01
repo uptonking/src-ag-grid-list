@@ -8,7 +8,8 @@ import { _ } from '../../utils';
 export interface ILoadingCellRendererParams extends ICellRendererParams {}
 export interface ILoadingCellRenderer extends ICellRenderer {}
 
-export class LoadingCellRenderer extends Component
+export class LoadingCellRenderer
+  extends Component
   implements ILoadingCellRenderer {
   private static TEMPLATE = `<div class="ag-loading">
             <span class="ag-loading-icon" ref="eLoadingIcon"></span>

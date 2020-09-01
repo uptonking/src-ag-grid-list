@@ -56,13 +56,16 @@ export interface DeprecatedComponentName {
   newComponentName: string;
 }
 
+/**
+ * ag-grid内部默认使用的组件的注册表操作
+ */
 @Bean('userComponentRegistry')
 export class UserComponentRegistry extends BeanStub {
   @Autowired('gridOptions')
   private gridOptions: GridOptions;
 
   /**
-   * 指定ag-grid使用的各种默认组件的映射表
+   * 指定ag-grid内部使用的各种默认组件的映射表
    */
   private agGridDefaults: {
     [key: string]: AgGridRegisteredComponentInput<any>;

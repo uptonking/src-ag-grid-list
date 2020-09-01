@@ -13,8 +13,8 @@ import { ImmutableService } from './clientSideRowModel/immutableService';
 export const ClientSideRowModelModule: Module = {
   moduleName: ModuleNames.ClientSideRowModelModule,
   beans: [
-    FilterStage,
     SortStage,
+    FilterStage,
     FlattenStage,
     SortService,
     FilterService,

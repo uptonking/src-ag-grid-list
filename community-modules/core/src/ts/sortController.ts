@@ -8,6 +8,9 @@ import { ColumnEventType, Events, SortChangedEvent } from './events';
 import { GridApi } from './gridApi';
 import { GridOptionsWrapper } from './gridOptionsWrapper';
 
+/**
+ * 在表头列触发排序事件，获取牌序状态
+ */
 @Bean('sortController')
 export class SortController extends BeanStub {
   private static DEFAULT_SORTING_ORDER = [

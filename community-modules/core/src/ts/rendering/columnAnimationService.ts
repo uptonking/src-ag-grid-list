@@ -4,6 +4,9 @@ import { GridPanel } from '../gridPanel/gridPanel';
 import { _ } from '../utils';
 import { BeanStub } from '../context/beanStub';
 
+/**
+ * 列移动动画状态控制
+ */
 @Bean('columnAnimationService')
 export class ColumnAnimationService extends BeanStub {
   @Autowired('gridOptionsWrapper')
@@ -35,7 +38,7 @@ export class ColumnAnimationService extends BeanStub {
       return;
     }
 
-    // if doing RTL, we don't animate open / close as due to how the pixels are inverted,
+    // if doing RTL, we don't animate open/close as due to how the pixels are inverted,
     // the animation moves all the row the the right rather than to the left (ie it's the static
     // columns that actually get their coordinates updated)
     if (this.gridOptionsWrapper.isEnableRtl()) {

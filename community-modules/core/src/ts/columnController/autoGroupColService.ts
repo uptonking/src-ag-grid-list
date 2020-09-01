@@ -8,6 +8,9 @@ import { Constants } from '../constants';
 import { BeanStub } from '../context/beanStub';
 import { _ } from '../utils';
 
+/**
+ * 计算表头列分组信息的service，可按auto将group表头列显示成一列，也可按multi auto将group显示成多列
+ */
 @Bean('autoGroupColService')
 export class AutoGroupColService extends BeanStub {
   public static GROUP_AUTO_COLUMN_BUNDLE_ID = Constants.GROUP_AUTO_COLUMN_ID;

@@ -8,7 +8,8 @@ import { ColumnController } from '../../../columnController/columnController';
 // optional floating filter for user provided filters - instead of providing a floating filter,
 // they can provide a getModelAsString() method on the filter instead. this class just displays
 // the string returned from getModelAsString()
-export class ReadOnlyFloatingFilter extends Component
+export class ReadOnlyFloatingFilter
+  extends Component
   implements IFloatingFilterComp {
   @RefSelector('eFloatingFilterText')
   private eFloatingFilterText: AgInputTextField;

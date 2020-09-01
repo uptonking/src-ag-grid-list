@@ -10,7 +10,10 @@ import { Bean } from '../context/context';
 import { _ } from '../utils';
 import { BeanStub } from '../context/beanStub';
 
-// takes in a list of columns, as specified by the column definitions, and returns column groups
+/**
+ * takes in a list of columns, as specified by the column definitions, and returns column groups。
+ * 根据表头列定义，计算表头列分组。
+ */
 @Bean('displayedGroupCreator')
 export class DisplayedGroupCreator extends BeanStub {
   @Autowired('columnUtils') private columnUtils: ColumnUtils;

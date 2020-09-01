@@ -29,6 +29,9 @@ interface Rect {
   bottom: number;
 }
 
+/**
+ * 弹出层元素操作相关的service
+ */
 @Bean('popupService')
 export class PopupService extends BeanStub {
   // really this should be using eGridDiv, not sure why it's not working.

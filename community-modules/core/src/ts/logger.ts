@@ -3,6 +3,9 @@ import { Bean } from './context/context';
 import { Qualifier } from './context/context';
 import { BeanStub } from './context/beanStub';
 
+/**
+ * 创建Logger对象的工厂类
+ */
 @Bean('loggerFactory')
 export class LoggerFactory extends BeanStub {
   private logging: boolean;
@@ -22,6 +25,9 @@ export class LoggerFactory extends BeanStub {
   }
 }
 
+/**
+ * Logger日志类，基于console.log实现
+ */
 export class Logger {
   private isLoggingFunc: () => boolean;
   private name: string;

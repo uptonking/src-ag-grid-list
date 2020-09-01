@@ -123,6 +123,9 @@ export interface ModifyParamsCallback<TParams> {
   (params: TParams, component: IComponent<TParams>): TParams;
 }
 
+/**
+ * 创建userCOmponents，如header，cellRenderer, cellEditor
+ */
 @Bean('userComponentFactory')
 export class UserComponentFactory extends BeanStub {
   @Autowired('gridOptions') private gridOptions: GridOptions;

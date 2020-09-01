@@ -9,6 +9,9 @@ import { HeaderRootComp } from '../headerRendering/headerRootComp';
 import { _ } from '../utils';
 import { BeanStub } from '../context/beanStub';
 
+/**
+ * 计算列宽度的工具类，包括getPreferredWidthForColumn
+ */
 @Bean('autoWidthCalculator')
 export class AutoWidthCalculator extends BeanStub {
   @Autowired('rowRenderer') private rowRenderer: RowRenderer;
@@ -30,6 +33,7 @@ export class AutoWidthCalculator extends BeanStub {
   // into the dummy, then check the dummy's width. then destroy the dummy
   // as we don't need it any more.
   // drawback: only the cells visible on the screen are considered
+  /** 计算某列的宽度，通过创建span作为占位符container装入cell来计算宽度，只计算了visible的单元格 */
   public getPreferredWidthForColumn(
     column: Column,
     skipHeader?: boolean,

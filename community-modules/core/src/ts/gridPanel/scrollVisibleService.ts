@@ -12,6 +12,9 @@ export interface SetScrollsVisibleParams {
   verticalScrollShowing: boolean;
 }
 
+/**
+ * 滚动条显示隐藏控制service
+ */
 @Bean('scrollVisibleService')
 export class ScrollVisibleService extends BeanStub {
   @Autowired('columnController') private columnController: ColumnController;

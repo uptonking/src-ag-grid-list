@@ -131,6 +131,9 @@ export interface DetailGridInfo {
   id: string;
 }
 
+/**
+ * 直接与grid交互的api
+ */
 @Bean('gridApi')
 export class GridApi {
   @Optional('immutableService') private immutableService: IImmutableService;

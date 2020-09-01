@@ -10,6 +10,9 @@ import { Constants } from '../constants';
 import { CellValueChangedEvent, Events } from '../events';
 import { IClientSideRowModel } from '../interfaces/iClientSideRowModel';
 
+/**
+ * 检测cellValue值的变化，并通过rowRenderer.refreshCells()重新渲染
+ */
 @Bean('changeDetectionService')
 export class ChangeDetectionService extends BeanStub {
   @Autowired('gridOptionsWrapper')

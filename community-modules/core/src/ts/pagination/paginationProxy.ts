@@ -9,6 +9,9 @@ import { ColumnApi } from '../columnController/columnApi';
 import { GridApi } from '../gridApi';
 import { _ } from '../utils';
 
+/**
+ * 分页的状态数据及操作方法，基于rowModel提供的api进行计算得到
+ */
 @Bean('paginationProxy')
 export class PaginationProxy extends BeanStub {
   @Autowired('rowModel') private rowModel: IRowModel;

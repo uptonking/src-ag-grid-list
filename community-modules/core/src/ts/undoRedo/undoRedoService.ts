@@ -21,6 +21,9 @@ import { ModuleRegistry } from '../modules/moduleRegistry';
 import { CellRange, CellRangeParams } from '../interfaces/iRangeController';
 import { BeanStub } from '../context/beanStub';
 
+/**
+ * 计算撤销重做的action和state
+ */
 @Bean('undoRedoService')
 export class UndoRedoService extends BeanStub {
   @Autowired('gridOptionsWrapper')

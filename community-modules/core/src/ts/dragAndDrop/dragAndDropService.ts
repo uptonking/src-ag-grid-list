@@ -101,6 +101,9 @@ export interface DraggingEvent {
   dropZoneTarget: HTMLElement;
 }
 
+/**
+ * drag drop状态数据及操作控制相关的计算service
+ */
 @Bean('dragAndDropService')
 export class DragAndDropService extends BeanStub {
   @Autowired('gridOptionsWrapper')

@@ -12,6 +12,9 @@ export interface ComponentMetadata {
   ) => { new (): IComponent<any> };
 }
 
+/**
+ * 组件元数据操作，只提供2个方法，retrieve，postConstruct
+ */
 @Bean('componentMetadataProvider')
 export class ComponentMetadataProvider extends BeanStub {
   private componentMetaData: { [key: string]: ComponentMetadata };
@@ -155,6 +158,9 @@ export class ComponentMetadataProvider extends BeanStub {
     };
   }
 
+  /**
+   *
+   */
   public retrieve(name: string): ComponentMetadata {
     return this.componentMetaData[name];
   }

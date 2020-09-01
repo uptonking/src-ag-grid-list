@@ -43,6 +43,10 @@ import { RowPosition, RowPositionUtils } from '../entities/rowPosition';
 import { PinnedRowModel } from '../pinnedRowModel/pinnedRowModel';
 import { _ } from '../utils';
 
+/**
+ * 处理rowModel的渲染与更新，如redrawRows,onModelUpdated，
+ * 还会给row内的单元格添加事件监听器
+ */
 @Bean('rowRenderer')
 export class RowRenderer extends BeanStub {
   @Autowired('paginationProxy') private paginationProxy: PaginationProxy;

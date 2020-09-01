@@ -3,6 +3,9 @@ import { Bean } from '../context/context';
 import { Qualifier } from '../context/context';
 import { BeanStub } from '../context/beanStub';
 
+/**
+ * 表达式计算服务，常用来计算单元格的取值valueGetter
+ */
 @Bean('expressionService')
 export class ExpressionService extends BeanStub {
   private expressionToFunctionCache = {} as any;

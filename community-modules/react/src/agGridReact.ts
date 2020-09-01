@@ -122,7 +122,7 @@ export class AgGridReact extends Component<AgGridReactProps, {}> {
       if (runningTime >= AgGridReact.MAX_COMPONENT_CREATION_TIME) {
         console.error(
           `ag-Grid: React Component '${reactComponent.getReactComponentName()}' not created within ${
-          AgGridReact.MAX_COMPONENT_CREATION_TIME
+            AgGridReact.MAX_COMPONENT_CREATION_TIME
           }ms`,
         );
         return;
@@ -325,7 +325,7 @@ class ReactFrameworkComponentWrapper
   }
 
   createWrapper(
-    UserReactComponent: { new(): any },
+    UserReactComponent: { new (): any },
     componentType: ComponentType,
   ): WrapableInterface {
     return new ReactComponent(

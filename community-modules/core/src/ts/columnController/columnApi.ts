@@ -6,6 +6,9 @@ import { ColumnGroup } from '../entities/columnGroup';
 import { Column } from '../entities/column';
 import { Autowired, Bean } from '../context/context';
 
+/**
+ * 直接操作表头列的api
+ */
 @Bean('columnApi')
 export class ColumnApi {
   @Autowired('columnController') private columnController: ColumnController;

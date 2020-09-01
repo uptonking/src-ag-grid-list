@@ -4,7 +4,8 @@ import { Component } from '../../widgets/component';
 import { FilterManager } from '../../filter/filterManager';
 import { _ } from '../../utils';
 
-export class AnimateSlideCellRenderer extends Component
+export class AnimateSlideCellRenderer
+  extends Component
   implements ICellRenderer {
   private static TEMPLATE =
     '<span>' + '<span class="ag-value-slide-current"></span>' + '</span>';

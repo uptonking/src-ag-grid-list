@@ -2,7 +2,7 @@
 
 $ag-theme-balham-dark-default-params: (
   // override colours from balham theme
-    foreground-color: #f5f5f5,
+  foreground-color: #f5f5f5,
   secondary-foreground-color: ag-derived(foreground-color),
   header-foreground-color: ag-derived(foreground-color, $opacity: 0.64),
   disabled-foreground-color: ag-derived(foreground-color, $opacity: 0.38),

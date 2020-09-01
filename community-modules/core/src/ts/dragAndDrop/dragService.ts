@@ -7,8 +7,11 @@ import { GridApi } from '../gridApi';
 import { _ } from '../utils';
 import { BeanStub } from '../context/beanStub';
 
-/** Adds drag listening onto an element. In ag-Grid this is used twice, first is resizing columns,
- * second is moving the columns and column groups around (ie the 'drag' part of Drag and Drop. */
+/** Adds drag listening onto an element.
+ * In ag-Grid this is used twice, first is resizing columns,
+ * second is moving the columns and column groups around (ie the 'drag' part of Drag and Drop.
+ * drag计算相关的service，两个使用场景，一是拖拽改变列宽，二是拖拽移动表头列或列分组。
+ */
 @Bean('dragService')
 export class DragService extends BeanStub {
   @Autowired('loggerFactory') private loggerFactory: LoggerFactory;

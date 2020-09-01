@@ -5,6 +5,9 @@ import { BeanStub } from '../context/beanStub';
 import { ColumnApi } from '../columnController/columnApi';
 import { GridApi } from '../gridApi';
 
+/**
+ * 在表头列触发columnHoverChanged事件
+ */
 @Bean('columnHoverService')
 export class ColumnHoverService extends BeanStub {
   @Autowired('columnApi') private columnApi: ColumnApi;

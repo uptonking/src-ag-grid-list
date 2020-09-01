@@ -3,6 +3,9 @@ import { Autowired, Bean } from '../context/context';
 import { ExpressionService } from '../valueService/expressionService';
 import { BeanStub } from '../context/beanStub';
 
+/**
+ * 计算应用到cell上的样式，包括 colDef.cellClassRules，colDef.cellClass
+ */
 @Bean('stylingService')
 export class StylingService extends BeanStub {
   @Autowired('expressionService') private expressionService: ExpressionService;

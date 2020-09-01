@@ -7,6 +7,9 @@ import { ColumnController } from '../columnController/columnController';
 import { _ } from '../utils';
 import { BeanStub } from '../context/beanStub';
 
+/**
+ * 自动计算rowHeight
+ */
 @Bean('autoHeightCalculator')
 export class AutoHeightCalculator extends BeanStub {
   @Autowired('beans') private beans: Beans;

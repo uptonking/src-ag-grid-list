@@ -1,6 +1,7 @@
 import { ILogger } from '../iLogger';
 import { Component } from '../widgets/component';
 import { _ } from '../utils';
+import { logObjSer } from '../utils/logUtils';
 
 // steps in booting up:
 // 1. create all beans
@@ -22,6 +23,7 @@ export interface ComponentMeta {
   componentName: string;
 }
 
+/** bean封装后的对象，包括bean对象实例、bean对应的class，bean名称 */
 interface BeanWrapper {
   bean: any;
   beanInstance: any;
@@ -34,7 +36,7 @@ interface BeanWrapper {
 export class Context {
   private logger: ILogger;
 
-  /** 存放所有bean对象实例的容器，数据类型是映射表 */
+  /** 存放所有bean对象实例的映射表容器，包含rowModel的bean */
   private beanWrappers: { [key: string]: BeanWrapper } = {};
 
   /** 创建Grid时传入的上下文参数，主要包含所有bean对应的class */
@@ -56,6 +58,7 @@ export class Context {
 
     // 创建所有bean对象
     this.createBeans();
+    logObjSer('createBeans, ', this.beanWrappers);
 
     // 获取所有bean对象存放到到数组
     const beanInstances = this.getBeanInstances();
@@ -73,7 +76,7 @@ export class Context {
     );
   }
 
-  /** 给输入的bean对象添加属性，bean对象实际不在这里创建 */
+  /** 给输入的bean对象注入属性，bean对象实际不在这里创建 */
   public createBean<T extends any>(
     bean: T,
     afterPreCreateCallback?: (comp: Component) => void,
@@ -92,8 +95,10 @@ export class Context {
     beanInstances: any[],
     afterPreCreateCallback?: (comp: Component) => void,
   ): void {
+    //
     this.autoWireBeans(beanInstances);
 
+    //
     this.methodWireBeans(beanInstances);
 
     // 调用 preConstructMethods
@@ -110,7 +115,7 @@ export class Context {
     this.callLifeCycleMethods(beanInstances, 'postConstructMethods');
   }
 
-  /** 创建所有bean对象，存放到beanWrappers映射表容器 */
+  /** 通过apply调用构造函数创建所有bean对象，存放到beanWrappers映射表容器 */
   private createBeans(): void {
     // register all normal beans，bind(o)方法会创建一个函数的实例，函数中的this会指向参数o
     this.contextParams.beanClasses.forEach(this.createBeanWrapper.bind(this));
@@ -121,6 +126,8 @@ export class Context {
       this.beanWrappers,
       (key: string, beanEntry: BeanWrapper) => {
         let constructorParamsMeta: any;
+
+        // 若bean class存在autowireMethods
         if (
           beanEntry.bean.__agBeanMetaData &&
           beanEntry.bean.__agBeanMetaData.autowireMethods &&
@@ -128,14 +135,16 @@ export class Context {
         ) {
           constructorParamsMeta =
             beanEntry.bean.__agBeanMetaData.autowireMethods.agConstructor;
+          // console.log('若bean class存在autowireMethods, ', beanEntry);
         }
 
+        // 获取创建bean时要传递给构造函数的参数
         const constructorParams = this.getBeansForParameters(
           constructorParamsMeta,
           beanEntry.bean.name,
         );
 
-        // 通过工具方法创建对象实例
+        // 通过工具方法创建bean对象实例
         const newInstance = applyToConstructor(
           beanEntry.bean,
           constructorParams,
@@ -174,7 +183,7 @@ export class Context {
     this.beanWrappers[metaData.beanName] = beanEntry;
   }
 
-  /** 查找beanInstance的class的元数据包含的属性，并添加到其上 */
+  /** 查找beanInstance的constructor原型链上通过agClassAttributes注入的其他bean，并添加到其属性 */
   private autoWireBeans(beanInstances: any[]): void {
     beanInstances.forEach((beanInstance) => {
       this.forEachMetaDataInHierarchy(
@@ -198,7 +207,7 @@ export class Context {
     });
   }
 
-  /** 查找beanInstance的元数据中包含的方法，并调用该方法 */
+  /** 查找beanInstance的constructor原型链上通过autowireMethods注入的其他bean，并添加到其属性 */
   private methodWireBeans(beanInstances: any[]): void {
     beanInstances.forEach((beanInstance) => {
       this.forEachMetaDataInHierarchy(
@@ -224,7 +233,7 @@ export class Context {
     });
   }
 
-  /** 会执行 callback(metaData, beanName);  */
+  /** 遍历beanInstance.__proto__.constructor,会执行 callback(metaData, beanName)*/
   private forEachMetaDataInHierarchy(
     beanInstance: any,
     callback: (metaData: any, beanName: string) => void,
@@ -238,6 +247,8 @@ export class Context {
       if (constructor.hasOwnProperty('__agBeanMetaData')) {
         const metaData = constructor.__agBeanMetaData;
         const beanName = this.getBeanName(constructor);
+
+        // 任务可以是调用autowireMethods指定的方法
         callback(metaData, beanName);
       }
 
@@ -245,6 +256,7 @@ export class Context {
     }
   }
 
+  /** 获取constructor.__agBeanMetaData.beanName中配置的beanName */
   private getBeanName(constructor: any): string {
     if (constructor.__agBeanMetaData && constructor.__agBeanMetaData.beanName) {
       return constructor.__agBeanMetaData.beanName;
@@ -258,7 +270,7 @@ export class Context {
     return beanName;
   }
 
-  /** 根据参数元数据创建beansList */
+  /** 获取创建bean时要传递给构造函数的参数，返回参数中包含的其他bean */
   private getBeansForParameters(parameters: any, beanName: string): any[] {
     const beansList: any[] = [];
     if (parameters) {
@@ -274,7 +286,7 @@ export class Context {
   }
 
   /**
-   * 根据bean名称查找bean对象实例
+   * 根据bean名称查找bean对象实例，会从beanWrappers容器和传入的providedBeanInstances中查找
    * @param wiringBean 作用是,在未找到bean时,打印wiringBean的错误信息
    * @param beanName 名称
    * @param optional bean实例是否可空,默认false,默认情况下,若未找到bean会在console打印error

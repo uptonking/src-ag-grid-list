@@ -9,6 +9,9 @@ import { GridApi } from '../gridApi';
 import { _ } from '../utils';
 import { BeanStub } from '../context/beanStub';
 
+/**
+ * 将row固定到top或bottom时更新rowModel
+ */
 @Bean('pinnedRowModel')
 export class PinnedRowModel extends BeanStub {
   @Autowired('gridOptionsWrapper')

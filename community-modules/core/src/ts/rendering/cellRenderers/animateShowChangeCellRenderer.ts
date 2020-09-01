@@ -7,7 +7,8 @@ import { _ } from '../../utils';
 const ARROW_UP = '\u2191';
 const ARROW_DOWN = '\u2193';
 
-export class AnimateShowChangeCellRenderer extends Component
+export class AnimateShowChangeCellRenderer
+  extends Component
   implements ICellRenderer {
   private static TEMPLATE =
     '<span>' +

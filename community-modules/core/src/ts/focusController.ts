@@ -21,6 +21,9 @@ import { ManagedFocusComponent } from './widgets/managedFocusComponent';
 import { _ } from './utils';
 import { GridCore } from './gridCore';
 
+/**
+ * 控制focus焦点的工具类，包括get/setFocusedCell、isRow/CellFocused，还可以获取和操作焦点元素
+ */
 @Bean('focusController')
 export class FocusController extends BeanStub {
   @Autowired('gridOptionsWrapper')

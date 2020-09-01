@@ -73,6 +73,9 @@ export interface ColumnState {
   flex?: number;
 }
 
+/**
+ * 表头列的状态数据及操作方法
+ */
 @Bean('columnController')
 export class ColumnController extends BeanStub {
   @Autowired('gridOptionsWrapper')

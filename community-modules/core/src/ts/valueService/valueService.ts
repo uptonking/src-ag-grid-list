@@ -11,6 +11,9 @@ import { ValueCache } from './valueCache';
 import { _ } from '../utils';
 import { BeanStub } from '../context/beanStub';
 
+/**
+ * 存取单元格的值的计算service，包括应用缓存、filter
+ */
 @Bean('valueService')
 export class ValueService extends BeanStub {
   @Autowired('gridOptionsWrapper')

@@ -8,6 +8,9 @@ export interface CellPosition extends RowPosition {
   column: Column;
 }
 
+/**
+ * cell操作类，包括 createIdFromValues
+ */
 @Bean('cellPositionUtils')
 export class CellPositionUtils extends BeanStub {
   public createId(cellPosition: CellPosition): string {

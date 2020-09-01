@@ -6,6 +6,9 @@ import { ExpressionService } from '../valueService/expressionService';
 import { ValueFormatterParams } from '../entities/colDef';
 import { BeanStub } from '../context/beanStub';
 
+/**
+ * 对cellValue进行格式化的计算，可配置具体格式 colDef.valueFormatter
+ */
 @Bean('valueFormatterService')
 export class ValueFormatterService extends BeanStub {
   @Autowired('gridOptionsWrapper')

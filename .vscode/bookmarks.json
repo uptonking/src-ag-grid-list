@@ -1,62 +1,62 @@
 [
-	{
-		"path": "$ROOTPATH$/community-modules/all-modules/src/main.ts",
-		"bookmarks": [
-			{
-				"line": 5,
-				"column": 13,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/grid-packages/ag-grid-community/src/main.ts",
-		"bookmarks": [
-			{
-				"line": 9,
-				"column": 0,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/core/src/ts/grid.ts",
-		"bookmarks": [
-			{
-				"line": 126,
-				"column": 13,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/scripts/release/copy-community-dist-to-root.sh",
-		"bookmarks": [
-			{
-				"line": 9,
-				"column": 0,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/core/src/ts/main.ts",
-		"bookmarks": [
-			{
-				"line": 236,
-				"column": 0,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/client-side-row-model/src/clientSideRowModel/clientSideRowModel.ts",
-		"bookmarks": [
-			{
-				"line": 54,
-				"column": 0,
-				"label": ""
-			}
-		]
-	}
+  {
+    "path": "$ROOTPATH$/community-modules/all-modules/src/main.ts",
+    "bookmarks": [
+      {
+        "line": 5,
+        "column": 13,
+        "label": ""
+      }
+    ]
+  },
+  {
+    "path": "$ROOTPATH$/grid-packages/ag-grid-community/src/main.ts",
+    "bookmarks": [
+      {
+        "line": 9,
+        "column": 0,
+        "label": ""
+      }
+    ]
+  },
+  {
+    "path": "$ROOTPATH$/community-modules/core/src/ts/grid.ts",
+    "bookmarks": [
+      {
+        "line": 123,
+        "column": 13,
+        "label": ""
+      }
+    ]
+  },
+  {
+    "path": "$ROOTPATH$/scripts/release/copy-community-dist-to-root.sh",
+    "bookmarks": [
+      {
+        "line": 9,
+        "column": 0,
+        "label": ""
+      }
+    ]
+  },
+  {
+    "path": "$ROOTPATH$/community-modules/core/src/ts/main.ts",
+    "bookmarks": [
+      {
+        "line": 236,
+        "column": 0,
+        "label": ""
+      }
+    ]
+  },
+  {
+    "path": "$ROOTPATH$/community-modules/client-side-row-model/src/clientSideRowModel/clientSideRowModel.ts",
+    "bookmarks": [
+      {
+        "line": 54,
+        "column": 0,
+        "label": ""
+      }
+    ]
+  }
 ]

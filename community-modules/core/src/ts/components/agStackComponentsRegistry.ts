@@ -2,13 +2,14 @@ import { Bean, ComponentMeta } from '../context/context';
 import { BeanStub } from '../context/beanStub';
 
 /**
- *
+ * 将组件名,组件对应的class及元数据存放到 componentsMappedByName 映射表
  */
 @Bean('agStackComponentsRegistry')
 export class AgStackComponentsRegistry extends BeanStub {
   /** 存放component名称和定义class的映射表 */
   private componentsMappedByName: { [key: string]: any } = {};
 
+  /** 将组件的名称和class添加到 componentsMappedByName映射表 */
   public setupComponents(components: ComponentMeta[]): void {
     if (components) {
       components.forEach((componentMeta) => this.addComponent(componentMeta));

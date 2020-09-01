@@ -89,6 +89,9 @@ export interface PropertyChangedEvent extends AgEvent {
   previousValue: any;
 }
 
+/**
+ * gridOptions配置对象相关的操作，如检验、判断boolean、获取部分值
+ */
 @Bean('gridOptionsWrapper')
 export class GridOptionsWrapper {
   private static MIN_COL_WIDTH = 10;

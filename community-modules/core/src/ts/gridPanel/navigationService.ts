@@ -13,6 +13,9 @@ import { GridOptionsWrapper } from '../gridOptionsWrapper';
 import { BeanStub } from '../context/beanStub';
 import { _ } from '../utils';
 
+/**
+ * grid浏览导航相关service，包括onPageUp/Down, onHomeKey, navigateTo
+ */
 @Bean('navigationService')
 export class NavigationService extends BeanStub {
   @Autowired('mouseEventService') private mouseEventService: MouseEventService;

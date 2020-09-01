@@ -14,6 +14,9 @@ export interface LastFocusedCell {
   columnId: string;
 }
 
+/**
+ * 定义支持撤销重做行为的class，只包含一个方法cellValueChanges
+ */
 export class UndoRedoAction {
   cellValueChanges: CellValueChange[];
 

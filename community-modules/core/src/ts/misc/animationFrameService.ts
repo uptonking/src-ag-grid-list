@@ -14,6 +14,10 @@ interface TaskList {
   list: TaskItem[];
   sorted: boolean;
 }
+
+/**
+ * 通过 window.requestAnimationFrame 执行callback
+ */
 @Bean('animationFrameService')
 export class AnimationFrameService extends BeanStub {
   @Autowired('gridOptionsWrapper')

@@ -11,7 +11,9 @@ export interface RowPosition {
   rowIndex: number;
   rowPinned: string | undefined;
 }
-
+/**
+ * row操作类，包括 getFirstRow, getRowNode
+ */
 @Bean('rowPositionUtils')
 export class RowPositionUtils extends BeanStub {
   @Autowired('rowModel') private rowModel: IRowModel;

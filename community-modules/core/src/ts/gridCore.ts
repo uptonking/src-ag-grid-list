@@ -26,7 +26,7 @@ import { Column } from './entities/column';
 import { _ } from './utils';
 
 /**
- * 包含grid配置、数据、操作的核心类
+ * 包含grid配置、数据、操作的核心类，包含页面布局模块的判断，以及事件监听处理
  */
 export class GridCore extends ManagedFocusComponent {
   @Autowired('gridOptions') private gridOptions: GridOptions;
@@ -233,6 +233,9 @@ export class GridCore extends ManagedFocusComponent {
     return true;
   }
 
+  /**
+   * 触发gridSizeChanged事件
+   */
   private onGridSizeChanged(): void {
     const event: GridSizeChangedEvent = {
       type: Events.EVENT_GRID_SIZE_CHANGED,

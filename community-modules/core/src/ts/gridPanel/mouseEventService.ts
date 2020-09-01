@@ -9,6 +9,9 @@ import { Constants } from '../constants';
 import { DraggingEvent } from '../dragAndDrop/dragAndDropService';
 import { BeanStub } from '../context/beanStub';
 
+/**
+ * 计算事件处的cell对象或rowIndex
+ */
 @Bean('mouseEventService')
 export class MouseEventService extends BeanStub {
   @Autowired('gridOptionsWrapper')

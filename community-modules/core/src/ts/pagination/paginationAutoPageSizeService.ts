@@ -4,6 +4,9 @@ import { Autowired, Bean } from '../context/context';
 import { GridOptionsWrapper } from '../gridOptionsWrapper';
 import { GridPanel } from '../gridPanel/gridPanel';
 
+/**
+ * 自动分页service
+ */
 @Bean('paginationAutoPageSizeService')
 export class PaginationAutoPageSizeService extends BeanStub {
   @Autowired('gridOptionsWrapper')

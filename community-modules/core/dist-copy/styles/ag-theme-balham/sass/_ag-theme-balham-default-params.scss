@@ -4,7 +4,7 @@
 $ag-theme-balham-default-params: (
   balham-active-color: #0091ea,
   // main colours (overridden by balham-dark)
-    foreground-color: #000,
+  foreground-color: #000,
   secondary-foreground-color: ag-derived(foreground-color, $opacity: 0.54),
   disabled-foreground-color: ag-derived(foreground-color, $opacity: 0.38),
   background-color: white,
@@ -24,7 +24,7 @@ $ag-theme-balham-default-params: (
   input-focus-border-color: #719ece,
   input-focus-box-shadow: 0 0 2px 1px ag-derived(input-focus-border-color),
   // derived colours (shared by balham-dark)
-    subheader-toolbar-background-color:
+  subheader-toolbar-background-color:
     ag-derived(subheader-background-color, $opacity: 0.5),
   range-selection-background-color:
     ag-derived(balham-active-color, $opacity: 0.2),
@@ -38,7 +38,7 @@ $ag-theme-balham-default-params: (
   header-column-separator-color: ag-derived(border-color, $opacity: 0.5),
   header-column-separator-height: 50%,
   // sizing
-    grid-size: 4px,
+  grid-size: 4px,
   icon-size: 16px,
   row-height: ag-derived(grid-size, $times: 7),
   header-height: ag-derived(grid-size, $times: 8),
@@ -47,7 +47,7 @@ $ag-theme-balham-default-params: (
   cell-horizontal-padding: ag-derived(grid-size, $times: 3),
   input-height: ag-derived(grid-size, $times: 4),
   // Fonts
-    font-family:
+  font-family:
     (
       -apple-system,
       BlinkMacSystemFont,
@@ -64,7 +64,7 @@ $ag-theme-balham-default-params: (
   icons-data: $ag-theme-balham-icons-data,
   icons-font-codes: $ag-theme-balham-icons-font-codes,
   // Misc
-    border-radius: 2px,
+  border-radius: 2px,
   card-shadow: none,
 );
 

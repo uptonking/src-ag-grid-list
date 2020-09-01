@@ -5,6 +5,9 @@ import { IsRowSelectable } from '../entities/gridOptions';
 import { _ } from '../utils';
 import { BeanStub } from '../context/beanStub';
 
+/**
+ * 行选择状态的更新计算service
+ */
 @Bean('selectableService')
 export class SelectableService extends BeanStub {
   @Autowired('gridOptionsWrapper')

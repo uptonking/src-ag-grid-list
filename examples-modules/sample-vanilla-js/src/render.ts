@@ -11,7 +11,6 @@ if ((module as any).hot) {
   (module as any).hot.accept('./demo.ts', () => {
     // render(App);
 
-    import('./demo')
-
+    import('./demo');
   });
 }

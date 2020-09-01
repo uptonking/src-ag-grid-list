@@ -11,6 +11,9 @@ import { RowPosition } from './entities/rowPosition';
 import { PinnedRowModel } from './pinnedRowModel/pinnedRowModel';
 import { _ } from './utils';
 
+/**
+ * cell周边位置元素相关计算service，包括getRow/CellAbove/Below
+ */
 @Bean('cellNavigationService')
 export class CellNavigationService extends BeanStub {
   @Autowired('columnController') private columnController: ColumnController;

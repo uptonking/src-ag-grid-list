@@ -7,7 +7,8 @@ import { Autowired } from '../../context/context';
 import { GridOptionsWrapper } from '../../gridOptionsWrapper';
 import { _ } from '../../utils';
 
-export class PopupEditorWrapper extends PopupComponent
+export class PopupEditorWrapper
+  extends PopupComponent
   implements ICellEditorComp {
   private cellEditor: ICellEditorComp;
   private params: any;

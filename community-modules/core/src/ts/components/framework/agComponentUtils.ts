@@ -16,6 +16,9 @@ import {
 import { BeanStub } from '../../context/beanStub';
 import { _ } from '../../utils';
 
+/**
+ * 组件操作工具类，包括adaptCellRendererFunction，adaptFunction
+ */
 @Bean('agComponentUtils')
 export class AgComponentUtils extends BeanStub {
   @Autowired('componentMetadataProvider')

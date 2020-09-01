@@ -90,27 +90,24 @@ import { AgStackComponentsRegistry } from './components/agStackComponentsRegistr
 import { HeaderPositionUtils } from './headerRendering/header/headerPosition';
 import { HeaderNavigationService } from './headerRendering/header/headerNavigationService';
 import { _ } from './utils';
+import { logObjSer } from './utils/logUtils';
 
 /** 主要是关于ag-grid module及第3方框架集成的配置 */
 export interface GridParams {
   // used by Web Components
   globalEventListener?: Function;
-
   // these are used by ng1 only
   $scope?: any;
   $compile?: any;
   quickFilterOnScope?: any;
-
   // this allows the base frameworks (React, NG2, etc) to provide alternative cellRenderers and cellEditors
   frameworkOverrides?: IFrameworkOverrides;
-
   // bean instances to add to the context
   providedBeanInstances?: { [key: string]: any };
-
-  modules?: Module[];
-
   // Alternative UI root class. Default is GridCore.
   rootComponent?: { new (): Component };
+  // modules to be registered to ag-grid
+  modules?: Module[];
 }
 
 /**
@@ -155,7 +152,8 @@ export class Grid {
 
     const debug = !!gridOptions.debug;
 
-    console.log('==src-gridOptions, ', gridOptions);
+    // console.log('==src-gridOptions, ', gridOptions);
+    logObjSer('==src-gridOptions, ', gridOptions);
     this.gridOptions = gridOptions;
 
     // 获取注册的模块，如ClientSideRowModelModule
@@ -163,12 +161,13 @@ export class Grid {
 
     // 准备要创建bean的class，包含rowModel的class，存放到数组beanClasses
     const beanClasses = this.createBeansList(registeredModules);
+    // logObjSer('beanClasses, ', beanClasses);
 
     if (!beanClasses) {
       return; // happens when no row model found
     }
 
-    // 创建一个包含配置信息及框架集成信息的对象
+    // 创建一个包含配置信息及框架集成信息的对象，在context的bean容器中查找bean时，也会查找这里的bean
     const providedBeanInstances = this.createProvidedBeans(eGridDiv, params);
 
     const contextParams: ContextParams = {
@@ -210,7 +209,7 @@ export class Grid {
 
   /** 获取向ag-grid core中直接或间接注册的模块 */
   private getRegisteredModules(params: GridParams): Module[] {
-    // 传参到Grid构造函数注册的模块
+    // 传参到Grid构造函数时注册的模块
     const passedViaConstructor: Module[] = params ? params.modules : null;
     // 手动注册的模块
     const registered = ModuleRegistry.getRegisteredModules();
@@ -251,7 +250,7 @@ export class Grid {
     return allModules;
   }
 
-  /** 将注册模块暴露的的userComponents覆盖到agGridDefaults默认组件映射表 */
+  /** 将注册模块暴露的的userComponents，覆盖到agGridDefaults默认组件映射表 */
   private registerModuleUserComponents(registeredModules: Module[]): void {
     const userComponentRegistry: UserComponentRegistry = this.context.getBean(
       'userComponentRegistry',
@@ -272,8 +271,9 @@ export class Grid {
     });
   }
 
-  /** 将grid内部默认使用的组件agStackComponents添加到agStackComponentsRegistry */
+  /** 将默认使用的AgXx组件和注册模块暴露的agStackComponents，都添加到agStackComponentsRegistry */
   private registerStackComponents(registeredModules: Module[]): void {
+    // 获取ag-grid内部默认使用的以Ag开头的组件，以及module暴露的agStackComponents
     const agStackComponents = this.createAgStackComponentsList(
       registeredModules,
     );
@@ -308,7 +308,8 @@ export class Grid {
   }
 
   /**
-   * 指定ag-grid内部使用的默认组件，如input,button,toggle
+   * 指定ag-grid内部使用的默认组件，如input,button,toggle,dialog,overlay，组件类名都以Ag开头，
+   * 最后加入module暴露的agStackComponents
    */
   private createAgStackComponentsList(registeredModules: Module[]): any[] {
     let components: ComponentMeta[] = [
@@ -350,7 +351,7 @@ export class Grid {
 
   /** 准备要创建bean的class，包含rowModel的class */
   private createBeansList(registeredModules: Module[]): any[] {
-    // 先获取要使用的rowModel
+    // 先从注册的module中获取要使用的rowModel
     const rowModelClass = this.getRowModelClass(registeredModules);
     if (!rowModelClass) {
       return undefined;
@@ -419,10 +420,12 @@ export class Grid {
       AgStackComponentsRegistry,
     ];
 
-    // 再提取出注册的modules中的beans，并加入beans数组用来初始化
+    // 再提取出注册的modules顶层暴露beans属性值，并加入bean class数组用来初始化
     const moduleBeans = this.extractModuleEntity(registeredModules, (module) =>
       module.beans ? module.beans : [],
     );
+
+    // 对于ClientSideRowModel，这里会加入 Sort/Filter-Stage/Service,FlattenStage,ImmutableService
     beans.push(...moduleBeans);
 
     // check for duplicates, as different modules could include the same beans that
@@ -466,7 +469,7 @@ export class Grid {
     rowModel.start();
   }
 
-  /** 通过eventService触发readyEvent事件 */
+  /** 通过eventService触发gridReady事件 */
   private dispatchGridReadyEvent(gridOptions: GridOptions): void {
     const eventService: EventService = this.context.getBean('eventService');
     const readyEvent: GridReadyEvent = {

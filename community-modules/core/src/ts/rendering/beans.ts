@@ -42,6 +42,7 @@ import { RowPositionUtils } from '../entities/rowPosition';
 import { SelectionController } from '../selectionController';
 
 /**
+ * 几乎都是ioc依赖注入Bean对象。
  * Using the IoC has a slight performance consideration, which is no problem most of the
  * time, unless we are trashing objects - which is the case when scrolling and rowComp
  * and cellComp.

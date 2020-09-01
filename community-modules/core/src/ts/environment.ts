@@ -72,6 +72,9 @@ const SASS_PROPERTY_BUILDER: { [key in SASS_PROPERTIES]: string[] } = {
 
 const CALCULATED_SIZES: HardCodedSize = {};
 
+/**
+ * ag-grid theme相关的环境配置操作工具类
+ */
 @Bean('environment')
 export class Environment extends BeanStub {
   @Autowired('eGridDiv') private eGridDiv: HTMLElement;

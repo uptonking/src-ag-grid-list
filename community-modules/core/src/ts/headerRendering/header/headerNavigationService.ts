@@ -19,6 +19,9 @@ export enum HeaderNavigationDirection {
   RIGHT,
 }
 
+/**
+ * 表头的行列跳转操作service
+ */
 @Bean('headerNavigationService')
 export class HeaderNavigationService extends BeanStub {
   @Autowired('gridOptionsWrapper')

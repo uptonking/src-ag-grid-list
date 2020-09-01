@@ -29,6 +29,9 @@ import { loadTemplate } from '../utils/dom';
 
 export type FilterRequestSource = 'COLUMN_MENU' | 'TOOLBAR' | 'NO_UI';
 
+/**
+ * filter的get、set、add
+ */
 @Bean('filterManager')
 export class FilterManager extends BeanStub {
   @Autowired('$compile') private $compile: any;

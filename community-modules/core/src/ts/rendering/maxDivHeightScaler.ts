@@ -9,7 +9,6 @@ import { _ } from '../utils';
  * This class solves the 'max height' problem, where the user might want to show more data than
  * the max div height actually allows.
  */
-
 @Bean('maxDivHeightScaler')
 export class MaxDivHeightScaler extends BeanStub {
   @Autowired('gridOptionsWrapper')
@@ -99,6 +98,9 @@ export class MaxDivHeightScaler extends BeanStub {
     this.setOffset(0);
   }
 
+  /**
+   * 触发 heightScaleChanged 事件
+   */
   private setOffset(newOffset: number): void {
     // because we are talking pixels, no point in confusing things with half numbers
     const newOffsetFloor =

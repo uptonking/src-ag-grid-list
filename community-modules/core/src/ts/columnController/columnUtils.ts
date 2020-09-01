@@ -9,7 +9,11 @@ import { Autowired } from '../context/context';
 import { _ } from '../utils';
 import { BeanStub } from '../context/beanStub';
 
-// takes in a list of columns, as specified by the column definitions, and returns column groups
+/**
+ * 表头列操作工具类，包括计算初始列宽，计算表头路径，基于深度优先执行callback。
+ * 主要用来计算表头分组column groups。
+ * takes in a list of columns, as specified by the column definitions, and returns column groups
+ */
 @Bean('columnUtils')
 export class ColumnUtils extends BeanStub {
   @Autowired('gridOptionsWrapper')

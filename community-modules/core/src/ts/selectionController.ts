@@ -16,6 +16,9 @@ import { ChangedPath } from './utils/changedPath';
 import { IClientSideRowModel } from './interfaces/iClientSideRowModel';
 import { _ } from './utils';
 
+/**
+ * rowNode的选择/取消选择相关的计算
+ */
 @Bean('selectionController')
 export class SelectionController extends BeanStub {
   @Autowired('rowModel') private rowModel: IRowModel;

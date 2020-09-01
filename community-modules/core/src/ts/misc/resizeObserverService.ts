@@ -3,6 +3,9 @@ import { GridOptionsWrapper } from '../gridOptionsWrapper';
 import { BeanStub } from '../context/beanStub';
 import { _ } from '../utils';
 
+/**
+ * 监听元素size的变化，只提供一个方法observeResize
+ */
 @Bean('resizeObserverService')
 export class ResizeObserverService extends BeanStub {
   @Autowired('gridOptionsWrapper')
