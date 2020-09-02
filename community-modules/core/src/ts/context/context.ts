@@ -45,7 +45,7 @@ export class Context {
   /** 所有bean对象是否已调用过destroy()方法 */
   private destroyed = false;
 
-  /** Context初始化时的任务，创建所有bean对象并给bean添加属性 */
+  /** Context初始化时的任务，创建所有bean对象并给bean注入属性 */
   public constructor(params: ContextParams, logger: ILogger) {
     if (!params || !params.beanClasses) {
       return;
@@ -65,6 +65,7 @@ export class Context {
 
     // 给所有bean对象添加属性
     this.wireBeans(beanInstances);
+    logObjSer('wireBeans, ', this.beanWrappers);
 
     this.logger.log('>> ag-Application Context ready - component is alive');
   }

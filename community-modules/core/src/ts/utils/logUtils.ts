@@ -1,9 +1,11 @@
+import { jsonFnClone } from './jsonUtils';
+
 /**
  * find and filter (thus causing data loss) a cyclic reference
  * by using the `replacer` parameter of `JSON.stringify()`.
  * eg: JSON.stringify(circularReference, getCircularReplacer());
  */
-export function getCircularReplacer() {
+function getCircularReplacer() {
   const seen = new WeakSet();
   return (key: any, value: any) => {
     if (typeof value === 'object' && value !== null) {
@@ -28,6 +30,7 @@ export function logObjSer(
   console.log(
     msg,
     // console.log(JSON.parse(JSON.stringify(obj, getCircularReplacer()))),
-    JSON.parse(JSON.stringify(obj)),
+    // JSON.parse(JSON.stringify(obj)),
+    jsonFnClone(obj),
   );
 }

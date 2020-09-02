@@ -157,10 +157,10 @@ export class Grid {
     this.gridOptions = gridOptions;
 
     // 获取注册的模块，如ClientSideRowModelModule
-    const registeredModules = this.getRegisteredModules(params);
+    const registeredModules: Module[] = this.getRegisteredModules(params);
 
-    // 准备要创建bean的class，包含rowModel的class，存放到数组beanClasses
-    const beanClasses = this.createBeansList(registeredModules);
+    // 准备要创建bean的class，包含rowModel的class，存放到数组
+    const beanClasses: any[] = this.createBeansList(registeredModules);
     // logObjSer('beanClasses, ', beanClasses);
 
     if (!beanClasses) {
