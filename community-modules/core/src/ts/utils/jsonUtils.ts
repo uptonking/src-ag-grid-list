@@ -9,7 +9,10 @@
  * @param date2obj 日期格式regexp
  */
 export function jsonFnClone(obj: any, date2obj?: RegExp): any {
-  return jsonFnParse(jsonFnStringify(obj), date2obj);
+  const str = jsonFnStringify(obj);
+  console.log('==jsonFnClone-str, ', str);
+
+  return jsonFnParse(str, date2obj);
 }
 
 /**
@@ -19,17 +22,17 @@ export function jsonFnClone(obj: any, date2obj?: RegExp): any {
  * @param obj 要序列化的对象
  */
 export function jsonFnStringify(obj: any): string {
-  return JSON.stringify(obj, function (key, value) {
+  const funcValueReplacer = function (key: any, value: any) {
     // seen集合用来存放不重复的属性值对象，用来判断属性值是否是循环引用的对象
-    const seen = new WeakSet();
+    // const seen = new WeakSet();
     // 若属性值是对象，且存在循环引用，则打印标记字符串
-    if (typeof value === 'object' && value !== null) {
-      if (seen.has(value)) {
-        // return;
-        return '##CirCularObj##';
-      }
-      seen.add(value);
-    }
+    // if (typeof value === 'object' && value !== null) {
+    //   if (seen.has(value)) {
+    //     // return;
+    //     return '##CirCularObj##';
+    //   }
+    //   seen.add(value);
+    // }
 
     let fnBody;
     // 若属性值是函数，则以字符串形式打印打印函数体
@@ -50,7 +53,8 @@ export function jsonFnStringify(obj: any): string {
 
     // 默认会调用toJSON()方法
     return value;
-  });
+  };
+  return JSON.stringify(jsonDecycle(obj, funcValueReplacer));
 }
 
 /**
@@ -91,7 +95,7 @@ export function jsonFnParse(str: string, date2obj?: RegExp): any {
 }
 
 /** 将jsonDecycle后的路径字符串属性值，恢复成原来的循环引用对象 */
-function jsonRetrocycle($) {
+function jsonRetrocycle($: any) {
   // Restore an object that was reduced by decycle. Members whose values are
   // objects of the form
   //      {$ref: PATH}
@@ -150,10 +154,10 @@ function jsonRetrocycle($) {
 }
 
 /**
- * JSON.stringify序列化对象时，将循环引用的属性值输出为路径字符串
+ * JSON.stringify序列化对象时，将循环引用的属性值输出为路径字符串，
+ * 实际会裁剪dom node内容和跳过iframe对象，所有不能完全恢复，也未在retrocycle方法实现恢复
  */
-// function jsonDecycle(object: any, replacer: Function) {
-function jsonDecycle(object, replacer, stringifyNodes) {
+function jsonDecycle(object: any, replacer: Function) {
   // Make a deep copy of an object or array, assuring that there is at most
   // one instance of each object or array in the resulting structure. The
   // duplicate references (which might be forming cycles) are replaced with
@@ -183,7 +187,7 @@ function jsonDecycle(object, replacer, stringifyNodes) {
    * @param {Element} node DOM Node (works best for DOM Elements).
    * @returns {String}
    */
-  function stringifyNode(node) {
+  let stringifyNode: any = function (node: any) {
     var text = '';
     switch (node.nodeType) {
       case node.ELEMENT_NODE:
@@ -218,13 +222,12 @@ function jsonDecycle(object, replacer, stringifyNodes) {
         break;
     }
     return text;
-  }
+  };
 
   /** object to path mappings，存放属性值对象到路径的映射，用来判定循环引用 */
   const objects = new WeakMap();
 
-  stringifyNodes =
-    typeof stringifyNodes === 'undefined' ? false : stringifyNodes;
+  stringifyNode = typeof stringifyNode === 'undefined' ? false : stringifyNode;
 
   return (function derez(value, path) {
     // console.log('path-value, ', path, value);
@@ -232,9 +235,8 @@ function jsonDecycle(object, replacer, stringifyNodes) {
 
     // The derez function recurses through the object, producing the deep copy.
 
-    // let old_path: string; // The path of an earlier occurance of value
-    let old_path; // The path of an earlier occurance of value
-    let nu; // The new object or array
+    let old_path: string; // The path of an earlier occurance of value
+    let nu: any; // The new object or array
 
     // If a replacer function was provided, then call it to get a replacement value.
     if (replacer !== undefined && typeof replacer === 'function') {
@@ -243,7 +245,7 @@ function jsonDecycle(object, replacer, stringifyNodes) {
 
     // 若属性值对象是dom node类型，则简化输出
     if (
-      stringifyNodes &&
+      stringifyNode &&
       typeof value === 'object' &&
       value !== null &&
       'nodeType' in value
