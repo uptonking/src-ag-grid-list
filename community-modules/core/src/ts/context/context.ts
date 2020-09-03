@@ -240,13 +240,15 @@ export class Context {
     beanInstance: any,
     callback: (metaData: any, beanName: string) => void,
   ): void {
+    // class CC的实例对象的__proto__指向 CC.prototype
     let prototype: any = Object.getPrototypeOf(beanInstance);
 
-    // 循环查找bean对象及其父对象原型的constructor，检查__agBeanMetaData属性
+    // 循环查找bean对象原型及其父对象原型的constructor，检查__agBeanMetaData属性
     while (prototype != null) {
       const constructor: any = prototype.constructor;
 
       if (constructor.hasOwnProperty('__agBeanMetaData')) {
+        logObjSer('constructor, ', constructor);
         const metaData = constructor.__agBeanMetaData;
         const beanName = this.getBeanName(constructor);
 
@@ -254,6 +256,7 @@ export class Context {
         callback(metaData, beanName);
       }
 
+      // 获取原型的原型，沿原型链查找构造函数
       prototype = Object.getPrototypeOf(prototype);
     }
   }
