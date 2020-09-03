@@ -4,28 +4,30 @@
 
 /**
  * 基于JSON.stringify和JSON.parse深克隆对象obj，
- * 若属性值存在循环引用的对象，则克隆后属性值变成字符串标记##CirCularObj##
+ * 函数属性值会stringify成源码文本，部分源码文本无法通过parse恢复成函数，
+ * 若属性值存在循环引用的对象，则属性值stringify后变成字符串路径标记，parse后恢复原对象
  * @param obj 待克隆的对象
  * @param date2obj 日期格式regexp
  */
 export function jsonFnClone(obj: any, date2obj?: RegExp): any {
   const str = jsonFnStringify(obj);
-  console.log('==jsonFnClone-str, ', str);
+  // console.log('==jsonFnClone-str, ', str);
 
   return jsonFnParse(str, date2obj);
 }
 
 /**
  * 基于JSON.stringify序列化对象obj，返回string，
- * 支持obj属性值类型为Function、RegExp，这些特殊值序列化后会有8位前缀标识类型，
- * 还支持序列化属性值存在循环引用的对象，但只打印标记##CirCularObj#，循环引用只支持一层
+ * 支持obj属性值类型为Function、RegExp，这些特殊值序列化后部分会有8位前缀标识类型，
+ * 还支持序列化属性值存在循环引用的对象
  * @param obj 要序列化的对象
  */
 export function jsonFnStringify(obj: any): string {
+  /** 序列化值类型为function和正则表达式的属性值，输出成源码文本 */
   const funcValueReplacer = function (key: any, value: any) {
     // seen集合用来存放不重复的属性值对象，用来判断属性值是否是循环引用的对象
     // const seen = new WeakSet();
-    // 若属性值是对象，且存在循环引用，则打印标记字符串
+    // 若属性值是对象，且存在循环引用，则打印标记字符串，这里的问题是只处理了第1层的，深层未处理
     // if (typeof value === 'object' && value !== null) {
     //   if (seen.has(value)) {
     //     // return;
@@ -39,6 +41,7 @@ export function jsonFnStringify(obj: any): string {
     if (value instanceof Function || typeof value == 'function') {
       fnBody = value.toString();
 
+      // 若函数体字符串长度小于8，则添加箭头函数标记
       if (fnBody.length < 8 || fnBody.substring(0, 8) !== 'function') {
         //this is ES6 Arrow Function
         return '_NuFrRa_' + fnBody;
@@ -54,110 +57,13 @@ export function jsonFnStringify(obj: any): string {
     // 默认会调用toJSON()方法
     return value;
   };
-  return JSON.stringify(jsonDecycle(obj, funcValueReplacer));
+  return JSON.stringify(jsonDecycle(obj), funcValueReplacer);
 }
-
 /**
- * 基于JSON.parse反序列化string为json形式的js对象
- * @param str 待反序列化的字符串
- * @param date2obj 日期格式regexp
+ * 将对象中循环引用的属性值对象输出为路径字符串，
+ * 实际会裁剪dom node内容和跳过iframe对象，所以不能完全恢复原对象，也未在retrocycle方法实现恢复
  */
-export function jsonFnParse(str: string, date2obj?: RegExp): any {
-  const iso8061 = date2obj
-    ? /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/
-    : false;
-
-  return JSON.parse(str, function (key, value) {
-    if (typeof value != 'string') {
-      return value;
-    }
-    if (value.length < 8) {
-      return value;
-    }
-
-    const prefix = value.substring(0, 8);
-
-    if (iso8061 && value.match(iso8061 as RegExp)) {
-      return new Date(value);
-    }
-    if (prefix === 'function') {
-      return eval('(' + value + ')');
-    }
-    if (prefix === '_NuFrRa_') {
-      return eval(value.slice(8));
-    }
-    if (prefix === '_PxEgEr_') {
-      return eval(value.slice(8));
-    }
-
-    return value;
-  });
-}
-
-/** 将jsonDecycle后的路径字符串属性值，恢复成原来的循环引用对象 */
-function jsonRetrocycle($: any) {
-  // Restore an object that was reduced by decycle. Members whose values are
-  // objects of the form
-  //      {$ref: PATH}
-  // are replaced with references to the value found by the PATH. This will
-  // restore cycles. The object will be mutated.
-
-  // The eval function is used to locate the values described by a PATH. The
-  // root object is kept in a $ variable. A regular expression is used to
-  // assure that the PATH is extremely well formed. The regexp contains nested
-  // quantifiers. That has been known to have extremely bad performance
-  // problems on some browsers for very long strings. A PATH is expected to be
-  // reasonably short. A PATH is allowed to belong to a very restricted subset of
-  // Goessner's JSONPath.
-
-  // So,
-  //      var s = '[{"$ref":"$"}]';
-  //      return JSON.retrocycle(JSON.parse(s));
-  // produces an array containing a single element which is the array itself.
-
-  const px = /^\$(?:\[(?:\d+|"(?:[^\\"\u0000-\u001f]|\\(?:[\\"\/bfnrt]|u[0-9a-zA-Z]{4}))*")\])*$/;
-
-  (function rez(value) {
-    // The rez function walks recursively through the object looking for $ref
-    // properties. When it finds one that has a value that is a path, then it
-    // replaces the $ref object with a reference to the value that is found by
-    // the path.
-
-    if (value && typeof value === 'object') {
-      if (Array.isArray(value)) {
-        value.forEach(function (element, i) {
-          if (typeof element === 'object' && element !== null) {
-            const path = element.$ref;
-            if (typeof path === 'string' && px.test(path)) {
-              value[i] = eval(path);
-            } else {
-              rez(element);
-            }
-          }
-        });
-      } else {
-        Object.keys(value).forEach(function (name) {
-          const item = value[name];
-          if (typeof item === 'object' && item !== null) {
-            const path = item.$ref;
-            if (typeof path === 'string' && px.test(path)) {
-              value[name] = eval(path);
-            } else {
-              rez(item);
-            }
-          }
-        });
-      }
-    }
-  })($);
-  return $;
-}
-
-/**
- * JSON.stringify序列化对象时，将循环引用的属性值输出为路径字符串，
- * 实际会裁剪dom node内容和跳过iframe对象，所有不能完全恢复，也未在retrocycle方法实现恢复
- */
-function jsonDecycle(object: any, replacer: Function) {
+function jsonDecycle(object: any, replacer?: Function) {
   // Make a deep copy of an object or array, assuring that there is at most
   // one instance of each object or array in the resulting structure. The
   // duplicate references (which might be forming cycles) are replaced with
@@ -231,11 +137,11 @@ function jsonDecycle(object: any, replacer: Function) {
 
   return (function derez(value, path) {
     // console.log('path-value, ', path, value);
-    console.log('path-value, ', path);
+    // console.log('path-value, ', path);
 
     // The derez function recurses through the object, producing the deep copy.
 
-    let old_path: string; // The path of an earlier occurance of value
+    let old_path: string; // The path of an earlier occurrence of value
     let nu: any; // The new object or array
 
     // If a replacer function was provided, then call it to get a replacement value.
@@ -250,7 +156,7 @@ function jsonDecycle(object: any, replacer: Function) {
       value !== null &&
       'nodeType' in value
     ) {
-      console.log('==nodeType, ', value);
+      // console.log('==nodeType, ', value);
 
       return stringifyNode(value);
     }
@@ -312,4 +218,112 @@ function jsonDecycle(object: any, replacer: Function) {
     }
     return value;
   })(object, '$');
+}
+
+/**
+ * 基于JSON.parse反序列化string为json形式的js对象
+ * @param str 待反序列化的字符串
+ * @param date2obj 日期格式regexp
+ */
+export function jsonFnParse(str: string, date2obj?: RegExp): any {
+  const iso8061 = date2obj
+    ? /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/
+    : false;
+
+  /** 对于JSON.parse后的对象，遍历其属性值，恢复其中带有特殊前缀的字符串为对象，如恢复成函数 */
+  const funcStrReviver = function (key: any, value: string) {
+    if (typeof value != 'string') {
+      return value;
+    }
+    if (value.length < 8) {
+      return value;
+    }
+
+    const prefix = value.substring(0, 8);
+
+    if (iso8061 && value.match(iso8061 as RegExp)) {
+      return new Date(value);
+    }
+    // console.log('key-value, ', key, value);
+
+    if (prefix === 'function') {
+      // 对于方法体被序列化成{ [native code] }的属性值，仍将方法体保存为字符串
+      if (/\{ \[native code\] \}$/.test(value)) {
+        return value;
+      }
+
+      // 对于大多数普通方法，可以还原方法体字符串为函数对象
+      return eval('(' + value + ')');
+    }
+    if (prefix === '_NuFrRa_') {
+      return eval(value.slice(8));
+    }
+    if (prefix === '_PxEgEr_') {
+      return eval(value.slice(8));
+    }
+
+    return value;
+  };
+  return jsonRetrocycle(JSON.parse(str, funcStrReviver));
+}
+
+/** 将(JSON.parse后得到的)对象中jsonDecycle处理过的路径字符串属性值，恢复成原来的循环引用对象，未实现恢复dom node对象 */
+function jsonRetrocycle($: any) {
+  // Restore an object that was reduced by decycle. Members whose values are
+  // objects of the form
+  //      {$ref: PATH}
+  // are replaced with references to the value found by the PATH. This will
+  // restore cycles. The object will be mutated.
+
+  // The eval function is used to locate the values described by a PATH. The
+  // root object is kept in a $ variable. A regular expression is used to
+  // assure that the PATH is extremely well formed. The regexp contains nested
+  // quantifiers. That has been known to have extremely bad performance
+  // problems on some browsers for very long strings. A PATH is expected to be
+  // reasonably short. A PATH is allowed to belong to a very restricted subset of
+  // Goessner's JSONPath.
+
+  // So,
+  //      var s = '[{"$ref":"$"}]';
+  //      return JSON.retrocycle(JSON.parse(s));
+  // produces an array containing a single element which is the array itself.
+
+  const px = /^\$(?:\[(?:\d+|"(?:[^\\"\u0000-\u001f]|\\(?:[\\"\/bfnrt]|u[0-9a-zA-Z]{4}))*")\])*$/;
+
+  (function rez(value) {
+    // The rez function walks recursively through the object looking for $ref
+    // properties. When it finds one that has a value that is a path, then it
+    // replaces the $ref object with a reference to the value that is found by
+    // the path.
+
+    if (value && typeof value === 'object') {
+      // 还原作为数组元素的循环引用对象
+      if (Array.isArray(value)) {
+        value.forEach(function (element, i) {
+          if (typeof element === 'object' && element !== null) {
+            const path = element.$ref;
+            if (typeof path === 'string' && px.test(path)) {
+              value[i] = eval(path);
+            } else {
+              rez(element);
+            }
+          }
+        });
+      } else {
+        // 还原作为对象属性的循环引用对象
+        Object.keys(value).forEach(function (name) {
+          const item = value[name];
+          if (typeof item === 'object' && item !== null) {
+            const path = item.$ref;
+            if (typeof path === 'string' && px.test(path)) {
+              value[name] = eval(path);
+            } else {
+              rez(item);
+            }
+          }
+        });
+      }
+    }
+  })($);
+  return $;
 }

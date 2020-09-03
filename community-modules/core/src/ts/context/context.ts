@@ -56,16 +56,16 @@ export class Context {
     this.logger = logger;
     this.logger.log('>> creating ag-Application Context');
 
-    // 创建所有bean对象
+    // 创建所有bean对象，只调用构造函数，大多数属性未初始化
     this.createBeans();
-    logObjSer('createBeans, ', this.beanWrappers);
+    logObjSer('==createBeans, ', this.beanWrappers);
 
     // 获取所有bean对象存放到到数组
     const beanInstances = this.getBeanInstances();
 
-    // 给所有bean对象添加属性
+    // 给所有bean对象注入属性里的值或其他bean，这里实现依赖注入
     this.wireBeans(beanInstances);
-    logObjSer('wireBeans, ', this.beanWrappers);
+    logObjSer('==wireBeans, ', this.beanWrappers);
 
     this.logger.log('>> ag-Application Context ready - component is alive');
   }
@@ -90,7 +90,7 @@ export class Context {
   }
 
   /**
-   * 给所有beanInstances对象添加和注入属性，并调用生命周期方法pre/postConstructMethods
+   * 给所有beanInstances对象注入属性，并调用生命周期方法pre/postConstructMethods
    */
   private wireBeans(
     beanInstances: any[],
@@ -201,6 +201,7 @@ export class Context {
               attribute.beanName,
               attribute.optional,
             );
+            // 在这里给bean实例对象添加其他bean作为属性
             beanInstance[attribute.attributeName] = otherBean;
           });
         },
@@ -234,7 +235,7 @@ export class Context {
     });
   }
 
-  /** 遍历beanInstance.__proto__.constructor,会执行 callback(metaData, beanName)*/
+  /** 遍历`beanInstance.__proto__.constructor`,会执行 `callback(metaData, beanName)`*/
   private forEachMetaDataInHierarchy(
     beanInstance: any,
     callback: (metaData: any, beanName: string) => void,
