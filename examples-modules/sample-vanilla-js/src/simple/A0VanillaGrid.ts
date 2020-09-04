@@ -3,6 +3,7 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import '@ag-grid-community/core/dist-copy/styles/ag-grid.scss';
 import '@ag-grid-community/core/dist-copy/styles/ag-theme-alpine/sass/ag-theme-alpine.scss';
 
+// 注册ag-grid使用的模块
 ModuleRegistry.register(ClientSideRowModelModule);
 
 export class SimpleGrid {
@@ -16,6 +17,8 @@ export class SimpleGrid {
     };
 
     let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#app');
+    console.log('==constructor in SimpleGrid');
+
     new Grid(eGridDiv, this.gridOptions);
   }
 

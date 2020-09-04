@@ -240,15 +240,15 @@ export class Context {
     beanInstance: any,
     callback: (metaData: any, beanName: string) => void,
   ): void {
-    // class CC的实例对象的__proto__指向 CC.prototype
+    // class CC的实例对象beanInstance的__proto__指向 CC.prototype
     let prototype: any = Object.getPrototypeOf(beanInstance);
 
-    // 循环查找bean对象原型及其父对象原型的constructor，检查__agBeanMetaData属性
+    // 循环查找bean对象隐式原型及原型对象的隐式原型的constructor，检查__agBeanMetaData属性
     while (prototype != null) {
       const constructor: any = prototype.constructor;
 
       if (constructor.hasOwnProperty('__agBeanMetaData')) {
-        logObjSer('constructor, ', constructor);
+        // logObjSer('constructor, ', constructor);
         const metaData = constructor.__agBeanMetaData;
         const beanName = this.getBeanName(constructor);
 
@@ -416,10 +416,11 @@ function applyToConstructor(constructor: Function, argArray: any[]) {
   const factoryFunction = constructor.bind.apply(constructor, args);
   return new factoryFunction();
 }
-// 另一种实现
+// applyToConstructor的另一种实现
 // function applyConstructor(ctor, args) {
 //   return new ctor(...args);
 // }
+
 export function PreConstruct(
   target: Object,
   methodName: string,
@@ -456,6 +457,7 @@ export function PreDestroy(
   props.preDestroyMethods.push(methodName);
 }
 
+/** 以`@Bean`注解形式使用的装饰器方法 */
 export function Bean(beanName: string): Function {
   return (classConstructor: any) => {
     const props = getOrCreateProps(classConstructor);
@@ -537,8 +539,11 @@ export function Qualifier(name: string): Function {
   };
 }
 
+/** 获取并返回target参数对象的__agBeanMetaData属性值，若该属性不存在则设置为{}*/
 function getOrCreateProps(target: any): any {
   if (!target.hasOwnProperty('__agBeanMetaData')) {
+    logObjSer('getOrCreateProps(target, ');
+    console.trace();
     target.__agBeanMetaData = {};
   }
 
