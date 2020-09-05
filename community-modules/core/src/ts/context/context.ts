@@ -457,7 +457,11 @@ export function PreDestroy(
   props.preDestroyMethods.push(methodName);
 }
 
-/** 以`@Bean`注解形式使用的装饰器方法 */
+/**
+ * 以`@Bean(beanName)`注解形式使用的class装饰器工厂，
+ * 定义class时会给class加上`__agBeanMetaData`静态属性，并设置该静态属性的beanName值
+ * @param beanName 设置其作为__agBeanMetaData.beanName的值
+ */
 export function Bean(beanName: string): Function {
   return (classConstructor: any) => {
     const props = getOrCreateProps(classConstructor);
@@ -465,18 +469,38 @@ export function Bean(beanName: string): Function {
   };
 }
 
+/**
+ * 以`@Autowired(beanName)`注解形式使用的class属性装饰器工厂，
+ * 会给class的__agBeanMetaData静态属性加上`agClassAttributes`属性，用来存放属性值依赖的bean
+ * @param name 该属性依赖的bean对象的名称
+ */
 export function Autowired(name?: string): Function {
+  /**
+   * target：如果装饰器挂载于静态成员上，则会返回构造函数，如果挂载于实例成员上则会返回类的原型
+   * propertyKey：装饰器挂载的成员名称
+   * descriptor：成员的描述符，也就是Object.getOwnPropertyDescriptor的返回值
+   */
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     autowiredFunc(target, name, false, target, propertyKey, null);
   };
 }
 
+/** `@Optional(beanName)`和`@Autowired(beanName)`相似，不同在于该属性依赖的bean是可选的，可不存在 */
 export function Optional(name?: string): Function {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     autowiredFunc(target, name, true, target, propertyKey, null);
   };
 }
 
+/**
+ * 给bean class的__agBeanMetaData静态属性设置agClassAttributes数组，存放class字段依赖的beanName
+ * @param target bean对象
+ * @param name 属性依赖的bean名称
+ * @param optional 是否可选
+ * @param classPrototype class的原型对象
+ * @param methodOrAttributeName 使用注解的属性名
+ * @param index 索引
+ */
 function autowiredFunc(
   target: any,
   name: string,
@@ -499,6 +523,8 @@ function autowiredFunc(
   if (!props.agClassAttributes) {
     props.agClassAttributes = [];
   }
+
+  // 将使用注解装饰器的属性、该属性所依赖的bean等信息添加到__agBeanMetaData.agClassAttributes
   props.agClassAttributes.push({
     attributeName: methodOrAttributeName,
     beanName: name,
@@ -506,7 +532,16 @@ function autowiredFunc(
   });
 }
 
+/**
+ * 以`@Qualifier(beanName)`注解形式使用的参数装饰器工厂
+ * @param name 该参数依赖的bean对象的名称
+ */
 export function Qualifier(name: string): Function {
+  /**
+   * classPrototype: 类的原型或类的构造函数
+   * methodOrAttributeName: 参数所在的函数名称
+   * index: 参数在形参中的位置索引
+   */
   return (
     classPrototype: any,
     methodOrAttributeName: string,
@@ -539,7 +574,10 @@ export function Qualifier(name: string): Function {
   };
 }
 
-/** 获取并返回target参数对象的__agBeanMetaData属性值，若该属性不存在则设置为{}*/
+/**
+ * 获取并返回target(class)参数对象的__agBeanMetaData属性值，
+ * 若该属性不存在，则添加该属性并设置为{}
+ */
 function getOrCreateProps(target: any): any {
   if (!target.hasOwnProperty('__agBeanMetaData')) {
     logObjSer('getOrCreateProps(target, ');
