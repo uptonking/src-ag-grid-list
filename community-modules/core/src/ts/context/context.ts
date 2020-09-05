@@ -539,7 +539,7 @@ function autowiredFunc(
 export function Qualifier(name: string): Function {
   /**
    * classPrototype: 类的原型或类的构造函数
-   * methodOrAttributeName: 参数所在的函数名称
+   * methodOrAttributeName: 参数所在函数的名称
    * index: 参数在形参中的位置索引
    */
   return (
@@ -554,28 +554,32 @@ export function Qualifier(name: string): Function {
     let props: any;
 
     if (typeof index === 'number') {
-      // it's a parameter on a method
+      // it's a parameter on a method，代表参数装饰器所在方法的名称
       let methodName: string;
       if (methodOrAttributeName) {
         props = getOrCreateProps(constructor);
         methodName = methodOrAttributeName;
       } else {
+        // 如果方法名不存在，则设置一个方法名
         props = getOrCreateProps(constructor);
         methodName = 'agConstructor';
       }
+
       if (!props.autowireMethods) {
         props.autowireMethods = {};
       }
+      // 在__agBeanMetaData属性中添加一个属性，key为带有设置@Qualifier的参数的方法
       if (!props.autowireMethods[methodName]) {
         props.autowireMethods[methodName] = {};
       }
+      // 设置methodName的第index参数所依赖的beanName
       props.autowireMethods[methodName][index] = name;
     }
   };
 }
 
 /**
- * 获取并返回target(class)参数对象的__agBeanMetaData属性值，
+ * 获取并返回target(class)参数对象的`__agBeanMetaData`属性值，
  * 若该属性不存在，则添加该属性并设置为{}
  */
 function getOrCreateProps(target: any): any {
