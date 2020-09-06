@@ -23,7 +23,7 @@ export interface ComponentMeta {
   componentName: string;
 }
 
-/** bean封装后的对象，包括bean对象实例、bean对应的class，bean名称 */
+/** bean对象封装后的对象，包含bean对象实例、bean对象对应的class，bean名称 */
 interface BeanWrapper {
   bean: any;
   beanInstance: any;
@@ -31,7 +31,7 @@ interface BeanWrapper {
 }
 
 /**
- * Context是创建Grid的上下文，负责创建并存放所有bean
+ * Context是创建Grid的上下文，负责创建并保存所有bean
  */
 export class Context {
   private logger: ILogger;
@@ -39,13 +39,13 @@ export class Context {
   /** 存放所有bean对象实例的映射表容器，包含rowModel的bean */
   private beanWrappers: { [key: string]: BeanWrapper } = {};
 
-  /** 创建Grid时传入的上下文参数，主要包含所有bean对应的class */
+  /** 创建Context时传入的参数，主要包含所有bean对应的class */
   private contextParams: ContextParams;
 
   /** 所有bean对象是否已调用过destroy()方法 */
   private destroyed = false;
 
-  /** Context初始化时的任务，创建所有bean对象并给bean注入属性 */
+  /** Context初始化时的任务，创建所有bean对象，再注入属性中依赖的其他bean对象，再调用参数依赖其他bean的方法 */
   public constructor(params: ContextParams, logger: ILogger) {
     if (!params || !params.beanClasses) {
       return;
@@ -56,14 +56,14 @@ export class Context {
     this.logger = logger;
     this.logger.log('>> creating ag-Application Context');
 
-    // 创建所有bean对象，只调用构造函数，大多数属性未初始化
+    // 创建所有bean对象，只调用了构造函数，会注入构造函数依赖的其他bean对象
     this.createBeans();
-    logObjSer('==createBeans, ', this.beanWrappers);
+    // logObjSer('==createBeans, ', this.beanWrappers);
 
     // 获取所有bean对象存放到到数组
     const beanInstances = this.getBeanInstances();
 
-    // 给所有bean对象注入属性里的值或其他bean，这里实现依赖注入
+    // 给所有bean对象注入自身属性依赖的其他bean对象，再调用参数带有依赖注入其他bean的方法
     this.wireBeans(beanInstances);
     logObjSer('==wireBeans, ', this.beanWrappers);
 
@@ -96,10 +96,10 @@ export class Context {
     beanInstances: any[],
     afterPreCreateCallback?: (comp: Component) => void,
   ): void {
-    //
+    // 给beanInstance设置通过属性字段注入的其他bean对象
     this.autoWireBeans(beanInstances);
 
-    //
+    // 调用参数中带有依赖其他bean的方法，一般是调用setBeans方法
     this.methodWireBeans(beanInstances);
 
     // 调用 preConstructMethods
@@ -128,7 +128,8 @@ export class Context {
       (key: string, beanEntry: BeanWrapper) => {
         let constructorParamsMeta: any;
 
-        // 若bean class存在autowireMethods
+        // 若bean.__agBeanMetaData.autowireMethods.agConstructor存在，即构造函数参数存在注入，
+        // 对于最简单的clientSideRowModel，这个分支未执行
         if (
           beanEntry.bean.__agBeanMetaData &&
           beanEntry.bean.__agBeanMetaData.autowireMethods &&
@@ -136,10 +137,10 @@ export class Context {
         ) {
           constructorParamsMeta =
             beanEntry.bean.__agBeanMetaData.autowireMethods.agConstructor;
-          // console.log('若bean class存在autowireMethods, ', beanEntry);
+          // console.log('=autowireMethods.agConstructor,', constructorParamsMeta);
         }
 
-        // 获取创建bean时要传递给构造函数的参数
+        // 获取创建bean时要传递给构造函数的参数，若constructorParamsMeta不存在，则会返回空数组
         const constructorParams = this.getBeansForParameters(
           constructorParamsMeta,
           beanEntry.bean.name,
@@ -184,7 +185,7 @@ export class Context {
     this.beanWrappers[metaData.beanName] = beanEntry;
   }
 
-  /** 查找beanInstance的constructor原型链上通过agClassAttributes注入的其他bean，并添加到其属性 */
+  /** 查找beanInstance的原型链上所有构造函数通过agClassAttributes注入的其他bean对象，并添加到其属性 */
   private autoWireBeans(beanInstances: any[]): void {
     beanInstances.forEach((beanInstance) => {
       this.forEachMetaDataInHierarchy(
@@ -195,6 +196,7 @@ export class Context {
             return;
           }
 
+          // 遍历agClassAttributes上存放的依赖其他bean的信息，再查找对应的bean对象
           attributes.forEach((attribute: any) => {
             const otherBean = this.lookupBeanInstance(
               beanName,
@@ -209,7 +211,7 @@ export class Context {
     });
   }
 
-  /** 查找beanInstance的constructor原型链上通过autowireMethods注入的其他bean，并添加到其属性 */
+  /** 查找beanInstance原型链上所有构造函数通过autowireMethods注入的其他bean对象，并调用以参数注入该bean的方法 */
   private methodWireBeans(beanInstances: any[]): void {
     beanInstances.forEach((beanInstance) => {
       this.forEachMetaDataInHierarchy(
@@ -218,15 +220,18 @@ export class Context {
           _.iterateObject(
             metaData.autowireMethods,
             (methodName: string, wireParams: any[]) => {
-              // skip constructor, as this is dealt with elsewhere
+              // skip constructor, as this is dealt with elsewhere，
+              // 构造函数在本文件的createBeans()方法中处理过了
               if (methodName === 'agConstructor') {
                 return;
               }
+
+              // 计算要传递给方法的实参对象
               const initParams = this.getBeansForParameters(
                 wireParams,
                 beanName,
               );
-              // 调用方法
+              // 通过apply调用参数中有其他bean对象注入的方法，在ag-grid框架中一般是调用setBeans方法
               beanInstance[methodName].apply(beanInstance, initParams);
             },
           );
@@ -235,7 +240,10 @@ export class Context {
     });
   }
 
-  /** 遍历`beanInstance.__proto__.constructor`,会执行 `callback(metaData, beanName)`*/
+  /**
+   * 遍历`beanInstance.__proto__.constructor`构造函数读取__agBeanMetaData属性代表的元数据，
+   * 然后执行 `callback(metaData, beanName)`
+   */
   private forEachMetaDataInHierarchy(
     beanInstance: any,
     callback: (metaData: any, beanName: string) => void,
@@ -248,11 +256,10 @@ export class Context {
       const constructor: any = prototype.constructor;
 
       if (constructor.hasOwnProperty('__agBeanMetaData')) {
-        // logObjSer('constructor, ', constructor);
         const metaData = constructor.__agBeanMetaData;
         const beanName = this.getBeanName(constructor);
 
-        // 任务可以是调用autowireMethods指定的方法
+        // 传入构造函数上的元信息作为参数，然后执行方法，可以是调用autowireMethods指定的方法
         callback(metaData, beanName);
       }
 
@@ -275,7 +282,7 @@ export class Context {
     return beanName;
   }
 
-  /** 获取创建bean时要传递给构造函数的参数，返回参数中包含的其他bean */
+  /** 获取要传递给方法的参数数组对象，参数中可以包含作为依赖的其他bean对象 */
   private getBeansForParameters(parameters: any, beanName: string): any[] {
     const beansList: any[] = [];
     if (parameters) {
@@ -287,6 +294,8 @@ export class Context {
         },
       );
     }
+
+    // 之后会作为实参数组arguments使用
     return beansList;
   }
 
@@ -325,7 +334,7 @@ export class Context {
     }
   }
 
-  /** 循环调用所有bean的lifeCycleMethod，入口方法 */
+  /** 遍历调用所有bean的lifeCycleMethod，入口方法 */
   private callLifeCycleMethods(
     beanInstances: any[],
     lifeCycleMethod: string,
@@ -335,7 +344,7 @@ export class Context {
     });
   }
 
-  /** 调用一个bean对象的声明周期方法 */
+  /** 调用一个bean对象的生命周期方法 */
   private callLifeCycleMethodsOneBean(
     beanInstance: any,
     lifeCycleMethod: string,
@@ -459,7 +468,8 @@ export function PreDestroy(
 
 /**
  * 以`@Bean(beanName)`注解形式使用的class装饰器工厂，
- * 定义class时会给class加上`__agBeanMetaData`静态属性，并设置该静态属性的beanName值
+ * 会给bean class加上`__agBeanMetaData`静态属性，并设置该静态属性的beanName值，
+ * 目的是存放本class类所创建的bean的名称，便于依赖注入时查找beanName
  * @param beanName 设置其作为__agBeanMetaData.beanName的值
  */
 export function Bean(beanName: string): Function {
@@ -471,13 +481,13 @@ export function Bean(beanName: string): Function {
 
 /**
  * 以`@Autowired(beanName)`注解形式使用的class属性装饰器工厂，
- * 会给class的__agBeanMetaData静态属性加上`agClassAttributes`属性，用来存放属性值依赖的bean
+ * 会给class的__agBeanMetaData静态属性加上`agClassAttributes`属性，用来存放class属性依赖的其他bean的名称
  * @param name 该属性依赖的bean对象的名称
  */
 export function Autowired(name?: string): Function {
   /**
    * target：如果装饰器挂载于静态成员上，则会返回构造函数，如果挂载于实例成员上则会返回类的原型
-   * propertyKey：装饰器挂载的成员名称
+   * propertyKey：装饰器挂载的属性成员名称
    * descriptor：成员的描述符，也就是Object.getOwnPropertyDescriptor的返回值
    */
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
@@ -493,9 +503,9 @@ export function Optional(name?: string): Function {
 }
 
 /**
- * 给bean class的__agBeanMetaData静态属性设置agClassAttributes数组，存放class字段依赖的beanName
+ * 给bean class的__agBeanMetaData静态属性设置agClassAttributes数组，存放class属性依赖的其他bean的名称
  * @param target bean对象
- * @param name 属性依赖的bean名称
+ * @param name 属性依赖的其他bean的名称
  * @param optional 是否可选
  * @param classPrototype class的原型对象
  * @param methodOrAttributeName 使用注解的属性名
@@ -533,7 +543,8 @@ function autowiredFunc(
 }
 
 /**
- * 以`@Qualifier(beanName)`注解形式使用的参数装饰器工厂
+ * 以`@Qualifier(beanName)`注解形式使用的参数装饰器工厂，
+ * 会给class的__agBeanMetaData静态属性加`autowireMethods`属性，存放class中方法参数依赖的其他bean的名称
  * @param name 该参数依赖的bean对象的名称
  */
 export function Qualifier(name: string): Function {
@@ -560,7 +571,7 @@ export function Qualifier(name: string): Function {
         props = getOrCreateProps(constructor);
         methodName = methodOrAttributeName;
       } else {
-        // 如果方法名不存在，则设置一个方法名
+        // 若是构造函数，则在这里设置统一的方法名agConstructor
         props = getOrCreateProps(constructor);
         methodName = 'agConstructor';
       }
@@ -568,7 +579,7 @@ export function Qualifier(name: string): Function {
       if (!props.autowireMethods) {
         props.autowireMethods = {};
       }
-      // 在__agBeanMetaData属性中添加一个属性，key为带有设置@Qualifier的参数的方法
+      // 给__agBeanMetaData属性添加一个属性，key为带有设置@Qualifier的参数的方法名
       if (!props.autowireMethods[methodName]) {
         props.autowireMethods[methodName] = {};
       }
@@ -579,13 +590,11 @@ export function Qualifier(name: string): Function {
 }
 
 /**
- * 获取并返回target(class)参数对象的`__agBeanMetaData`属性值，
+ * 获取并返回target(class)参数对象的`__agBeanMetaData`属性值，该属性会存放target的属性或方法参数依赖的其他bean，
  * 若该属性不存在，则添加该属性并设置为{}
  */
 function getOrCreateProps(target: any): any {
   if (!target.hasOwnProperty('__agBeanMetaData')) {
-    logObjSer('getOrCreateProps(target, ');
-    console.trace();
     target.__agBeanMetaData = {};
   }
 

@@ -42,10 +42,10 @@ import { RowPositionUtils } from '../entities/rowPosition';
 import { SelectionController } from '../selectionController';
 
 /**
- * 几乎都是ioc依赖注入Bean对象。
- * Using the IoC has a slight performance consideration, which is no problem most of the
- * time, unless we are trashing objects - which is the case when scrolling and rowComp
- * and cellComp.
+ * Beans是包含各种bean对象的容器类，属性值几乎都需要通过Autowire注入对象。
+ * Using the IoC has a slight performance consideration, which is no problem
+ * most of the time, unless we are trashing objects - which is the case when
+ * scrolling and rowComp and cellComp.
  * So for performance reasons, RowComp and CellComp do not get autowired
  * with the IoC.
  * Instead they get passed this object which is all the beans the RowComp

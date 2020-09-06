@@ -9,7 +9,7 @@ export interface CellPosition extends RowPosition {
 }
 
 /**
- * cell操作类，包括 createIdFromValues
+ * cell操作类，包括 createIdFromValues, equals(cellA,cellB)
  */
 @Bean('cellPositionUtils')
 export class CellPositionUtils extends BeanStub {

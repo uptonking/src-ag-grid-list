@@ -117,10 +117,10 @@ export interface GridParams {
 export class Grid {
   protected logger: Logger;
 
-  /** 创建grid的上下文，会创建并保存各种bean */
+  /** 创建grid的上下文信息对象，会创建并保存各种bean */
   private context: Context;
 
-  /** grid配置对象 */
+  /** grid配置对象，主要包括properties、events和callbacks相关配置，与第3方框架无关 */
   private readonly gridOptions: GridOptions;
 
   /**
@@ -211,7 +211,7 @@ export class Grid {
   private getRegisteredModules(params: GridParams): Module[] {
     // 传参到Grid构造函数时注册的模块
     const passedViaConstructor: Module[] = params ? params.modules : null;
-    // 手动注册的模块
+    // 通过ModuleRegistry注册的模块
     const registered = ModuleRegistry.getRegisteredModules();
 
     // 最后会返回所有module构成的数组
@@ -284,7 +284,7 @@ export class Grid {
     agStackComponentsRegistry.setupComponents(agStackComponents);
   }
 
-  /** 返回一个对象，包含gridOptions, eGridDiv，与框架集成相关的各种配置属性 */
+  /** 返回一个对象，包含gridOptions, eGridDiv，与框架集成相关的各种配置等属性 */
   private createProvidedBeans(eGridDiv: HTMLElement, params: GridParams): any {
     let frameworkOverrides = params ? params.frameworkOverrides : null;
     if (_.missing(frameworkOverrides)) {
@@ -420,7 +420,7 @@ export class Grid {
       AgStackComponentsRegistry,
     ];
 
-    // 再提取出注册的modules顶层暴露beans属性值，并加入bean class数组用来初始化
+    // 再提取出注册的modules顶层暴露beans属性值，并加入bean class数组等待初始化
     const moduleBeans = this.extractModuleEntity(registeredModules, (module) =>
       module.beans ? module.beans : [],
     );
