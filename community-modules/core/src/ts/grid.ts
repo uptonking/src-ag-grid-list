@@ -256,6 +256,7 @@ export class Grid {
       'userComponentRegistry',
     );
 
+    // 对于clientSideRowModel来说，这里为空数组
     const moduleUserComps: {
       componentName: string;
       componentClass: AgGridRegisteredComponentInput<IComponent<any>>;
@@ -308,7 +309,7 @@ export class Grid {
   }
 
   /**
-   * 指定ag-grid内部使用的默认组件，如input,button,toggle,dialog,overlay，组件类名都以Ag开头，
+   * 指定ag-grid内部使用的默认组件，组件类名都以Ag开头，如input,button,toggle,dialog,overlay，
    * 最后加入module暴露的agStackComponents
    */
   private createAgStackComponentsList(registeredModules: Module[]): any[] {

@@ -77,7 +77,7 @@ export class Context {
     );
   }
 
-  /** 给输入的bean对象注入属性，bean对象实际不在这里创建 */
+  /** 给传入的参数bean对象注入其属性值中依赖的其他bean，bean对象实际不在这里创建 */
   public createBean<T extends any>(
     bean: T,
     afterPreCreateCallback?: (comp: Component) => void,
@@ -118,7 +118,8 @@ export class Context {
 
   /** 通过apply调用构造函数创建所有bean对象，存放到beanWrappers映射表容器 */
   private createBeans(): void {
-    // register all normal beans，bind(o)方法会创建一个函数的实例，函数中的this会指向参数o
+    // register all normal beans，
+    // 这里会向beanWrappers容器中添加beanEntry，bind(o)方法会创建一个函数的实例，函数中的this会指向参数o
     this.contextParams.beanClasses.forEach(this.createBeanWrapper.bind(this));
     // register override beans, these will overwrite beans above of same name
 
@@ -164,7 +165,7 @@ export class Context {
   private createBeanWrapper(Bean: new () => Object): void {
     const metaData = (Bean as any).__agBeanMetaData;
 
-    // 若元数据不存在，则打印error
+    // 若__agBeanMetaData元数据不存在，则打印error
     if (!metaData) {
       let beanName: string;
       if (Bean.prototype.constructor) {
@@ -203,7 +204,7 @@ export class Context {
               attribute.beanName,
               attribute.optional,
             );
-            // 在这里给bean实例对象添加其他bean作为属性
+            // 在这里给bean实例对象添加其他bean对象作为属性
             beanInstance[attribute.attributeName] = otherBean;
           });
         },
@@ -583,7 +584,7 @@ export function Qualifier(name: string): Function {
       if (!props.autowireMethods[methodName]) {
         props.autowireMethods[methodName] = {};
       }
-      // 设置methodName的第index参数所依赖的beanName
+      // 设置methodName的第index个参数所依赖的beanName
       props.autowireMethods[methodName][index] = name;
     }
   };

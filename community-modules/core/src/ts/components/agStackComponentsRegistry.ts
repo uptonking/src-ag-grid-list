@@ -6,7 +6,7 @@ import { BeanStub } from '../context/beanStub';
  */
 @Bean('agStackComponentsRegistry')
 export class AgStackComponentsRegistry extends BeanStub {
-  /** 存放component名称和定义class的映射表 */
+  /** 存放component名称和定义class的映射表，注意名称经过小处理 */
   private componentsMappedByName: { [key: string]: any } = {};
 
   /** 将组件的名称和class添加到 componentsMappedByName映射表 */

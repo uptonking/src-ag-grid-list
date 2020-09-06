@@ -26,7 +26,8 @@ import { Column } from './entities/column';
 import { _ } from './utils';
 
 /**
- * 包含grid配置、数据、操作的核心类，包含页面布局模块的判断，以及事件监听处理
+ * 包含grid配置、数据、操作的核心类，包括页面布局模块的判断，以及事件监听处理，
+ * 通过在Grid构造函数中依赖注入来初始化属性值
  */
 export class GridCore extends ManagedFocusComponent {
   @Autowired('gridOptions') private gridOptions: GridOptions;
