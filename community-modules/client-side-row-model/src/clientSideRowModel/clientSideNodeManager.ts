@@ -16,9 +16,14 @@ import {
   _,
 } from '@ag-grid-community/core';
 
+/**
+ * 将rowData计算成rowModel模型的数据allNodesMap，还提供了对数据进行crud的方法
+ */
 export class ClientSideNodeManager {
+  /** grid行默认所处的层级，若行中存在其他行，则行中行的层级会+1 */
   private static TOP_LEVEL = 0;
 
+  /** 所有行数据rowData会挂载在rootNode根节点下形成树形结构，rootNode自身可看做一行，但不会显示 */
   private rootNode: RowNode;
   private gridOptionsWrapper: GridOptionsWrapper;
   private context: Context;
@@ -39,7 +44,7 @@ export class ClientSideNodeManager {
   private doingTreeData: boolean;
   private doingMasterDetail: boolean;
 
-  // when user is provide the id's, we also keep a map of ids to row nodes for convenience
+  /** 存放每行id和每行数据RowNode的映射表集合。when user is provide the id's, we also keep a map of ids to row nodes for convenience */
   private allNodesMap: { [id: string]: RowNode } = {};
   private columnApi: ColumnApi;
   private gridApi: GridApi;
@@ -106,6 +111,10 @@ export class ClientSideNodeManager {
     return this.allNodesMap[id];
   }
 
+  /**
+   * 将rowData计算成rowModel模型的入口
+   * @param rowData 传入grid的原数据
+   */
   public setRowData(rowData: any[]): RowNode[] {
     this.rootNode.childrenAfterFilter = null;
     this.rootNode.childrenAfterGroup = null;
@@ -121,6 +130,7 @@ export class ClientSideNodeManager {
       return;
     }
 
+    // 递归地将rowData计算成rowModel
     // kick off recursion
     // we add rootNode as the parent, however if using ag-grid-enterprise, the grouping stage
     // sets the parent node on each row (even if we are not grouping). so setting parent node
@@ -340,6 +350,12 @@ export class ClientSideNodeManager {
     return rowNode;
   }
 
+  /**
+   * 递归地计算代表每一行数据的RowNode对象
+   * @param rowData 原grid数据数组
+   * @param parent 直接父行的RowNode
+   * @param level 当前行rowNode的层级
+   */
   private recursiveFunction(
     rowData: any[],
     parent: RowNode,
@@ -355,12 +371,19 @@ export class ClientSideNodeManager {
 
     const rowNodes: RowNode[] = [];
     rowData.forEach((dataItem) => {
+      // 对每一行创建一个RowNode对象
       const node = this.createNode(dataItem, parent, level);
       rowNodes.push(node);
     });
     return rowNodes;
   }
 
+  /**
+   * 对
+   * @param dataItem 该行对应的数据
+   * @param parent 直接父行的RowNode
+   * @param level 该行所处的层级
+   */
   private createNode(dataItem: any, parent: RowNode, level: number): RowNode {
     const node = new RowNode();
     this.context.createBean(node);

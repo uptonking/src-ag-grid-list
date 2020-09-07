@@ -335,7 +335,7 @@ export class Context {
     }
   }
 
-  /** 遍历调用所有bean的lifeCycleMethod，入口方法 */
+  /** 遍历调用所有bean对象的lifeCycleMethod，入口方法 */
   private callLifeCycleMethods(
     beanInstances: any[],
     lifeCycleMethod: string,
@@ -345,7 +345,7 @@ export class Context {
     });
   }
 
-  /** 调用一个bean对象的生命周期方法 */
+  /** 调用一个bean对象的生命周期方法，主要是pre/postConstructMethods */
   private callLifeCycleMethodsOneBean(
     beanInstance: any,
     lifeCycleMethod: string,
@@ -367,6 +367,8 @@ export class Context {
     });
 
     const allMethodsList = Object.keys(allMethods);
+
+    // 遍历调用元数据中查找到的所有方法，方法作为beanInstance对象的属性调用时内部this指向自身对象
     allMethodsList.forEach((methodName) => beanInstance[methodName]());
   }
 
@@ -431,6 +433,10 @@ function applyToConstructor(constructor: Function, argArray: any[]) {
 //   return new ctor(...args);
 // }
 
+/**
+ * 以`@PreConstruct`注解形式使用的class属性装饰器，
+ * 会给class的__agBeanMetaData静态属性加上`preConstructMethods`属性，在构造函数调用前执行钩子函数
+ */
 export function PreConstruct(
   target: Object,
   methodName: string,
@@ -443,6 +449,10 @@ export function PreConstruct(
   props.preConstructMethods.push(methodName);
 }
 
+/**
+ * 以`@PostConstruct`注解形式使用的class属性装饰器，
+ * 会给class的__agBeanMetaData静态属性加上`postConstructMethods`属性，在构造函数调用后执行钩子函数
+ */
 export function PostConstruct(
   target: Object,
   methodName: string,
@@ -455,6 +465,10 @@ export function PostConstruct(
   props.postConstructMethods.push(methodName);
 }
 
+/**
+ * 以`@PreDestroy`注解形式使用的class属性装饰器，
+ * 会给class的__agBeanMetaData静态属性加上`preDestroyMethods`属性，在destroy前执行钩子函数
+ */
 export function PreDestroy(
   target: Object,
   methodName: string,

@@ -49,7 +49,7 @@ export interface RowNodeMap {
 }
 
 /**
- * 最常用的rowModel，不涉及服务端数据通信
+ * 最常用的rowModel，仅在浏览器客户端进行计算，不涉及服务端数据通信
  */
 @Bean('rowModel')
 export class ClientSideRowModel
@@ -78,9 +78,10 @@ export class ClientSideRowModel
   @Optional('aggregationStage') private aggregationStage: IRowNodeStage;
   @Optional('pivotStage') private pivotStage: IRowNodeStage;
 
-  // top most node of the tree. the children are the user provided data.
+  /** top most node of the tree. the children are the user provided data. */
   private rootNode: RowNode;
-  private rowsToDisplay: RowNode[]; // the rows mapped to rows to display
+  /** the rows mapped to rows to display */
+  private rowsToDisplay: RowNode[];
   private nodeManager: ClientSideNodeManager;
   private rowDataTransactionBatch: BatchTransactionItem[] | null;
   private lastHighlightedRow: RowNode | null;

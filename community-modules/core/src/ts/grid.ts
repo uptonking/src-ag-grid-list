@@ -192,7 +192,7 @@ export class Grid {
     const gridCoreClass = (params && params.rootComponent) || GridCore;
     const gridCore = new gridCoreClass();
 
-    // 给gridCore对象添加和注入属性，会从context的bean容器中取出相关bean来初始化core的属性
+    // 给gridCore对象添加和注入属性，会从context的bean容器中查找相关bean来初始化GridCore的属性
     this.context.createBean(gridCore);
 
     // 将rowData计算处理成rowModel形式的数据结构

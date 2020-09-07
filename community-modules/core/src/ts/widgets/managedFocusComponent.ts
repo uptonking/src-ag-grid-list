@@ -5,6 +5,7 @@ import { FocusController } from '../focusController';
 import { _ } from '../utils';
 
 /**
+ * 自定义focus逻辑，会覆盖浏览器默认的focus逻辑。
  * This provides logic to override the default browser focus logic.
  *
  * When the component gets focus, it uses the grid logic to find out what should be focused,

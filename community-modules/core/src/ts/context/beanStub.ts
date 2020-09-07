@@ -7,6 +7,9 @@ import { IFrameworkOverrides } from '../interfaces/iFrameworkOverrides';
 import { Component } from '../widgets/component';
 import { _ } from '../utils';
 
+/**
+ * bean的基类，可以加减事件监听器、触发bean的destroyed事件及PreDestroy钩子函数
+ */
 export class BeanStub implements IEventEmitter {
   public static EVENT_DESTROYED = 'destroyed';
 
