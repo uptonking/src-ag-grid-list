@@ -44,6 +44,7 @@ export class BeanStub implements IEventEmitter {
     return this.frameworkOverrides;
   }
 
+  /** 获取对象的context属性 */
   public getContext = (): Context => this.context;
 
   @PreDestroy
@@ -78,6 +79,7 @@ export class BeanStub implements IEventEmitter {
     window.setTimeout(() => this.dispatchEvent(event), 0);
   }
 
+  /** 调用localEventService的dispatchEvent方法 */
   public dispatchEvent<T extends AgEvent>(event: T): void {
     if (this.localEventService) {
       this.localEventService.dispatchEvent(event);
@@ -119,23 +121,26 @@ export class BeanStub implements IEventEmitter {
     return destroyFunc;
   }
 
+  /** 若bean未destroyed，则isAlive为true */
   public isAlive = (): boolean => !this.destroyed;
 
   public addDestroyFunc(func: () => void): void {
-    // if we are already destroyed, we execute the func now
     if (this.isAlive()) {
       this.destroyFunctions.push(func);
     } else {
+      // if we are already destroyed, we execute the func now
       func();
     }
   }
 
+  /** 给传入的参数bean对象注入其依赖的其他bean，再给参数bean的destroyFunctions属性加入销毁时需要调用的方法 */
   public createManagedBean<T>(bean: T, context?: Context): T {
     const res = this.createBean(bean, context);
     this.addDestroyFunc(this.destroyBean.bind(this, bean, context));
     return res;
   }
 
+  /** 给传入的参数bean对象注入其属性值中依赖的其他bean，bean对象实际不在这里创建，会从参数或属性context中查找bean */
   protected createBean<T>(
     bean: T,
     context?: Context,

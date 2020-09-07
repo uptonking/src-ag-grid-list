@@ -38,6 +38,11 @@ export class ClientSideNodeManager {
   private getNodeChildDetails: GetNodeChildDetails;
   private doesDataFlower: (data: any) => boolean;
   private isRowMasterFunc: IsRowMaster;
+  /**
+   * 默认false. If true, rowNodes don't get their parents set.
+   * If this is a problem (e.g. if you need to convert the tree to JSON,
+   * which does not allow cyclic dependencies) then set this to true.
+   */
   private suppressParentsInRowNodes: boolean;
 
   private doingLegacyTreeData: boolean;
@@ -353,8 +358,8 @@ export class ClientSideNodeManager {
   /**
    * 递归地计算代表每一行数据的RowNode对象
    * @param rowData 原grid数据数组
-   * @param parent 直接父行的RowNode
-   * @param level 当前行rowNode的层级
+   * @param parent 代表当前行直接父行的RowNode
+   * @param level 父行rowNode的层级
    */
   private recursiveFunction(
     rowData: any[],
@@ -371,7 +376,7 @@ export class ClientSideNodeManager {
 
     const rowNodes: RowNode[] = [];
     rowData.forEach((dataItem) => {
-      // 对每一行创建一个RowNode对象
+      // 对原数据每一行的对象，创建一个RowNode对象
       const node = this.createNode(dataItem, parent, level);
       rowNodes.push(node);
     });
@@ -380,8 +385,8 @@ export class ClientSideNodeManager {
 
   /**
    * 对
-   * @param dataItem 该行对应的数据
-   * @param parent 直接父行的RowNode
+   * @param dataItem 该行对应的数据对象
+   * @param parent 代表直接父行的RowNode
    * @param level 该行所处的层级
    */
   private createNode(dataItem: any, parent: RowNode, level: number): RowNode {
@@ -392,6 +397,7 @@ export class ClientSideNodeManager {
       ? this.getNodeChildDetails(dataItem)
       : null;
 
+    // 若存在details结构
     if (nodeChildDetails && nodeChildDetails.group) {
       node.group = true;
       node.childrenAfterGroup = this.recursiveFunction(
@@ -405,6 +411,9 @@ export class ClientSideNodeManager {
       // pull out all the leaf children and add to our node
       this.setLeafChildren(node);
     } else {
+      // 若不存在details结构
+      // 默认会执行这里
+
       node.group = false;
       this.setMasterForRow(node, dataItem, level, true);
     }

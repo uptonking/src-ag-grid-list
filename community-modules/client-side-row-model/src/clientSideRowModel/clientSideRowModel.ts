@@ -52,8 +52,7 @@ export interface RowNodeMap {
  * 最常用的rowModel，仅在浏览器客户端进行计算，不涉及服务端数据通信
  */
 @Bean('rowModel')
-export class ClientSideRowModel
-  extends BeanStub
+export class ClientSideRowModel extends BeanStub
   implements IClientSideRowModel {
   @Autowired('gridOptionsWrapper')
   private gridOptionsWrapper: GridOptionsWrapper;
@@ -86,6 +85,9 @@ export class ClientSideRowModel
   private rowDataTransactionBatch: BatchTransactionItem[] | null;
   private lastHighlightedRow: RowNode | null;
 
+  /**
+   * clientSideRowModel创建对象后会调用此方法，这里会创建rootNode和ClientSideNodeManager对象
+   */
   @PostConstruct
   public init(): void {
     const refreshEverythingFunc = this.refreshModel.bind(this, {
@@ -171,7 +173,7 @@ export class ClientSideRowModel
   }
 
   /**
-   * 开始将输入的rowData处理成grid内部的数据结构
+   * 开始将输入的rowData处理成grid内部的rowModel结构
    */
   public start(): void {
     const rowData = this.gridOptionsWrapper.getRowData();
@@ -987,6 +989,7 @@ export class ClientSideRowModel
     // remember group state, so we can expand groups that should be expanded
     const groupState = this.getGroupState();
 
+    // 将rowData计算成rowModel的结构
     this.nodeManager.setRowData(rowData);
 
     // this event kicks off:

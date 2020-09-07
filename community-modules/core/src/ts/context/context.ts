@@ -345,7 +345,7 @@ export class Context {
     });
   }
 
-  /** 调用一个bean对象的生命周期方法，主要是pre/postConstructMethods */
+  /** 调用一个bean对象的生命周期方法，主要是pre/postConstruct/DestroyMethods */
   private callLifeCycleMethodsOneBean(
     beanInstance: any,
     lifeCycleMethod: string,
