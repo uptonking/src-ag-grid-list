@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "dist/es6",
     "baseUrl": ".",
+    "removeComments": false,
     "paths": {
       "@ag-*": ["node_modules/@ag-*/dist/es6/main"]
     }

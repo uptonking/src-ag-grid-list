@@ -56,7 +56,7 @@ export interface CellChangedEvent extends RowNodeEvent {
 }
 
 /**
- * 一个RowNode对象代表grid中的一行，包括对RowNode中的数据crud，对行加减事件监听器的方法。
+ * 一个RowNode对象代表grid中的一行，包括对一行RowNode中的数据crud，对行加减事件监听器的方法。
  * each row in the grid is represented by a RowNode object.
  */
 export class RowNode implements IEventEmitter {
@@ -98,8 +98,9 @@ export class RowNode implements IEventEmitter {
   @Autowired('columnApi') private columnApi: ColumnApi;
   @Autowired('gridApi') private gridApi: GridApi;
 
-  /** Unique ID for the node. Either provided by the grid, or user can set to match the primary
-   * key in the database (or whatever data source is used). */
+  /**
+   * Unique ID for the node. Either provided by the grid, or user can set to
+   * match the primary key in the database(or whatever datasource is used). */
   public id: string;
   /** The group data */
   public groupData: any;
@@ -111,19 +112,21 @@ export class RowNode implements IEventEmitter {
   public parent: RowNode | null;
   /** How many levels this node is from the top */
   public level: number;
-  /** How many levels this node is from the top in the UI (different to the level when removing parents)*/
+  /** How many levels this node is from the top in the UI
+   * (different to the level when removing parents) */
   public uiLevel: number;
   /** If doing in memory grouping, this is the index of the group column this cell is for.
-   * This will always be the same as the level, unless we are collapsing groups ie groupRemoveSingleChildren = true */
+   * This will always be the same as the level,
+   * unless we are collapsing groups ie groupRemoveSingleChildren = true */
   public rowGroupIndex: number | null;
   /** True if this node is a group node (ie has children) */
   public group: boolean | undefined;
   /** True if this row is getting dragged */
   public dragging: boolean;
 
-  /** True if this row is a master row, part of master / detail (ie row can be expanded to show detail) */
+  /** True if this row is a master row, part of master/detail (ie row can be expanded to show detail) */
   public master: boolean;
-  /** True if this row is a detail row, part of master / detail (ie child row of an expanded master row)*/
+  /** True if this row is a detail row, part of master/detail (ie child row of an expanded master row)*/
   public detail: boolean;
   /** If this row is a master row that was expanded, this points to the associated detail row. */
   public detailNode: RowNode;
@@ -224,12 +227,32 @@ export class RowNode implements IEventEmitter {
   private selected = false;
   private eventService: EventService;
 
+  /** 设置本rowNode对象的this.data属性，并触发dataChanged事件 */
   public setData(data: any): void {
     const oldData = this.data;
 
     this.data = data;
     this.valueCache.onDataChanged();
     this.updateDataOnDetailNode();
+    this.checkRowSelectable();
+
+    const event: DataChangedEvent = this.createDataChangedEvent(
+      data,
+      oldData,
+      false,
+    );
+
+    this.dispatchLocalEvent(event);
+  }
+
+  public setDataAndId(data: any, id: string | undefined): void {
+    const oldNode = _.exists(this.id) ? this.createDaemonNode() : null;
+    const oldData = this.data;
+
+    this.data = data;
+    this.updateDataOnDetailNode();
+    this.setId(id);
+    this.selectionController.syncInRowNode(this, oldNode);
     this.checkRowSelectable();
 
     const event: DataChangedEvent = this.createDataChangedEvent(
@@ -317,25 +340,6 @@ export class RowNode implements IEventEmitter {
     oldNode.level = this.level;
 
     return oldNode;
-  }
-
-  public setDataAndId(data: any, id: string | undefined): void {
-    const oldNode = _.exists(this.id) ? this.createDaemonNode() : null;
-    const oldData = this.data;
-
-    this.data = data;
-    this.updateDataOnDetailNode();
-    this.setId(id);
-    this.selectionController.syncInRowNode(this, oldNode);
-    this.checkRowSelectable();
-
-    const event: DataChangedEvent = this.createDataChangedEvent(
-      data,
-      oldData,
-      false,
-    );
-
-    this.dispatchLocalEvent(event);
   }
 
   private checkRowSelectable() {

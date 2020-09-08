@@ -12,7 +12,7 @@
     "noImplicitThis": true,
     "noImplicitAny": false,
     "noUnusedLocals": false,
-    "removeComments": true,
+    "removeComments": false,
     "declaration": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

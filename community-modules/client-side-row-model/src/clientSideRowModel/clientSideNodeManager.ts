@@ -17,11 +17,12 @@ import {
 } from '@ag-grid-community/core';
 
 /**
- * 将rowData计算成rowModel模型的数据allNodesMap，还提供了对数据进行crud的方法
+ * 将rowData计算成rowModel结构的数据并保存到allNodesMap，还提供了对数据进行crud的方法
  */
 export class ClientSideNodeManager {
   /** grid行默认所处的层级，若行中存在其他行，则行中行的层级会+1 */
   private static TOP_LEVEL = 0;
+  private static ROOT_NODE_ID = 'ROOT_NODE_ID';
 
   /** 所有行数据rowData会挂载在rootNode根节点下形成树形结构，rootNode自身可看做一行，但不会显示 */
   private rootNode: RowNode;
@@ -33,13 +34,11 @@ export class ClientSideNodeManager {
 
   private nextId = 0;
 
-  private static ROOT_NODE_ID = 'ROOT_NODE_ID';
-
   private getNodeChildDetails: GetNodeChildDetails;
   private doesDataFlower: (data: any) => boolean;
   private isRowMasterFunc: IsRowMaster;
   /**
-   * 默认false. If true, rowNodes don't get their parents set.
+   * 默认false。If true, rowNodes don't get their parents set.
    * If this is a problem (e.g. if you need to convert the tree to JSON,
    * which does not allow cyclic dependencies) then set this to true.
    */
@@ -49,7 +48,10 @@ export class ClientSideNodeManager {
   private doingTreeData: boolean;
   private doingMasterDetail: boolean;
 
-  /** 存放每行id和每行数据RowNode的映射表集合。when user is provide the id's, we also keep a map of ids to row nodes for convenience */
+  /**
+   * 存放每行id和每行数据RowNode的映射表集合。when user is provide the id's, we also keep
+   * a map of ids to row nodes for convenience
+   */
   private allNodesMap: { [id: string]: RowNode } = {};
   private columnApi: ColumnApi;
   private gridApi: GridApi;
@@ -127,6 +129,7 @@ export class ClientSideNodeManager {
     this.rootNode.childrenMapped = null;
 
     this.nextId = 0;
+    // 设置数据前会先清空原rowModel模型
     this.allNodesMap = {};
 
     if (!rowData) {
