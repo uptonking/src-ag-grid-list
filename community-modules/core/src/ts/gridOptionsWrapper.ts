@@ -1203,6 +1203,7 @@ export class GridOptionsWrapper {
     return this.gridOptions.getChartToolbarItems;
   }
 
+  /** 从gridOptions配置对象中获取创建行id的方法getRowNodeId */
   public getRowNodeIdFunc(): GetRowNodeIdFunc | undefined {
     return this.gridOptions.getRowNodeId;
   }

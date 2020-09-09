@@ -245,6 +245,7 @@ export class RowNode implements IEventEmitter {
     this.dispatchLocalEvent(event);
   }
 
+  /** 设置本rowNode对象的this.data和this.id属性，并触发dataChanged事件 */
   public setDataAndId(data: any, id: string | undefined): void {
     const oldNode = _.exists(this.id) ? this.createDaemonNode() : null;
     const oldData = this.data;
@@ -362,6 +363,7 @@ export class RowNode implements IEventEmitter {
     }
   }
 
+  /** 计算行id，可以是使用用户配置的id生成算法 */
   public setId(id: string): void {
     // see if user is providing the id's
     const getRowNodeId = this.gridOptionsWrapper.getRowNodeIdFunc();
@@ -500,6 +502,7 @@ export class RowNode implements IEventEmitter {
     }
   }
 
+  /** 设置本rowNode对象的master属性，并触发masterChanged事件 */
   public setMaster(master: boolean): void {
     if (this.master === master) {
       return;

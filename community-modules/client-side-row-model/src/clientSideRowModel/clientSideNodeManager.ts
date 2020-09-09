@@ -20,11 +20,11 @@ import {
  * 将rowData计算成rowModel结构的数据并保存到allNodesMap，还提供了对数据进行crud的方法
  */
 export class ClientSideNodeManager {
-  /** grid行默认所处的层级，若行中存在其他行，则行中行的层级会+1 */
+  /** grid行默认所处的层级为0，若行中存在其他行，则行中行的层级会+1 */
   private static TOP_LEVEL = 0;
   private static ROOT_NODE_ID = 'ROOT_NODE_ID';
 
-  /** 所有行数据rowData会挂载在rootNode根节点下形成树形结构，rootNode自身可看做一行，但不会显示 */
+  /** 所有行数据rowData会挂载在rootNode根节点下形成树形结构，rootNode自身可看做一行，但不会显示，level为-1 */
   private rootNode: RowNode;
   private gridOptionsWrapper: GridOptionsWrapper;
   private context: Context;
@@ -32,9 +32,12 @@ export class ClientSideNodeManager {
   private columnController: ColumnController;
   private selectionController: SelectionController;
 
+  /** 当前行rowNode的默认id，每次自增1 */
   private nextId = 0;
 
+  /** 会从gridOptions中得到的获取子节点数据的方法 */
   private getNodeChildDetails: GetNodeChildDetails;
+  /** 会从gridOptions中得到 */
   private doesDataFlower: (data: any) => boolean;
   private isRowMasterFunc: IsRowMaster;
   /**
@@ -155,6 +158,96 @@ export class ClientSideNodeManager {
     } else {
       this.rootNode.allLeafChildren = result;
     }
+  }
+
+  /**
+   * 计算代表每一行数据对应的RowNode对象，若不存在子行，则直接执行简单计算，若存在子行，则会递归计算所有行的rowNode
+   * @param rowData 当前行层级所有行数据的数组
+   * @param parent 代表当前行层级直接父行的RowNode，最顶层是rootNode
+   * @param level 当前行层级，最顶层rootNode是-1，无嵌套的简单grid的数据行层级是0，子grid层级逐层加1
+   */
+  private recursiveFunction(
+    rowData: any[],
+    parent: RowNode,
+    level: number,
+  ): RowNode[] {
+    // make sure the rowData is an array and not a string of json - this was a commonly reported problem on the forum
+    if (typeof rowData === 'string') {
+      console.warn(
+        'ag-Grid: rowData must be an array, however you passed in a string. If you are loading JSON, make sure you convert the JSON string to JavaScript objects first',
+      );
+      return;
+    }
+
+    const rowNodes: RowNode[] = [];
+    rowData.forEach((dataItem) => {
+      // 对原数据数组每一行的对象，创建一个RowNode对象
+      const node = this.createNode(dataItem, parent, level);
+      rowNodes.push(node);
+    });
+    return rowNodes;
+  }
+
+  /**
+   * 对一行的数据dataItem创建相应的rowNode行对象，若该行包含子grid，则递归创建子grid各行的rowNode
+   * @param dataItem 该行对应的数据对象
+   * @param parent 代表直接父行的RowNode
+   * @param level 该行所处的层级
+   */
+  private createNode(dataItem: any, parent: RowNode, level: number): RowNode {
+    // 该行数据对应的RowNode对象，方法最后会返回这个对象
+    const node = new RowNode();
+    this.context.createBean(node);
+
+    // 若该行存在子行，则计算子行数据
+    const nodeChildDetails = this.doingLegacyTreeData
+      ? this.getNodeChildDetails(dataItem)
+      : null;
+
+    // 若存在details结构，则递归创建子行的rowNode对象
+    if (nodeChildDetails && nodeChildDetails.group) {
+      node.group = true;
+      node.childrenAfterGroup = this.recursiveFunction(
+        nodeChildDetails.children,
+        node,
+        // 子行的level会+1
+        level + 1,
+      );
+      node.expanded = nodeChildDetails.expanded === true;
+      node.field = nodeChildDetails.field;
+      node.key = nodeChildDetails.key;
+      // pull out all the leaf children and add to our node
+      this.setLeafChildren(node);
+    } else {
+      // 若不存在details结构，则设置rowNode的master属性
+      // 默认会执行这里
+
+      node.group = false;
+      this.setMasterForRow(node, dataItem, level, true);
+    }
+
+    // support for backwards compatibility, canFlow is now called 'master'
+    /** @deprecated is now 'master' */
+    node.canFlower = node.master;
+
+    // 设置当前行的信息
+    if (parent && !this.suppressParentsInRowNodes) {
+      node.parent = parent;
+    }
+    node.level = level;
+    node.setDataAndId(dataItem, this.nextId.toString());
+
+    if (this.allNodesMap[node.id]) {
+      console.warn(
+        `ag-grid: duplicate node id '${node.id}' detected from getRowNodeId callback, this could cause issues in your grid.`,
+      );
+    }
+    // 将当前行的模型对象rowNode存放到allNodesMap映射表集合
+    this.allNodesMap[node.id] = node;
+
+    this.nextId++;
+
+    return node;
   }
 
   public updateRowData(
@@ -358,91 +451,7 @@ export class ClientSideNodeManager {
     return rowNode;
   }
 
-  /**
-   * 递归地计算代表每一行数据的RowNode对象
-   * @param rowData 原grid数据数组
-   * @param parent 代表当前行直接父行的RowNode
-   * @param level 父行rowNode的层级
-   */
-  private recursiveFunction(
-    rowData: any[],
-    parent: RowNode,
-    level: number,
-  ): RowNode[] {
-    // make sure the rowData is an array and not a string of json - this was a commonly reported problem on the forum
-    if (typeof rowData === 'string') {
-      console.warn(
-        'ag-Grid: rowData must be an array, however you passed in a string. If you are loading JSON, make sure you convert the JSON string to JavaScript objects first',
-      );
-      return;
-    }
-
-    const rowNodes: RowNode[] = [];
-    rowData.forEach((dataItem) => {
-      // 对原数据每一行的对象，创建一个RowNode对象
-      const node = this.createNode(dataItem, parent, level);
-      rowNodes.push(node);
-    });
-    return rowNodes;
-  }
-
-  /**
-   * 对
-   * @param dataItem 该行对应的数据对象
-   * @param parent 代表直接父行的RowNode
-   * @param level 该行所处的层级
-   */
-  private createNode(dataItem: any, parent: RowNode, level: number): RowNode {
-    const node = new RowNode();
-    this.context.createBean(node);
-
-    const nodeChildDetails = this.doingLegacyTreeData
-      ? this.getNodeChildDetails(dataItem)
-      : null;
-
-    // 若存在details结构
-    if (nodeChildDetails && nodeChildDetails.group) {
-      node.group = true;
-      node.childrenAfterGroup = this.recursiveFunction(
-        nodeChildDetails.children,
-        node,
-        level + 1,
-      );
-      node.expanded = nodeChildDetails.expanded === true;
-      node.field = nodeChildDetails.field;
-      node.key = nodeChildDetails.key;
-      // pull out all the leaf children and add to our node
-      this.setLeafChildren(node);
-    } else {
-      // 若不存在details结构
-      // 默认会执行这里
-
-      node.group = false;
-      this.setMasterForRow(node, dataItem, level, true);
-    }
-
-    // support for backwards compatibility, canFlow is now called 'master'
-    /** @deprecated is now 'master' */
-    node.canFlower = node.master;
-
-    if (parent && !this.suppressParentsInRowNodes) {
-      node.parent = parent;
-    }
-    node.level = level;
-    node.setDataAndId(dataItem, this.nextId.toString());
-
-    if (this.allNodesMap[node.id]) {
-      console.warn(
-        `ag-grid: duplicate node id '${node.id}' detected from getRowNodeId callback, this could cause issues in your grid.`,
-      );
-    }
-    this.allNodesMap[node.id] = node;
-
-    this.nextId++;
-
-    return node;
-  }
-
+  /** 设置rowNode的master属性 */
   private setMasterForRow(
     rowNode: RowNode,
     data: any,
@@ -455,12 +464,13 @@ export class ClientSideNodeManager {
         rowNode.expanded = false;
       }
     } else {
-      // this is the default, for when doing grid data
+      // this is the default, for when doing grid data，
       if (this.doesDataFlower) {
         rowNode.setMaster(this.doesDataFlower(data));
       } else if (this.doingMasterDetail) {
         // if we are doing master detail, then the
         // default is that everything can be a Master Row.
+
         if (this.isRowMasterFunc) {
           rowNode.setMaster(this.isRowMasterFunc(data));
         } else {

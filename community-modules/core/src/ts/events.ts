@@ -25,6 +25,7 @@ export interface ModelUpdatedEvent extends AgGridEvent {
   newPage: boolean;
 }
 
+/** ag-grid的事件接口，只有type一个属性*/
 export interface AgEvent {
   type: string;
 }

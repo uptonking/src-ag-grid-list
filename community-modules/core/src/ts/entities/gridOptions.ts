@@ -106,7 +106,7 @@ import {
 } from '../interfaces/iChartOptions';
 
 /**
- * Grid所有配置项，主要包括 gird properties, onEvents, callbacks
+ * Grid所有配置项的Interface，主要包括 gird properties, onEvents, callbacks
  */
 export interface GridOptions {
   /*******************************************************************************************************

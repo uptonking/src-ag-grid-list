@@ -19,12 +19,13 @@ export class EventService implements IEventEmitter {
   private globalSyncListeners = new Set<Function>();
   private globalAsyncListeners = new Set<Function>();
 
-  /** 需要异步执行的事件处理函数的列表 */
+  /** 需要异步执行的事件处理函数的链表 */
   private asyncFunctionsQueue: Function[] = [];
+  /** 是否计划在setTimeout中执行异步函数，默认false */
   private scheduled = false;
 
   // using an object performs better than a Set for the number of different events we have
-  /** 触发过的events的映射表 */
+  /** 触发过的events的映射表，key是event.type */
   private firedEvents: { [key: string]: boolean } = {};
 
   // because this class is used both inside the context and outside the context, we do not
@@ -54,6 +55,7 @@ export class EventService implements IEventEmitter {
     const listenerMap = async ? this.allAsyncListeners : this.allSyncListeners;
     let listeners = listenerMap.get(eventType);
 
+    // 若listeners不存在，则添加进空的
     if (!listeners) {
       listeners = new Set<Function>();
       listenerMap.set(eventType, listeners);
@@ -90,7 +92,7 @@ export class EventService implements IEventEmitter {
     );
   }
 
-  /** 触发event，注意这里会触发2次，todo, 为什么是2次 */
+  /** 触发event，注意这里会触发2次，第1次异步，第2次同步 */
   public dispatchEvent(event: AgEvent): void {
     this.dispatchToListeners(event, true);
     this.dispatchToListeners(event, false);
@@ -98,7 +100,7 @@ export class EventService implements IEventEmitter {
     this.firedEvents[event.type] = true;
   }
 
-  /** 触发event，这里只会触发1次 */
+  /** 触发一次event事件 */
   public dispatchEventOnce(event: AgEvent): void {
     if (!this.firedEvents[event.type]) {
       this.dispatchEvent(event);
@@ -113,7 +115,7 @@ export class EventService implements IEventEmitter {
   private dispatchToListeners(event: AgEvent, async: boolean) {
     const eventType = event.type;
 
-    /** 事件处理，若是异步，则使用setTimeOut分批调用，若是同步，则直接调用事件处理函数 */
+    /** 执行事件处理函数的方法，若是异步，则使用setTimeOut分批调用，若是同步，则直接调用事件处理函数 */
     const processEventListeners = (listeners: Set<Function>) =>
       listeners.forEach((listener) => {
         if (async) {
@@ -123,7 +125,10 @@ export class EventService implements IEventEmitter {
         }
       });
 
-    processEventListeners(this.getListeners(eventType, async));
+    const listeners = this.getListeners(eventType, async);
+    console.log('==evListeners, ', listeners);
+
+    processEventListeners(listeners);
 
     const globalListeners = async
       ? this.globalAsyncListeners
@@ -163,7 +168,7 @@ export class EventService implements IEventEmitter {
   }
   // queue as we are flushing it.
 
-  // this happens in the next VM turn only, and empties the queue of events
+  /** this happens in the next VM turn only, and empties the queue of events */
   private flushAsyncQueue(): void {
     this.scheduled = false;
 

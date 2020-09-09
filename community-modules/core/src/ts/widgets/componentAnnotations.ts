@@ -2,6 +2,11 @@ export function QuerySelector(selector?: string): Function {
   return querySelectorFunc.bind(this, selector);
 }
 
+/**
+ * 以`RefSelector(ref)`注解形式使用的属性装饰器工厂，
+ * 会给class的__agBeanMetaData静态属性加上`constructor.name.querySelectors`属性，用来存放ref对象名
+ * @param ref component的ref对象名称
+ */
 export function RefSelector(ref?: string): Function {
   return querySelectorFunc.bind(this, '[ref=' + ref + ']');
 }
@@ -88,15 +93,21 @@ function guiListenerFunc(
 //     });
 // }
 
+/**
+ * 给target对象添加__agComponentMetaData属性，
+ * 该属性值值为对象，包括target.constructor.name，target.constructor.name.key
+ * */
 function addToObjectProps(target: Object, key: string, value: any): void {
   // it's an attribute on the class
   const props = getOrCreateProps(target, (target.constructor as any).name);
+
   if (!props[key]) {
     props[key] = [];
   }
   props[key].push(value);
 }
 
+/** 会给target对象添加__agComponentMetaData属性，并给该属性添加instanceName作为新属性，值为{} */
 function getOrCreateProps(target: any, instanceName: string): any {
   if (!target.__agComponentMetaData) {
     target.__agComponentMetaData = {};

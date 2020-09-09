@@ -52,7 +52,8 @@ export interface RowNodeMap {
  * 最常用的rowModel，仅在浏览器客户端进行计算，不涉及服务端数据通信
  */
 @Bean('rowModel')
-export class ClientSideRowModel extends BeanStub
+export class ClientSideRowModel
+  extends BeanStub
   implements IClientSideRowModel {
   @Autowired('gridOptionsWrapper')
   private gridOptionsWrapper: GridOptionsWrapper;
@@ -86,7 +87,7 @@ export class ClientSideRowModel extends BeanStub
   private lastHighlightedRow: RowNode | null;
 
   /**
-   * clientSideRowModel创建对象后会调用此方法，这里会创建rootNode和ClientSideNodeManager对象
+   * clientSideRowModel对象实例创建后会调用此方法，这里会创建rootNode和ClientSideNodeManager对象
    */
   @PostConstruct
   public init(): void {
