@@ -37,6 +37,7 @@ export class EventService implements IEventEmitter {
   //
   // the times when this class is used outside of the context (eg RowNode has an instance of this
   // class) then it is not a bean, and this setBeans method is not called.
+  // globalEventListener is used by Web Components, 默认为null
   public setBeans(
     @Qualifier('loggerFactory') loggerFactory: LoggerFactory,
     @Qualifier('gridOptionsWrapper') gridOptionsWrapper: GridOptionsWrapper,

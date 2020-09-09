@@ -84,13 +84,14 @@ function oneOrGreater(value: any, defaultValue: number): number {
   return defaultValue;
 }
 
+/** 属性值更新事件的接口，包含3个属性值，cur/preValue,type */
 export interface PropertyChangedEvent extends AgEvent {
   currentValue: any;
   previousValue: any;
 }
 
 /**
- * gridOptions配置对象相关的操作，如检验、判断boolean、获取部分值
+ * 封装对gridOptions配置对象相关的操作，如检验、判断boolean、获取部分值，还包括ag-grid使用的部分默认值
  */
 @Bean('gridOptionsWrapper')
 export class GridOptionsWrapper {
@@ -147,9 +148,9 @@ export class GridOptionsWrapper {
 
   @PreDestroy
   private destroy(): void {
-    // need to remove these, as we don't own the lifecycle of the gridOptions, we need to
-    // remove the references in case the user keeps the grid options, we want the rest
-    // of the grid to be picked up by the garbage collector
+    // need to remove these, as we don't own the lifecycle of the gridOptions,
+    // we need to remove the references in case the user keeps the grid options,
+    // we want the rest of the grid to be picked up by the garbage collector
     this.gridOptions.api = null;
     this.gridOptions.columnApi = null;
     this.removeEventListener(
