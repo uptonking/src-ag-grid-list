@@ -462,6 +462,7 @@ export class Grid {
 
     const columnDefs = gridOptionsWrapper.getColumnDefs();
     if (_.exists(columnDefs)) {
+      // 根据columnDefs计算表头结构
       columnController.setColumnDefs(columnDefs, 'gridInitializing');
     }
 

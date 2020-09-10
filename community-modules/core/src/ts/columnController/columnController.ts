@@ -218,7 +218,7 @@ export class ColumnController extends BeanStub {
     this.updateDisplayedColumns('gridOptionsChanged');
   }
 
-  /** 设置columnDefs，并触发columnEverythingChanged事件 */
+  /** 根据columnDefs计算表头结构，并触发columnEverythingChanged和newColumnsLoaded事件 */
   public setColumnDefs(
     columnDefs: (ColDef | ColGroupDef)[],
     source: ColumnEventType = 'api',
@@ -250,6 +250,7 @@ export class ColumnController extends BeanStub {
 
     this.extractRowGroupColumns(source, oldPrimaryColumns);
     this.extractPivotColumns(source, oldPrimaryColumns);
+
     this.createValueColumns(source, oldPrimaryColumns);
 
     this.ready = true;
@@ -268,7 +269,6 @@ export class ColumnController extends BeanStub {
       columnApi: this.columnApi,
       source,
     };
-
     this.eventService.dispatchEvent(eventEverythingChanged);
 
     const newColumnsLoadedEvent: NewColumnsLoadedEvent = {
@@ -276,7 +276,6 @@ export class ColumnController extends BeanStub {
       api: this.gridApi,
       columnApi: this.columnApi,
     };
-
     this.eventService.dispatchEvent(newColumnsLoadedEvent);
 
     this.flexActive = this.getDisplayedCenterColumns().some(

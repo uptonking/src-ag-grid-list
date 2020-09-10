@@ -103,6 +103,7 @@ export class GridCore extends ManagedFocusComponent {
 
     this.logger.log('ready');
 
+    // 设置eRootWrapperBody的dom元素的layout样式名
     this.gridOptionsWrapper.addLayoutElement(this.eRootWrapperBody);
 
     const unsubscribeFromResize = this.resizeObserverService.observeResize(

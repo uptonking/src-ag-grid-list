@@ -52,8 +52,7 @@ export interface RowNodeMap {
  * 最常用的rowModel，仅在浏览器客户端进行计算，不涉及服务端数据通信
  */
 @Bean('rowModel')
-export class ClientSideRowModel
-  extends BeanStub
+export class ClientSideRowModel extends BeanStub
   implements IClientSideRowModel {
   @Autowired('gridOptionsWrapper')
   private gridOptionsWrapper: GridOptionsWrapper;
@@ -561,6 +560,7 @@ export class ClientSideRowModel
       newData: params.newData,
       newPage: false,
     };
+    // modelUpdated事件默认为空
     this.eventService.dispatchEvent(event);
 
     if (this.$scope) {
@@ -1002,8 +1002,7 @@ export class ClientSideRowModel
       api: this.gridApi,
       columnApi: this.columnApi,
     };
-
-    // 触发 rowDataChanged 事件
+    // 触发 rowDataChanged 事件，默认为空
     this.eventService.dispatchEvent(rowDataChangedEvent);
 
     this.refreshModel({

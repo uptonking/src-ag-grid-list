@@ -91,7 +91,8 @@ export interface PropertyChangedEvent extends AgEvent {
 }
 
 /**
- * 封装对gridOptions配置对象相关的操作，如检验、判断boolean、获取部分值，还包括ag-grid使用的部分默认值
+ * 封装对gridOptions配置对象的操作，如检验、判断boolean、获取部分值，
+ * 还封装了ag-grid使用的部分默认值
  */
 @Bean('gridOptionsWrapper')
 export class GridOptionsWrapper {

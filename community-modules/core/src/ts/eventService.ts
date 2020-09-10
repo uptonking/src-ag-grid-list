@@ -128,18 +128,18 @@ export class EventService implements IEventEmitter {
       });
 
     const listeners = this.getListeners(eventType, async);
-    // if (event.type === 'gridReady') {
-    //   logObjSer('gridReady, ', listeners);
-    // }
+    if (event.type === 'rowDataChanged') {
+      logObjSer('rowDataChanged, ', listeners);
+    }
 
     processEventListeners(listeners);
 
     const globalListeners = async
       ? this.globalAsyncListeners
       : this.globalSyncListeners;
-    // if (event.type === 'gridReady') {
-    //   logObjSer('gridReady, ', globalListeners);
-    // }
+    if (event.type === 'rowDataChanged') {
+      logObjSer('rowDataChanged, ', globalListeners);
+    }
 
     globalListeners.forEach((listener) => {
       if (async) {
