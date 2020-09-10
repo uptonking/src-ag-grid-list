@@ -5,6 +5,7 @@ import { Qualifier } from './context/context';
 import { IEventEmitter } from './interfaces/iEventEmitter';
 import { GridOptionsWrapper } from './gridOptionsWrapper';
 import { AgEvent } from './events';
+import { logObjSer } from './utils/logUtils';
 
 /**
  * 处理事件监听器的add/remove，以及通过dispatchEvent触发事件
@@ -93,7 +94,7 @@ export class EventService implements IEventEmitter {
     );
   }
 
-  /** 触发event，注意这里会触发2次，第1次异步，第2次同步 */
+  /** 触发event，注意这里会触发2次，第1次触发所有异步事件，第2次触发所有同步事件 */
   public dispatchEvent(event: AgEvent): void {
     this.dispatchToListeners(event, true);
     this.dispatchToListeners(event, false);
@@ -101,7 +102,7 @@ export class EventService implements IEventEmitter {
     this.firedEvents[event.type] = true;
   }
 
-  /** 触发一次event事件 */
+  /** 只触发一次event事件，若event正在firedEvents映射表中，则不重复触发 */
   public dispatchEventOnce(event: AgEvent): void {
     if (!this.firedEvents[event.type]) {
       this.dispatchEvent(event);
@@ -116,7 +117,7 @@ export class EventService implements IEventEmitter {
   private dispatchToListeners(event: AgEvent, async: boolean) {
     const eventType = event.type;
 
-    /** 执行事件处理函数的方法，若是异步，则使用setTimeOut分批调用，若是同步，则直接调用事件处理函数 */
+    /** 执行事件处理函数的方法，若是异步，则使用setTimeout分批调用，若是同步，则直接调用事件处理函数 */
     const processEventListeners = (listeners: Set<Function>) =>
       listeners.forEach((listener) => {
         if (async) {
@@ -127,13 +128,18 @@ export class EventService implements IEventEmitter {
       });
 
     const listeners = this.getListeners(eventType, async);
-    console.log('==evListeners, ', listeners);
+    // if (event.type === 'gridReady') {
+    //   logObjSer('gridReady, ', listeners);
+    // }
 
     processEventListeners(listeners);
 
     const globalListeners = async
       ? this.globalAsyncListeners
       : this.globalSyncListeners;
+    // if (event.type === 'gridReady') {
+    //   logObjSer('gridReady, ', globalListeners);
+    // }
 
     globalListeners.forEach((listener) => {
       if (async) {

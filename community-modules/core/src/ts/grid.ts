@@ -188,17 +188,18 @@ export class Grid {
     // 将grid内部默认使用的组件agStackComponents添加到agStackComponentsRegistry
     this.registerStackComponents(registeredModules);
 
-    // 创建gridCore对象，包含grid数据及操作实现的核心部分
+    // 创建gridCore对象，包含grid数据、操作的重要类
     const gridCoreClass = (params && params.rootComponent) || GridCore;
     const gridCore = new gridCoreClass();
 
-    // 给gridCore对象添加和注入属性，会从context的bean容器中查找相关bean来初始化GridCore的属性
+    // 给gridCore对象注入属性，会从context的bean容器中查找相关bean来初始化GridCore的属性
+    // 执行gridCore的postConstruct钩子方法时会将grid的dom元素渲染到页面显示出来
     this.context.createBean(gridCore);
 
     // 将rowData计算处理成rowModel形式的数据结构
     this.setColumnsAndData();
 
-    // 触发gridReady事件
+    // 触发gridReady事件，默认要执行的事件集合为空
     this.dispatchGridReadyEvent(gridOptions);
 
     const isEnterprise = ModuleRegistry.isRegistered(
@@ -285,7 +286,7 @@ export class Grid {
     agStackComponentsRegistry.setupComponents(agStackComponents);
   }
 
-  /** 返回一个对象，包含gridOptions, eGridDiv，与框架集成相关的各种配置等属性 */
+  /** 返回一个映射表，包含gridOptions、eGridDiv、与框架集成相关的各种bean，用于注入属性时查找 */
   private createProvidedBeans(eGridDiv: HTMLElement, params: GridParams): any {
     let frameworkOverrides = params ? params.frameworkOverrides : null;
     if (_.missing(frameworkOverrides)) {
@@ -470,7 +471,7 @@ export class Grid {
     rowModel.start();
   }
 
-  /** 通过eventService触发gridReady事件 */
+  /** 通过eventService触发gridReady事件，在event对象中可以获取api和columnApi */
   private dispatchGridReadyEvent(gridOptions: GridOptions): void {
     const eventService: EventService = this.context.getBean('eventService');
     const readyEvent: GridReadyEvent = {

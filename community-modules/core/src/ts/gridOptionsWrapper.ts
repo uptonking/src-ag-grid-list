@@ -568,7 +568,7 @@ export class GridOptionsWrapper {
     return isTrue(this.gridOptions.enableMultiRowDragging);
   }
 
-  // returns either 'print', 'autoHeight' or 'normal' (normal is the default)
+  /**  returns either 'print', 'autoHeight' or 'normal' (normal is the default) */
   public getDomLayout(): string {
     const domLayout = this.gridOptions.domLayout || Constants.DOM_LAYOUT_NORMAL;
     const validLayouts = [
@@ -1337,8 +1337,12 @@ export class GridOptionsWrapper {
     }
   }
 
-  // this logic is repeated in lots of places. any element that had different CSS
-  // dependent on the layout needs to have the layout class added ot it.
+  /**
+   * 遍历this.layoutElements元素列表，设置layout样式名normal，autoheight，print
+   * this logic is repeated in lots of places.
+   * any element that had different CSS dependent on the layout
+   * needs to have the layout class added ot it.
+   */
   public addLayoutElement(element: HTMLElement): void {
     this.layoutElements.push(element);
     this.updateLayoutClasses();

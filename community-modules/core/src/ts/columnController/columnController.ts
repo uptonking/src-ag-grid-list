@@ -218,6 +218,7 @@ export class ColumnController extends BeanStub {
     this.updateDisplayedColumns('gridOptionsChanged');
   }
 
+  /** 设置columnDefs，并触发columnEverythingChanged事件 */
   public setColumnDefs(
     columnDefs: (ColDef | ColGroupDef)[],
     source: ColumnEventType = 'api',

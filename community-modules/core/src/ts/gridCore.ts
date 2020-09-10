@@ -26,8 +26,8 @@ import { Column } from './entities/column';
 import { _ } from './utils';
 
 /**
- * 包含grid配置、数据、操作的核心类，包括页面布局模块的判断，以及事件监听处理，
- * 通过在Grid构造函数中依赖注入来初始化GridCore的属性值
+ * 包含grid配置、数据、操作、渲染的核心ui组件Component类，包括页面布局模块的判断，以及事件监听处理，
+ * GridCore的属性字段通过在Grid类的构造函数中手动依赖注入进行初始化
  */
 export class GridCore extends ManagedFocusComponent {
   @Autowired('gridOptions') private gridOptions: GridOptions;
@@ -56,16 +56,18 @@ export class GridCore extends ManagedFocusComponent {
   @RefSelector('sideBar') private sideBarComp: ISideBar & Component;
   @RefSelector('rootWrapperBody') private eRootWrapperBody: HTMLElement;
 
-  private doingVirtualPaging: boolean;
   private logger: Logger;
+  private doingVirtualPaging: boolean;
 
+  /** 在Grid构造函数中创建gridCore对象后，会在属性注入时作为钩子函数调用 */
   protected postConstruct(): void {
     this.logger = this.loggerFactory.create('GridCore');
 
+    // 创建ag-grid的dom元素结构对应的字符串
     const template = this.createTemplate();
     this.setTemplate(template);
 
-    // register with services that need grid core
+    // register with services that need grid core，设置各自对象中的gridCore属性
     [
       this.gridApi,
       this.rowRenderer,
@@ -77,8 +79,10 @@ export class GridCore extends ManagedFocusComponent {
       this.clipboardService.registerGridCore(this);
     }
 
+    // 设置本组件dom元素的layout样式名
     this.gridOptionsWrapper.addLayoutElement(this.getGui());
 
+    // 将本对象代表grid的dom元素对象追加到要渲染的容器dom元素内，此时就会渲染到页面，但只有grid结构dom没有各行数据元素的dom
     this.eGridDiv.appendChild(this.getGui());
     this.addDestroyFunc(() => {
       this.eGridDiv.removeChild(this.getGui());
@@ -107,8 +111,10 @@ export class GridCore extends ManagedFocusComponent {
     );
     this.addDestroyFunc(() => unsubscribeFromResize());
 
+    // 获取本对象代表grid的dom元素
     const eGui = this.getGui();
 
+    // 添加keyboardFocus事件
     this.addManagedListener(
       this.eventService,
       Events.EVENT_KEYBOARD_FOCUS,
@@ -117,6 +123,7 @@ export class GridCore extends ManagedFocusComponent {
       },
     );
 
+    // 添加mouseFocus事件
     this.addManagedListener(this.eventService, Events.EVENT_MOUSE_FOCUS, () => {
       _.removeCssClass(eGui, 'ag-keyboard-focus');
     });
@@ -128,6 +135,10 @@ export class GridCore extends ManagedFocusComponent {
     return this.eRootWrapperBody;
   }
 
+  /**
+   * 创建并返回ag-grid最外层的dom元素及内部结构，
+   * 最外层是div-ag-root-wrapper，内部可以包含dropZones、sideBar、statusBar、watermark
+   */
   private createTemplate(): string {
     const sideBarModuleLoaded = ModuleRegistry.isRegistered(
       ModuleNames.SideBarModule,

@@ -11,11 +11,13 @@ export interface VisibleChangedEvent extends AgEvent {
 }
 
 /**
- * 对ui组件的样式、属性进行crud，还可以创建子组件的DOM元素
+ * 对渲染的ui组件的样式、属性进行crud，还可以创建子组件的DOM元素
  */
 export class Component extends BeanStub {
   public static EVENT_DISPLAYED_CHANGED = 'displayedChanged';
+  /** 本组件渲染到页面时对应的dom元素对象 */
   private eGui: HTMLElement;
+  /** 保存注册到本dom元素上的事件监听器信息 */
   private annotatedGuiListeners: any[] = [];
 
   @Autowired('agStackComponentsRegistry')
@@ -44,6 +46,29 @@ export class Component extends BeanStub {
 
   public getCompId(): number {
     return this.compId;
+  }
+
+  @PreConstruct
+  private createChildComponentsPreConstruct(): void {
+    // ui exists if user sets template in constructor. when this happens, we have to wait for the context
+    // to be autoWired first before we can create child components.
+    if (!!this.getGui()) {
+      this.createChildComponentsFromTags(this.getGui());
+    }
+  }
+
+  @PostConstruct
+  private addAnnotatedGridEventListeners(): void {
+    const listenerMetas = this.getAgComponentMetaData('gridListenerMethods');
+
+    if (!listenerMetas) {
+      return;
+    }
+
+    listenerMetas.forEach((meta) => {
+      const listener = (this as any)[meta.methodName].bind(this);
+      this.addManagedListener(this.eventService, meta.eventName, listener);
+    });
   }
 
   // for registered components only, eg creates AgCheckbox instance from ag-checkbox HTML tag
@@ -141,6 +166,7 @@ export class Component extends BeanStub {
     });
   }
 
+  /** 遍历本对象各级原型对象的__agComponentMetaData的querySelectors属性值，并作为参数传递给action函数 */
   private iterateOverQuerySelectors(
     action: (querySelector: any) => void,
   ): void {
@@ -165,6 +191,7 @@ export class Component extends BeanStub {
     }
   }
 
+  /** 将传入的dom元素字符串创建成dom元素对象，并赋值给this.eGui属性，再给dom对象添加事件监听器和注解装饰器中指定的选择器结果 */
   public setTemplate(template: string, paramsMap?: any): void {
     const eGui = _.loadTemplate(template as string);
     this.setTemplateFromElement(eGui, paramsMap);
@@ -173,6 +200,7 @@ export class Component extends BeanStub {
   public setTemplateFromElement(element: HTMLElement, paramsMap?: any): void {
     this.eGui = element;
     (this.eGui as any).__agComponent = this;
+
     this.addAnnotatedGuiEventListeners();
     this.wireQuerySelectors();
 
@@ -182,15 +210,9 @@ export class Component extends BeanStub {
     }
   }
 
-  @PreConstruct
-  private createChildComponentsPreConstruct(): void {
-    // ui exists if user sets template in constructor. when this happens, we have to wait for the context
-    // to be autoWired first before we can create child components.
-    if (!!this.getGui()) {
-      this.createChildComponentsFromTags(this.getGui());
-    }
-  }
-
+  /**
+   * 查找各级原型对象的__agComponentMetaData的querySelectors属性值，并执行选择器，将结果保存到本对象的属性
+   */
   protected wireQuerySelectors(): void {
     if (!this.eGui) {
       return;
@@ -204,6 +226,7 @@ export class Component extends BeanStub {
       );
 
       if (resultOfQuery) {
+        // 将选择器查找结果本身或结果的__agComponent属性值，保存到this对象的属性
         thisNoType[querySelector.attributeName] =
           (resultOfQuery as any).__agComponent || resultOfQuery;
       } else {
@@ -212,6 +235,9 @@ export class Component extends BeanStub {
     });
   }
 
+  /**
+   * 查找各级原型对象的_agComponentMetaData的guiListenerMethods属性值并将事件注册到this.eGui的dom元素上
+   */
   private addAnnotatedGuiEventListeners(): void {
     this.removeAnnotatedGuiEventListeners();
 
@@ -219,6 +245,7 @@ export class Component extends BeanStub {
       return;
     }
 
+    // 获取各级原型对象__agComponentMetaData元数据中的guiListenerMethods属性值
     const listenerMethods = this.getAgComponentMetaData('guiListenerMethods');
 
     if (!listenerMethods) {
@@ -235,6 +262,7 @@ export class Component extends BeanStub {
         return;
       }
       const listener = (this as any)[meta.methodName].bind(this);
+      // 给dom元素添加事件监听器
       element.addEventListener(meta.eventName, listener);
       this.annotatedGuiListeners.push({
         eventName: meta.eventName,
@@ -244,20 +272,9 @@ export class Component extends BeanStub {
     });
   }
 
-  @PostConstruct
-  private addAnnotatedGridEventListeners(): void {
-    const listenerMetas = this.getAgComponentMetaData('gridListenerMethods');
-
-    if (!listenerMetas) {
-      return;
-    }
-
-    listenerMetas.forEach((meta) => {
-      const listener = (this as any)[meta.methodName].bind(this);
-      this.addManagedListener(this.eventService, meta.eventName, listener);
-    });
-  }
-
+  /**
+   * 从各级构造函数原型对象的`__agComponentMetaData`属性值中查找key属性的值的集合
+   */
   private getAgComponentMetaData(key: string): any[] {
     let res: any[] = [];
 
@@ -305,10 +322,18 @@ export class Component extends BeanStub {
     this.annotatedGuiListeners = [];
   }
 
+  /** 返回本ui组件对应的dom对象，即this.eGui */
   public getGui(): HTMLElement {
     return this.eGui;
   }
 
+  // this method is for older code, that wants to provide the gui element,
+  // it is not intended for this to be in ag-Stack
+  protected setGui(eGui: HTMLElement): void {
+    this.eGui = eGui;
+  }
+
+  /** 直接返回this.eGui作为当前获得焦点的元素 */
   public getFocusableElement(): HTMLElement {
     return this.eGui;
   }
@@ -321,12 +346,7 @@ export class Component extends BeanStub {
     return this.parentComponent;
   }
 
-  // this method is for older code, that wants to provide the gui element,
-  // it is not intended for this to be in ag-Stack
-  protected setGui(eGui: HTMLElement): void {
-    this.eGui = eGui;
-  }
-
+  /** 会对this.eGui这个dom元素对象执行选择器查找 querySelector(cssSelector) */
   protected queryForHtmlElement(cssSelector: string): HTMLElement {
     return this.eGui.querySelector(cssSelector) as HTMLElement;
   }
@@ -409,6 +429,7 @@ export class Component extends BeanStub {
     return eGui ? eGui.getAttribute(key) : null;
   }
 
+  /** 查找dom元素上带有ref属性且ref值为refName的第一个dom元素对象 */
   public getRefElement(refName: string): HTMLElement {
     return this.queryForHtmlElement(`[ref="${refName}"]`);
   }

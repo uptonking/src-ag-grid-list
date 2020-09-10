@@ -62,6 +62,7 @@ export class PinnedRowModel extends BeanStub {
     return rows.length - 1;
   }
 
+  /** 通过eventService对象触发pinnedRowDataChanged事件 */
   public setPinnedTopRowData(rowData: any[] | undefined): void {
     this.pinnedTopRows = this.createNodesFromData(rowData, true);
     const event: PinnedRowDataChangedEvent = {
@@ -71,7 +72,7 @@ export class PinnedRowModel extends BeanStub {
     };
     this.eventService.dispatchEvent(event);
   }
-
+  /** 通过eventService对象触发pinnedRowDataChanged事件 */
   public setPinnedBottomRowData(rowData: any[] | undefined): void {
     this.pinnedBottomRows = this.createNodesFromData(rowData, false);
     const event: PinnedRowDataChangedEvent = {

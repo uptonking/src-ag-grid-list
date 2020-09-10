@@ -58,7 +58,7 @@ export class Context {
 
     // 创建所有bean对象，只调用了构造函数，会注入构造函数依赖的其他bean对象
     this.createBeans();
-    // logObjSer('==createBeans, ', this.beanWrappers);
+    logObjSer('==createBeans, ', this.beanWrappers);
 
     // 获取所有bean对象存放到到数组
     const beanInstances = this.getBeanInstances();
@@ -105,7 +105,7 @@ export class Context {
     // 调用 preConstructMethods
     this.callLifeCycleMethods(beanInstances, 'preConstructMethods');
 
-    // 调用 afterPreCreateCallback，在这里可设置属性
+    // 调用 afterPreCreateCallback，在这里可设置属性，然后在postConstruct方法中访问
     // the callback sets the attributes, so the component has access to attributes
     // before postConstruct methods in the component are executed
     if (_.exists(afterPreCreateCallback)) {
@@ -242,7 +242,7 @@ export class Context {
   }
 
   /**
-   * 遍历`beanInstance.__proto__.constructor`构造函数读取__agBeanMetaData属性代表的元数据，
+   * 遍历`beanInstance.__proto__.constructor`各级构造函数读取__agBeanMetaData属性存放的元数据，
    * 然后执行 `callback(metaData, beanName)`
    */
   private forEachMetaDataInHierarchy(
@@ -345,7 +345,9 @@ export class Context {
     });
   }
 
-  /** 调用一个bean对象的生命周期方法，主要是pre/postConstruct/DestroyMethods */
+  /** 调用一个bean对象的lifeCycleMethod方法，主要是pre/postConstruct/DestroyMethods，
+   * 要注意查找方法名会在当前类及各级父类的静态属性上找，最终会调用当前类上的同名方法
+   */
   private callLifeCycleMethodsOneBean(
     beanInstance: any,
     lifeCycleMethod: string,
@@ -365,8 +367,10 @@ export class Context {
         });
       }
     });
+    // console.log('allMethods, ', allMethods);
 
     const allMethodsList = Object.keys(allMethods);
+    // console.log('allMethodsList, ', allMethodsList);
 
     // 遍历调用元数据中查找到的所有方法，方法作为beanInstance对象的属性调用时内部this指向自身对象
     allMethodsList.forEach((methodName) => beanInstance[methodName]());
@@ -451,7 +455,8 @@ export function PreConstruct(
 
 /**
  * 以`@PostConstruct`注解形式使用的class属性装饰器，
- * 会给class的__agBeanMetaData静态属性加上`postConstructMethods`属性，在构造函数调用后执行钩子函数
+ * 会给class的__agBeanMetaData静态属性加上`postConstructMethods`属性，在构造函数调用后执行钩子函数，
+ * 只记录了方法名，可能最终调用的是子类的同名方法
  */
 export function PostConstruct(
   target: Object,

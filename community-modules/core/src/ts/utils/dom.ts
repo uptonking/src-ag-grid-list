@@ -283,6 +283,7 @@ export function isVisible(element: HTMLElement) {
 }
 
 /**
+ * 传入代表dom元素的字符串，返回对应的HTMLElement对象，基于innerHtml实现。
  * Loads the template and returns it as an element. makes up for no simple way in
  * the dom api to load html directly, eg we cannot do this: document.createElement(template)
  * @param {string} template
@@ -296,6 +297,7 @@ export function loadTemplate(template: string): HTMLElement {
   return tempDiv.firstChild as HTMLElement;
 }
 
+/** 使用insertAdjacentHTML或innerHTML插入创建好的html字符串 */
 export function appendHtml(eContainer: HTMLElement, htmlTemplate: string) {
   if (eContainer.lastChild) {
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML

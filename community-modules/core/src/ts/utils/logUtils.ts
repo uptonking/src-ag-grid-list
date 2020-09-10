@@ -26,11 +26,16 @@ function getCircularReplacer() {
 export function logObjSer(
   msg: string = '',
   obj: any = { WARNING: '： 未传入obj参数让logObjSer(msg,obj)方法打印' },
+  ...restArgs: any[]
 ) {
+  let toLog = [obj, ...restArgs];
+  if (restArgs === undefined || restArgs === null || restArgs.length === 0) {
+    toLog = obj;
+  }
   console.log(
     msg,
     // console.log(JSON.parse(JSON.stringify(obj, getCircularReplacer()))),
     // JSON.parse(JSON.stringify(obj)),
-    jsonFnClone(obj),
+    jsonFnClone(toLog),
   );
 }
