@@ -57,13 +57,18 @@ export function jsonFnStringify(obj: any): string {
     // 默认会调用toJSON()方法
     return value;
   };
-  return JSON.stringify(jsonDecycle(obj), funcValueReplacer);
+  let decycledObj = jsonDecycle(obj);
+  // if (obj.constructor.name === 'Map' || obj.constructor.name === 'Set') {
+  //   decycledObj = obj;
+  // }
+  // console.log(decycledObj);
+  return JSON.stringify(decycledObj, funcValueReplacer);
 }
 /**
  * 将对象中循环引用的属性值对象输出为路径字符串，
  * 实际会裁剪dom node内容和跳过iframe对象，所以不能完全恢复原对象，也未在retrocycle方法实现恢复
  */
-function jsonDecycle(object: any, replacer?: Function) {
+export function jsonDecycle(object: any, replacer?: Function) {
   // Make a deep copy of an object or array, assuring that there is at most
   // one instance of each object or array in the resulting structure. The
   // duplicate references (which might be forming cycles) are replaced with
@@ -171,7 +176,9 @@ function jsonDecycle(object: any, replacer?: Function) {
       !(value instanceof Number) &&
       !(value instanceof String) &&
       !(value instanceof Date) &&
-      !(value instanceof RegExp)
+      !(value instanceof RegExp) &&
+      !(value instanceof Map) &&
+      !(value instanceof Set)
     ) {
       old_path = objects.get(value);
       // If the value is an object or array, look to see if we have already

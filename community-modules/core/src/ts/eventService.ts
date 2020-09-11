@@ -6,6 +6,7 @@ import { IEventEmitter } from './interfaces/iEventEmitter';
 import { GridOptionsWrapper } from './gridOptionsWrapper';
 import { AgEvent } from './events';
 import { logObjSer } from './utils/logUtils';
+import { jsonFnStringify } from './utils/jsonUtils';
 
 /**
  * 处理事件监听器的add/remove，以及通过dispatchEvent触发异步和同步事件
@@ -58,7 +59,7 @@ export class EventService implements IEventEmitter {
     let listeners = listenerMap.get(eventType);
 
     if (eventType === 'columnEverythingChanged') {
-      logObjSer('listeners-get, ', listenerMap);
+      console.log('listeners-get, ', listenerMap);
     }
 
     // 若listeners不存在，则添加进空的
@@ -67,7 +68,11 @@ export class EventService implements IEventEmitter {
       listenerMap.set(eventType, listeners);
     }
     if (eventType === 'columnEverythingChanged') {
-      logObjSer('listeners-get2, ', Array.from(listenerMap.keys()));
+      // console.log(typeof listenerMap);
+
+      // console.log('listeners-get2, ', Array.from(listenerMap.keys()));
+      console.log(jsonFnStringify(listenerMap));
+      logObjSer('listeners-get2, ', listenerMap);
     }
 
     return listeners;

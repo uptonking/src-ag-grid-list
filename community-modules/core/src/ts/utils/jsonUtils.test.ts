@@ -1,4 +1,4 @@
-import { jsonFnStringify, jsonFnParse } from './jsonUtils';
+import { jsonFnStringify, jsonFnParse, jsonDecycle } from './jsonUtils';
 
 describe('JSON stringify object tests', () => {
   test('stringify simple object without circular reference and function prop', () => {
@@ -52,6 +52,20 @@ describe('JSON stringify object tests', () => {
     expect(jsonFnStringify(obj)).toBe(
       '{"p1":11,"p3":{},"p2":{"p21":21,"p22":{"p221":{"$ref":"$"},"p222":{"$ref":"$[\\"p3\\"]"}}}}',
     );
+  });
+
+  test('stringify Map object', () => {
+    const obj: any = {
+      p1: 11,
+    };
+    const m = new Map();
+    m.set('k1', 'v1');
+    obj.p2 = m;
+    // console.log(jsonFnStringify(obj));
+    console.log(jsonDecycle(obj));
+    console.log(obj);
+    // expect(jsonFnStringify(obj)).toBe('{"p1":11,"p2":{}}');
+    expect(jsonFnStringify(obj)).toBe('{"p1":11, "p2":Map { "k1" => "v1" } }');
   });
 });
 
