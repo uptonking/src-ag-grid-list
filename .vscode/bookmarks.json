@@ -53,7 +53,7 @@
 		"path": "$ROOTPATH$/community-modules/client-side-row-model/src/clientSideRowModel/clientSideRowModel.ts",
 		"bookmarks": [
 			{
-				"line": 54,
+				"line": 55,
 				"column": 0,
 				"label": ""
 			}
@@ -63,7 +63,7 @@
 		"path": "$ROOTPATH$/community-modules/core/src/ts/entities/rowNode.ts",
 		"bookmarks": [
 			{
-				"line": 61,
+				"line": 62,
 				"column": 0,
 				"label": ""
 			}

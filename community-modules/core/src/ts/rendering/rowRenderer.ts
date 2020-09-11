@@ -469,6 +469,7 @@ export class RowRenderer extends BeanStub {
       // trashed - or editing cells in pinned rows are not refreshed and put into read mode
       onlyBody: true,
     };
+    console.trace();
     this.redrawAfterModelUpdate(params);
   }
 
@@ -538,7 +539,7 @@ export class RowRenderer extends BeanStub {
     return elementIsNotACellDev ? null : focusedCell;
   }
 
-  // gets called after changes to the model.
+  /** gets called after changes to the model. */
   public redrawAfterModelUpdate(params: RefreshViewParams = {}): void {
     this.getLockOnRefresh();
 

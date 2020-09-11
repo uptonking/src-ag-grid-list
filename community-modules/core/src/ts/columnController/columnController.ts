@@ -55,6 +55,7 @@ import { Constants } from '../constants';
 import { areEqual } from '../utils/array';
 import { AnimationFrameService } from '../misc/animationFrameService';
 import { _ } from '../utils';
+import { logObjSer } from '../utils/logUtils';
 
 export interface ColumnResizeSet {
   columns: Column[];
@@ -103,6 +104,7 @@ export class ColumnController extends BeanStub {
   // order or state of the columns and groups change. it will only change if the client
   // provides a new set of column definitions. otherwise this tree is used to build up
   // the groups for displaying.
+  /** 树形结构的column链表，若column顺序变化，本对象不变，若colDefs变化，本对象才变 */
   private primaryColumnTree: OriginalColumnGroupChild[];
   // header row count, based on user provided columns
   private primaryHeaderRowCount = 0;
@@ -218,7 +220,7 @@ export class ColumnController extends BeanStub {
     this.updateDisplayedColumns('gridOptionsChanged');
   }
 
-  /** 根据columnDefs计算表头结构，并触发columnEverythingChanged和newColumnsLoaded事件 */
+  /** 根据columnDefs计算表头结构，并触发 columnEverythingChanged 和 newColumnsLoaded 事件 */
   public setColumnDefs(
     columnDefs: (ColDef | ColGroupDef)[],
     source: ColumnEventType = 'api',
@@ -269,6 +271,8 @@ export class ColumnController extends BeanStub {
       columnApi: this.columnApi,
       source,
     };
+    logObjSer('columnEverythingChanged, ', this.eventService);
+    // columnEverythingChanged事件列表默认为空，但会立即触发modelUpdate事件
     this.eventService.dispatchEvent(eventEverythingChanged);
 
     const newColumnsLoadedEvent: NewColumnsLoadedEvent = {

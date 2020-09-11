@@ -30,7 +30,7 @@
     "build-1": "npm run build-cjs && npm run build-es6 && npm run hash",
     "build-cjs": "tsc -p tsconfig.json",
     "build-es": "yarn run clean && tsc -p tsconfig.es6.json",
-    "build-es6": "tsc -p tsconfig.es6.json",
+    "build-tsc": "tsc -p tsconfig.es6.json -w",
     "clean": "rimraf -rf dist",
     "hash": "sh ../../scripts/hashDirectory.sh > .hash",
     "package": "node ../../module-build/rollup/build.js"

@@ -8,7 +8,7 @@ import { AgEvent } from './events';
 import { logObjSer } from './utils/logUtils';
 
 /**
- * 处理事件监听器的add/remove，以及通过dispatchEvent触发事件
+ * 处理事件监听器的add/remove，以及通过dispatchEvent触发异步和同步事件
  */
 @Bean('eventService')
 export class EventService implements IEventEmitter {
@@ -20,7 +20,7 @@ export class EventService implements IEventEmitter {
   private globalSyncListeners = new Set<Function>();
   private globalAsyncListeners = new Set<Function>();
 
-  /** 需要异步执行的事件处理函数的链表 */
+  /** 正在异步执行的事件处理函数的链表 */
   private asyncFunctionsQueue: Function[] = [];
   /** 是否计划在setTimeout中执行异步函数，默认false */
   private scheduled = false;
@@ -57,21 +57,35 @@ export class EventService implements IEventEmitter {
     const listenerMap = async ? this.allAsyncListeners : this.allSyncListeners;
     let listeners = listenerMap.get(eventType);
 
+    if (eventType === 'columnEverythingChanged') {
+      logObjSer('listeners-get, ', listenerMap);
+    }
+
     // 若listeners不存在，则添加进空的
     if (!listeners) {
       listeners = new Set<Function>();
       listenerMap.set(eventType, listeners);
     }
+    if (eventType === 'columnEverythingChanged') {
+      logObjSer('listeners-get2, ', Array.from(listenerMap.keys()));
+    }
 
     return listeners;
   }
 
+  /** 本方法默认添加的是同步事件 */
   public addEventListener(
     eventType: string,
     listener: Function,
     async = false,
   ): void {
+    if (eventType === 'columnEverythingChanged') {
+      logObjSer('eventService-add1, ', this);
+    }
     this.getListeners(eventType, async).add(listener);
+    if (eventType === 'columnEverythingChanged') {
+      logObjSer('eventService-add2, ', this);
+    }
   }
 
   public removeEventListener(
@@ -128,18 +142,18 @@ export class EventService implements IEventEmitter {
       });
 
     const listeners = this.getListeners(eventType, async);
-    if (event.type === 'rowDataChanged') {
-      logObjSer('rowDataChanged, ', listeners);
-    }
+    // if (event.type === 'rowDataChanged') {
+    // logObjSer(eventType, listeners);
+    // }
 
     processEventListeners(listeners);
 
     const globalListeners = async
       ? this.globalAsyncListeners
       : this.globalSyncListeners;
-    if (event.type === 'rowDataChanged') {
-      logObjSer('rowDataChanged, ', globalListeners);
-    }
+    // if (event.type === 'rowDataChanged') {
+    // logObjSer('eventType-g, ', globalListeners);
+    // }
 
     globalListeners.forEach((listener) => {
       if (async) {
@@ -155,7 +169,7 @@ export class EventService implements IEventEmitter {
   // the grid then batches the events into one setTimeout().
   // because setTimeout() is an expensive operation, ideally we would have
   // each event in it's own setTimeout(), but we batch for performance.
-  /** 异步触发的event会在setTimeOut中批量执行 */
+  /** 触发的异步event会在setTimeout中批量执行 */
   private dispatchAsync(func: Function): void {
     // add to the queue for executing later in the next VM turn
     this.asyncFunctionsQueue.push(func);

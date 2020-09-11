@@ -58,6 +58,7 @@ export interface CellChangedEvent extends RowNodeEvent {
 /**
  * 一个RowNode对象代表grid中的一行，包括对一行RowNode中的数据crud，对行加减事件监听器的方法。
  * each row in the grid is represented by a RowNode object.
+ * RowNode未标注为@Bean.
  */
 export class RowNode implements IEventEmitter {
   public static ID_PREFIX_ROW_GROUP = 'row-group-';

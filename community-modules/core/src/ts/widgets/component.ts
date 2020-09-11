@@ -17,7 +17,7 @@ export class Component extends BeanStub {
   public static EVENT_DISPLAYED_CHANGED = 'displayedChanged';
   /** 本组件渲染到页面时对应的dom元素对象 */
   private eGui: HTMLElement;
-  /** 保存注册到本dom元素上的事件监听器信息 */
+  /** 保存注册到本dom元素上的事件监听器列表 */
   private annotatedGuiListeners: any[] = [];
 
   @Autowired('agStackComponentsRegistry')
@@ -44,10 +44,6 @@ export class Component extends BeanStub {
     }
   }
 
-  public getCompId(): number {
-    return this.compId;
-  }
-
   @PreConstruct
   private createChildComponentsPreConstruct(): void {
     // ui exists if user sets template in constructor. when this happens, we have to wait for the context
@@ -69,6 +65,10 @@ export class Component extends BeanStub {
       const listener = (this as any)[meta.methodName].bind(this);
       this.addManagedListener(this.eventService, meta.eventName, listener);
     });
+  }
+
+  public getCompId(): number {
+    return this.compId;
   }
 
   // for registered components only, eg creates AgCheckbox instance from ag-checkbox HTML tag

@@ -340,6 +340,8 @@ export class Context {
     beanInstances: any[],
     lifeCycleMethod: string,
   ): void {
+    console.log('==', lifeCycleMethod);
+
     beanInstances.forEach((beanInstance: any) => {
       this.callLifeCycleMethodsOneBean(beanInstance, lifeCycleMethod);
     });
@@ -370,7 +372,8 @@ export class Context {
     // console.log('allMethods, ', allMethods);
 
     const allMethodsList = Object.keys(allMethods);
-    // console.log('allMethodsList, ', allMethodsList);
+
+    console.log(beanInstance.constructor.name, allMethodsList);
 
     // 遍历调用元数据中查找到的所有方法，方法作为beanInstance对象的属性调用时内部this指向自身对象
     allMethodsList.forEach((methodName) => beanInstance[methodName]());
@@ -439,7 +442,9 @@ function applyToConstructor(constructor: Function, argArray: any[]) {
 
 /**
  * 以`@PreConstruct`注解形式使用的class属性装饰器，
- * 会给class的__agBeanMetaData静态属性加上`preConstructMethods`属性，在构造函数调用前执行钩子函数
+ * 会给class的__agBeanMetaData静态属性加上`preConstructMethods`属性，
+ * 会在对象创建、注入属性bean、注入方法参数bean后，afterPreCreateCallback之前，执行标注的钩子函数，
+ * 本装饰器很少使用，如Component组件ui基类
  */
 export function PreConstruct(
   target: Object,
@@ -455,8 +460,9 @@ export function PreConstruct(
 
 /**
  * 以`@PostConstruct`注解形式使用的class属性装饰器，
- * 会给class的__agBeanMetaData静态属性加上`postConstructMethods`属性，在构造函数调用后执行钩子函数，
- * 只记录了方法名，可能最终调用的是子类的同名方法
+ * 会给class的__agBeanMetaData静态属性加上`postConstructMethods`属性，
+ * 会在对象创建和依赖注入、preConstructMethods、afterPreCreateCallback之后，执行标注的钩子函数，
+ * 只记录了方法名，可能最终调用的是子类的同名方法，
  */
 export function PostConstruct(
   target: Object,

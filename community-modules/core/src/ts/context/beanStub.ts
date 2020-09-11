@@ -86,6 +86,12 @@ export class BeanStub implements IEventEmitter {
     }
   }
 
+  /**
+   * 给object对象添加event类型的事件处理函数listener，再将object的清理函数加入destroyFunctions列表
+   * @param object 要添加listener的目标对象
+   * @param event 事件类型
+   * @param listener 事件处理函数
+   */
   public addManagedListener(
     object: Window | HTMLElement | GridOptionsWrapper | IEventEmitter,
     event: string,

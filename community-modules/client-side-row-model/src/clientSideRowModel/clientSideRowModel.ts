@@ -31,6 +31,7 @@ import {
   _,
 } from '@ag-grid-community/core';
 import { ClientSideNodeManager } from './clientSideNodeManager';
+import { logObjSer } from '../logUtils';
 
 enum RecursionType {
   Normal,
@@ -52,7 +53,8 @@ export interface RowNodeMap {
  * 最常用的rowModel，仅在浏览器客户端进行计算，不涉及服务端数据通信
  */
 @Bean('rowModel')
-export class ClientSideRowModel extends BeanStub
+export class ClientSideRowModel
+  extends BeanStub
   implements IClientSideRowModel {
   @Autowired('gridOptionsWrapper')
   private gridOptionsWrapper: GridOptionsWrapper;
@@ -86,7 +88,7 @@ export class ClientSideRowModel extends BeanStub
   private lastHighlightedRow: RowNode | null;
 
   /**
-   * clientSideRowModel对象实例创建后会调用此方法，这里会创建rootNode和ClientSideNodeManager对象
+   * PostConstruct阶段会调用，这里会注册各种事件监听器到eventService，创建rootNode和ClientSideNodeManager对象
    */
   @PostConstruct
   public init(): void {
@@ -98,6 +100,8 @@ export class ClientSideRowModel extends BeanStub
       afterColumnsChanged: true,
       keepRenderedRows: true,
     });
+
+    console.log('==RowModel-post-construct');
 
     this.addManagedListener(
       this.eventService,
@@ -140,6 +144,8 @@ export class ClientSideRowModel extends BeanStub
       refreshEverythingFunc,
     );
 
+    logObjSer('rowModel-post-construct ,', this.eventService);
+
     const refreshMapListener = this.refreshModel.bind(this, {
       step: Constants.STEP_MAP,
       keepRenderedRows: true,
@@ -168,7 +174,7 @@ export class ClientSideRowModel extends BeanStub
       this.columnApi,
       this.selectionController,
     );
-
+    // 给rootNode注入依赖的bean
     this.createBean(this.rootNode);
   }
 
@@ -495,7 +501,8 @@ export class ClientSideRowModel extends BeanStub
   }
 
   /**
-   * 更新数据rowModel，基于无break的switch选择分支，实现从某一步开始一直执行到结束的流程
+   * 更新数据rowModel，基于无break的switch选择分支，实现从某一步开始一直执行到结束的流程，
+   * 是columnEverythingChanged事件对应的事件处理函数之一
    * @param params 更新参数
    */
   public refreshModel(params: RefreshModelParams): void {

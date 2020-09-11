@@ -196,7 +196,7 @@ export class Grid {
     // 执行gridCore的postConstruct钩子方法时会将grid的dom元素渲染到页面显示出来
     this.context.createBean(gridCore);
 
-    // 将rowData计算处理成rowModel形式的数据结构
+    // 计算表头结构，并将rowData计算处理成rowModel形式的数据结构
     this.setColumnsAndData();
 
     // 触发gridReady事件，默认要执行的事件集合为空
@@ -451,7 +451,7 @@ export class Grid {
     return [].concat(...moduleEntities.map(extractor));
   }
 
-  /** 设置columnDefs，并将rowData计算处理成rowModel结构 */
+  /** 根据columnDefs计算表头结构，并将rowData计算处理成rowModel结构 */
   private setColumnsAndData(): void {
     const gridOptionsWrapper: GridOptionsWrapper = this.context.getBean(
       'gridOptionsWrapper',

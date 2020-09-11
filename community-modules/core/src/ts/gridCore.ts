@@ -169,7 +169,7 @@ export class GridCore extends ManagedFocusComponent {
 
     const template = `<div ref="eRootWrapper" class="ag-root-wrapper">
                 ${dropZones}
-                <div class="ag-root-wrapper-body" ref="rootWrapperBody">
+                <div ref="rootWrapperBody" class="ag-root-wrapper-body" >
                     <ag-grid-comp ref="gridPanel"></ag-grid-comp>
                     ${sideBar}
                 </div>

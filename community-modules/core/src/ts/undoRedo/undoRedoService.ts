@@ -67,7 +67,7 @@ export class UndoRedoService extends BeanStub {
       Events.EVENT_CELL_VALUE_CHANGED,
       this.onCellValueChanged,
     );
-    // undo / redo is restricted to actual editing so we clear the stacks when other operations are
+    // undo/redo is restricted to actual editing so we clear the stacks when other operations are
     // performed that change the order of the row / cols.
     this.addManagedListener(
       this.eventService,
