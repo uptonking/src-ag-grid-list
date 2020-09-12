@@ -78,10 +78,6 @@ describe('JSON stringify object tests', () => {
     const s = new Set();
     s.add('v1');
     obj.p2 = s;
-    // console.log(jsonFnStringify(obj));
-    // console.log(jsonDecycle(obj));
-    // console.log(obj);
-    // expect(jsonFnStringify(obj)).toBe('{"p1":11,"p2":{}}');
     expect(jsonFnStringify(obj)).toBe(
       '{"p1":11,"p2":{"dataType":"Set","value":["v1"]}}',
     );
@@ -185,7 +181,7 @@ describe('JSON parse string tests', () => {
     const parsedObj = jsonFnParse(
       '{"p1":11,"p2":{"dataType":"Map","value":[["k1",{"dataType":"Set","value":["v1","function () { [native code] }","function () { [native code] }"]}]]}}',
     );
-    console.log(parsedObj);
+    // console.log(parsedObj);
     console.log(parsedObj.p2.get('k1'));
     expect(parsedObj.p2.get('k1').size).toBe(3);
     // s.add(function () {});

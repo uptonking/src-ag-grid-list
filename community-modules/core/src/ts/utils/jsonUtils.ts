@@ -1,7 +1,7 @@
 // this file is copied and modified from
 // https://github.com/vkiryukhin/jsonfn/blob/master/jsonfn.js (MIT)
 // and https://github.com/douglascrockford/JSON-js/blob/master/cycle.js ()
-// todo 嵌套深层的循环引用可以识别，但嵌套深层的Map和Set结构没有处理
+// todo 嵌套深层的循环引用已处理，但嵌套深层的Map和Set结构没有处理
 
 /**
  * 基于JSON.stringify和JSON.parse深克隆对象obj，
@@ -262,13 +262,22 @@ export function jsonFnParse(str: string, date2obj?: RegExp): any {
       if (value.dataType === 'Map') {
         return new Map(value.value);
       }
+
+      let firstValidFunc = true;
       if (value.dataType === 'Set') {
         console.log('==fnp, ', value);
-        // 需要查找value数组中的重复元素，这里简单实现，根据这里的应用场景，只有可能是函数重复
+        // 需要查找value数组中的重复元素，这里简单实现，实际的应用场景中函数或对象序列化后会是重复字符串
         const rmDup = value.value.map((str: any) => {
           if (typeof str === 'string' && str.endsWith('{ [native code] }')) {
-            str = str + ', ' + Math.random();
+            // 重复值的第一个不变
+            if (firstValidFunc) {
+              firstValidFunc = false;
+              return str;
+            }
+            // 重复值从第二个开始加个随机数，使后面创建Set后仍存在
+            return str + ', ' + Math.random();
           }
+          return str;
         });
         return new Set(rmDup);
       }
