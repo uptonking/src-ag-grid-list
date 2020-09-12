@@ -1,4 +1,4 @@
-// to satisfy server side compilation，本文件全是export，包括类型接口和表格相关class
+// to satisfy server side compilation，本文件全是export，包括类型接口和grid相关class
 declare let global: any;
 const globalObj = typeof global === 'undefined' ? {} : global;
 globalObj.HTMLElement = typeof HTMLElement === 'undefined' ? {} : HTMLElement;
@@ -342,6 +342,7 @@ export { CellNavigationService } from './cellNavigationService';
 export { AlignedGridsService } from './alignedGridsService';
 export { Constants } from './constants';
 export { Grid, GridParams } from './grid';
+export { GridCore } from './gridCore';
 export {
   GridApi,
   RedrawRowsParams,
@@ -351,7 +352,6 @@ export {
   CreateRangeChartParams,
   CreatePivotChartParams,
 } from './gridApi';
-export { GridCore } from './gridCore';
 export { GridOptionsWrapper } from './gridOptionsWrapper';
 export { Events } from './eventKeys';
 export { FocusController } from './focusController';
@@ -362,10 +362,10 @@ export { Logger, LoggerFactory } from './logger';
 export { SelectionController } from './selectionController';
 export { SortController } from './sortController';
 export { TemplateService } from './templateService';
-export * from './utils';
 export { ValueService } from './valueService/valueService';
 export { ValueCache } from './valueService/valueCache';
 export { ExpressionService } from './valueService/expressionService';
+export * from './utils';
 
 // uncatalogued
 export { IRowModel, RowBounds } from './interfaces/iRowModel';

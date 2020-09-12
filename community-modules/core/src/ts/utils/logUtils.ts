@@ -28,9 +28,11 @@ export function logObjSer(
   obj: any = { WARNING: '： 未传入obj参数让logObjSer(msg,obj)方法打印' },
   ...restArgs: any[]
 ) {
-  let toLog = [obj, ...restArgs];
+  let toLog;
   if (restArgs === undefined || restArgs === null || restArgs.length === 0) {
     toLog = obj;
+  } else {
+    toLog = [obj, ...restArgs];
   }
   console.log(
     msg,

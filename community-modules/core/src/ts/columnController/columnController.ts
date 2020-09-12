@@ -693,7 +693,7 @@ export class ColumnController extends BeanStub {
       if (filterCallback) {
         // if user provided a callback, means some columns may not be in the viewport.
         // the user will NOT provide a callback if we are talking about pinned areas,
-        // as pinned areas have no horizontal scroll and do not virtualise the columns.
+        // as pinned areas have no horizontal scroll and do not virtualize the columns.
         // if lots of columns, that means column spanning, and we set filterPasses = true
         // if one or more of the columns spanned pass the filter.
         filterPasses = false;
@@ -3828,7 +3828,7 @@ export class ColumnController extends BeanStub {
         this.groupAutoColumns,
       );
       // we force recreate when suppressSetColumnStateEvents changes, so new group cols pick up the new
-      // definitions. otherwise we could ignore the new cols becasue they appear to be the same.
+      // definitions. otherwise we could ignore the new cols because they appear to be the same.
       if (autoColsDifferent || this.forceRecreateAutoGroups) {
         this.groupAutoColumns = newAutoGroupCols;
       }

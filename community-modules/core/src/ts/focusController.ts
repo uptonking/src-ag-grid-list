@@ -90,10 +90,12 @@ export class FocusController extends BeanStub {
     this.gridCore = gridCore;
   }
 
+  /**
+   * if the columns change, check and see if this column still exists.
+   * if it does, then we can keep the focused cell.
+   * if it doesn't, then we need to drop the focused cell.
+   */
   public onColumnEverythingChanged(): void {
-    // if the columns change, check and see if this column still exists. if it does,
-    // then we can keep the focused cell. if it doesn't, then we need to drop the focused
-    // cell.
     if (this.focusedCellPosition) {
       const col = this.focusedCellPosition.column;
       const colFromColumnController = this.columnController.getGridColumn(

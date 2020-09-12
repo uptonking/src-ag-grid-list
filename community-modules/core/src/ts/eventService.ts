@@ -6,7 +6,7 @@ import { IEventEmitter } from './interfaces/iEventEmitter';
 import { GridOptionsWrapper } from './gridOptionsWrapper';
 import { AgEvent } from './events';
 import { logObjSer } from './utils/logUtils';
-import { jsonFnStringify } from './utils/jsonUtils';
+import { jsonFnStringify } from './utils';
 
 /**
  * 处理事件监听器的add/remove，以及通过dispatchEvent触发异步和同步事件
@@ -27,7 +27,7 @@ export class EventService implements IEventEmitter {
   private scheduled = false;
 
   // using an object performs better than a Set for the number of different events we have
-  /** 触发过的events的映射表，key是event.type */
+  /** 触发过的events的映射表，key是event.type，执行完的事件仍然会在里面 */
   private firedEvents: { [key: string]: boolean } = {};
 
   // because this class is used both inside the context and outside the context, we do not
@@ -53,27 +53,23 @@ export class EventService implements IEventEmitter {
     }
   }
 
-  /** 查找eventType类型的listeners列表 */
+  /** 查找eventType类型的listeners非重复集合 */
   private getListeners(eventType: string, async: boolean): Set<Function> {
     const listenerMap = async ? this.allAsyncListeners : this.allSyncListeners;
     let listeners = listenerMap.get(eventType);
 
     if (eventType === 'columnEverythingChanged') {
-      console.log('listeners-get, ', listenerMap);
+      logObjSer('listeners, ', listeners);
     }
 
-    // 若listeners不存在，则添加进空的
+    // 若listeners不存在，则eventType类型事件添加进空的listeners集合
     if (!listeners) {
       listeners = new Set<Function>();
       listenerMap.set(eventType, listeners);
     }
-    if (eventType === 'columnEverythingChanged') {
-      // console.log(typeof listenerMap);
-
-      // console.log('listeners-get2, ', Array.from(listenerMap.keys()));
-      console.log(jsonFnStringify(listenerMap));
-      logObjSer('listeners-get2, ', listenerMap);
-    }
+    // if (eventType === 'columnEverythingChanged') {
+    //   logObjSer('listeners-get2, ', listenerMap);
+    // }
 
     return listeners;
   }
@@ -86,10 +82,23 @@ export class EventService implements IEventEmitter {
   ): void {
     if (eventType === 'columnEverythingChanged') {
       logObjSer('eventService-add1, ', this);
+      console.log(
+        this.allSyncListeners.get(eventType) &&
+          this.allSyncListeners.get(eventType).size,
+      );
     }
+
     this.getListeners(eventType, async).add(listener);
+
     if (eventType === 'columnEverythingChanged') {
-      logObjSer('eventService-add2, ', this);
+      console.log(this.allSyncListeners.get(eventType).size);
+      logObjSer('eventService-add2, ', this.allSyncListeners.get(eventType));
+      logObjSer(
+        'eventService-add2, ',
+        Array.from(this.allSyncListeners.get(eventType)),
+      );
+      console.log(jsonFnStringify(this.allSyncListeners.get(eventType)));
+      // logObjSer('eventService-add2, ', this);
     }
   }
 
@@ -98,6 +107,9 @@ export class EventService implements IEventEmitter {
     listener: Function,
     async = false,
   ): void {
+    if (eventType === 'columnEverythingChanged') {
+      console.log('eventService-rm1, ', this.allSyncListeners);
+    }
     this.getListeners(eventType, async).delete(listener);
   }
 
@@ -113,8 +125,15 @@ export class EventService implements IEventEmitter {
     );
   }
 
-  /** 触发event，注意这里会触发2次，第1次触发所有异步事件，第2次触发所有同步事件 */
+  /** 触发event类型的所有异步和同步事件，事件函数执行后并未从allSyncListeners映射表移除 */
   public dispatchEvent(event: AgEvent): void {
+    if (event.type === 'columnEverythingChanged') {
+      console.log(
+        'dispatchEvent-columnEverythingChanged, ',
+        this.allSyncListeners,
+      );
+    }
+
     this.dispatchToListeners(event, true);
     this.dispatchToListeners(event, false);
 

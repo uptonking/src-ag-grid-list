@@ -1,6 +1,7 @@
 // this file is copied and modified from
 // https://github.com/vkiryukhin/jsonfn/blob/master/jsonfn.js (MIT)
 // and https://github.com/douglascrockford/JSON-js/blob/master/cycle.js ()
+// todo 嵌套深层的循环引用可以识别，但嵌套深层的Map和Set结构没有处理
 
 /**
  * 基于JSON.stringify和JSON.parse深克隆对象obj，
@@ -36,8 +37,25 @@ export function jsonFnStringify(obj: any): string {
     //   seen.add(value);
     // }
 
+    // 若当前key的属性值类型是Map
+    // const originalObject = this[key];
+    if (value instanceof Map) {
+      return {
+        dataType: 'Map',
+        value: Array.from(value), // or with spread: value: [...originalObject]
+      };
+    }
+
+    if (value instanceof Set) {
+      console.log('==fns, ', value);
+      return {
+        dataType: 'Set',
+        value: Array.from(value),
+      };
+    }
+
     let fnBody;
-    // 若属性值是函数，则以字符串形式打印打印函数体
+    // 若属性值是函数，则以字符串形式打印打印函数体源码，注意内置函数和bind过的函数会打印成[native code]
     if (value instanceof Function || typeof value == 'function') {
       fnBody = value.toString();
 
@@ -68,7 +86,7 @@ export function jsonFnStringify(obj: any): string {
  * 将对象中循环引用的属性值对象输出为路径字符串，
  * 实际会裁剪dom node内容和跳过iframe对象，所以不能完全恢复原对象，也未在retrocycle方法实现恢复
  */
-export function jsonDecycle(object: any, replacer?: Function) {
+function jsonDecycle(object: any, replacer?: Function) {
   // Make a deep copy of an object or array, assuring that there is at most
   // one instance of each object or array in the resulting structure. The
   // duplicate references (which might be forming cycles) are replaced with
@@ -238,21 +256,38 @@ export function jsonFnParse(str: string, date2obj?: RegExp): any {
     : false;
 
   /** 对于JSON.parse后的对象，遍历其属性值，恢复其中带有特殊前缀的字符串为对象，如恢复成函数 */
-  const funcStrReviver = function (key: any, value: string) {
+  const funcStrReviver = function (key: any, value: any) {
+    // 先处理value为object类型的情况
+    if (typeof value === 'object' && value !== null) {
+      if (value.dataType === 'Map') {
+        return new Map(value.value);
+      }
+      if (value.dataType === 'Set') {
+        console.log('==fnp, ', value);
+        // 需要查找value数组中的重复元素，这里简单实现，根据这里的应用场景，只有可能是函数重复
+        const rmDup = value.value.map((str: any) => {
+          if (typeof str === 'string' && str.endsWith('{ [native code] }')) {
+            str = str + ', ' + Math.random();
+          }
+        });
+        return new Set(rmDup);
+      }
+    }
+
     if (typeof value != 'string') {
       return value;
     }
+
     if (value.length < 8) {
       return value;
     }
-
-    const prefix = value.substring(0, 8);
 
     if (iso8061 && value.match(iso8061 as RegExp)) {
       return new Date(value);
     }
     // console.log('key-value, ', key, value);
 
+    const prefix = value.substring(0, 8);
     if (prefix === 'function') {
       // 对于方法体被序列化成{ [native code] }的属性值，仍将方法体保存为字符串
       if (/\{ \[native code\] \}$/.test(value)) {

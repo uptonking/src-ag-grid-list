@@ -29,9 +29,9 @@ import {
   FilterChangedEvent,
   BeanStub,
   _,
+  logObjSer,
 } from '@ag-grid-community/core';
 import { ClientSideNodeManager } from './clientSideNodeManager';
-import { logObjSer } from '../logUtils';
 
 enum RecursionType {
   Normal,
@@ -101,8 +101,6 @@ export class ClientSideRowModel
       keepRenderedRows: true,
     });
 
-    console.log('==RowModel-post-construct');
-
     this.addManagedListener(
       this.eventService,
       Events.EVENT_COLUMN_EVERYTHING_CHANGED,
@@ -144,7 +142,7 @@ export class ClientSideRowModel
       refreshEverythingFunc,
     );
 
-    logObjSer('rowModel-post-construct ,', this.eventService);
+    // logObjSer('rowModel-post-construct ,', this.eventService);
 
     const refreshMapListener = this.refreshModel.bind(this, {
       step: Constants.STEP_MAP,
