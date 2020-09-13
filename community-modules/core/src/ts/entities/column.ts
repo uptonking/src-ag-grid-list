@@ -26,39 +26,45 @@ import { Constants } from '../constants';
 import { ModuleNames } from '../modules/moduleNames';
 import { ModuleRegistry } from '../modules/moduleRegistry';
 
-// Wrapper around a user provide column definition. The grid treats the column definition as ready only.
-// This class contains all the runtime information about a column, plus some logic (the definition has no logic).
-// This class implements both interfaces ColumnGroupChild and OriginalColumnGroupChild as the class can
-// appear as a child of either the original tree or the displayed tree. However the relevant group classes
-// for each type only implements one, as each group can only appear in it's associated tree (eg OriginalColumnGroup
-// can only appear in OriginalColumn tree).
+/** 封装了一个表头列定义的属性及操作方法。
+ * 注意部分属性由ioc注入，部分属性如eventService由对象自己创建，没有使用ioc容器中的bean。
+ * Wrapper around a user provided column definition.
+ * The grid treats the column definition as ready only.
+ * This class contains all the runtime information about a column, plus some
+ * logic (the definition has no logic). This class implements both interfaces
+ * `ColumnGroupChild` and `OriginalColumnGroupChild` as the class can appear as
+ * a child of either the original tree or the displayed tree.
+ * However the relevant group classes for each type only implements one,
+ * as each group can only appear in it's associated tree(eg OriginalColumnGroup
+ * can only appear in OriginalColumn tree).
+ */
 export class Column
   implements ColumnGroupChild, OriginalColumnGroupChild, IEventEmitter {
-  // + renderedHeaderCell - for making header cell transparent when moving
+  /** renderedHeaderCell - for making header cell transparent when moving */
   public static EVENT_MOVING_CHANGED = 'movingChanged';
-  // + renderedCell - changing left position
+  /** renderedCell - changing left position */
   public static EVENT_LEFT_CHANGED = 'leftChanged';
-  // + renderedCell - changing width
+  /** renderedCell - changing width */
   public static EVENT_WIDTH_CHANGED = 'widthChanged';
-  // + renderedCell - for changing pinned classes
+  /** renderedCell - for changing pinned classes */
   public static EVENT_LAST_LEFT_PINNED_CHANGED = 'lastLeftPinnedChanged';
   public static EVENT_FIRST_RIGHT_PINNED_CHANGED = 'firstRightPinnedChanged';
-  // + renderedColumn - for changing visibility icon
+  /** renderedColumn - for changing visibility icon */
   public static EVENT_VISIBLE_CHANGED = 'visibleChanged';
-  // + every time the filter changes, used in the floating filters
+  /** every time the filter changes, used in the floating filters */
   public static EVENT_FILTER_CHANGED = 'filterChanged';
-  // + renderedHeaderCell - marks the header with filter icon
+  /** renderedHeaderCell - marks the header with filter icon */
   public static EVENT_FILTER_ACTIVE_CHANGED = 'filterActiveChanged';
-  // + renderedHeaderCell - marks the header with sort icon
+  /** renderedHeaderCell - marks the header with sort icon */
   public static EVENT_SORT_CHANGED = 'sortChanged';
 
   public static EVENT_MENU_VISIBLE_CHANGED = 'menuVisibleChanged';
 
-  // + toolpanel, for gui updates
+  /** toolpanel, for gui updates */
   public static EVENT_ROW_GROUP_CHANGED = 'columnRowGroupChanged';
-  // + toolpanel, for gui updates
+  /** toolpanel, for gui updates */
   public static EVENT_PIVOT_CHANGED = 'columnPivotChanged';
-  // + toolpanel, for gui updates
+  /** toolpanel, for gui updates */
   public static EVENT_VALUE_CHANGED = 'columnValueChanged';
 
   @Autowired('gridOptionsWrapper')
@@ -71,10 +77,11 @@ export class Column
   private readonly colId: any;
   private colDef: ColDef;
 
-  // We do NOT use this anywhere, we just keep a reference. this is to check object equivalence
-  // when the user provides an updated list of columns - so we can check if we have a column already
-  // existing for a col def. we cannot use the this.colDef as that is the result of a merge.
-  // This is used in ColumnFactory
+  /** We do NOT use this anywhere, we just keep a reference.
+   this is to check object equivalence when the user provides an updated list
+   of columns - so we can check if we have a column already existing for a
+   col def. we cannot use the this.colDef as that is the result of a merge.
+   This is used in ColumnFactory */
   private userProvidedColDef: ColDef;
 
   private actualWidth: any;
@@ -97,6 +104,7 @@ export class Column
 
   private filterActive = false;
 
+  /** 每个column对象都保存自己的eventService事件中心，不是ioc容器中那个 */
   private eventService: EventService = new EventService();
 
   private fieldContainsDots: boolean;
@@ -127,33 +135,6 @@ export class Column
     this.primary = primary;
   }
 
-  // gets called when user provides an alternative colDef, eg
-  public setColDef(colDef: ColDef, userProvidedColDef: ColDef | null): void {
-    this.colDef = colDef;
-    this.userProvidedColDef = userProvidedColDef;
-  }
-
-  public getUserProvidedColDef(): ColDef {
-    return this.userProvidedColDef;
-  }
-
-  public setParent(parent: ColumnGroup): void {
-    this.parent = parent;
-  }
-
-  public getParent(): ColumnGroup {
-    return this.parent;
-  }
-
-  public setOriginalParent(originalParent: OriginalColumnGroup | null): void {
-    this.originalParent = originalParent;
-  }
-
-  public getOriginalParent(): OriginalColumnGroup | null {
-    return this.originalParent;
-  }
-
-  // this is done after constructor as it uses gridOptionsWrapper
   @PostConstruct
   public initialise(): void {
     this.setPinned(this.colDef.pinned);
@@ -190,6 +171,32 @@ export class Column
       !suppressDotNotation;
 
     this.validate();
+  }
+
+  /** gets called when user provides an alternative colDef **/
+  public setColDef(colDef: ColDef, userProvidedColDef: ColDef | null): void {
+    this.colDef = colDef;
+    this.userProvidedColDef = userProvidedColDef;
+  }
+
+  public getUserProvidedColDef(): ColDef {
+    return this.userProvidedColDef;
+  }
+
+  public setParent(parent: ColumnGroup): void {
+    this.parent = parent;
+  }
+
+  public getParent(): ColumnGroup {
+    return this.parent;
+  }
+
+  public setOriginalParent(originalParent: OriginalColumnGroup | null): void {
+    this.originalParent = originalParent;
+  }
+
+  public getOriginalParent(): OriginalColumnGroup | null {
+    return this.originalParent;
   }
 
   public resetActualWidth(): void {

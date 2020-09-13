@@ -43,9 +43,18 @@ import { RowPosition, RowPositionUtils } from '../entities/rowPosition';
 import { PinnedRowModel } from '../pinnedRowModel/pinnedRowModel';
 import { _ } from '../utils';
 
+export interface RefreshViewParams {
+  recycleRows?: boolean;
+  animate?: boolean;
+  suppressKeepFocus?: boolean;
+  onlyBody?: boolean;
+  // when new data, grid scrolls back to top
+  newData?: boolean;
+  newPage?: boolean;
+}
+
 /**
- * 处理rowModel的渲染与更新，如redrawRows,onModelUpdated，
- * 还会给row内的单元格添加事件监听器
+ * 渲染所有行ui组件，注册各种事件监听器，监听rowModel的渲染与更新，如redrawRows,onModelUpdated
  */
 @Bean('rowRenderer')
 export class RowRenderer extends BeanStub {
@@ -77,8 +86,8 @@ export class RowRenderer extends BeanStub {
   private firstRenderedRow: number;
   private lastRenderedRow: number;
 
-  // map of row ids to row objects. keeps track of which elements
-  // are rendered for which rows in the dom.
+  /** map of row ids to row objects. Keeps track of which elements
+  are rendered for which rows in the dom. */
   private rowCompsByIndex: { [key: string]: RowComp } = {};
   private floatingTopRowComps: RowComp[] = [];
   private floatingBottomRowComps: RowComp[] = [];
@@ -113,6 +122,7 @@ export class RowRenderer extends BeanStub {
     this.logger = loggerFactory.create('RowRenderer');
   }
 
+  /** 给grid组件注册各种事件监听器，在表头模型或数据模型变化后触发更新ui */
   public registerGridComp(gridPanel: GridPanel): void {
     this.gridPanel = gridPanel;
 
@@ -358,6 +368,7 @@ export class RowRenderer extends BeanStub {
     this.removeRowComps(rowIndexesToRemove);
   }
 
+  /** 一页数据加载完成后，再触发 modelUpdated 事件 */
   private onPageLoaded(refreshEvent?: ModelUpdatedEvent): void {
     if (_.missing(refreshEvent)) {
       refreshEvent = {
@@ -457,6 +468,7 @@ export class RowRenderer extends BeanStub {
     this.redrawAfterModelUpdate(params);
   }
 
+  /** 行数据更新时，会 */
   private onModelUpdated(refreshEvent: ModelUpdatedEvent): void {
     const params: RefreshViewParams = {
       recycleRows: refreshEvent.keepRenderedRows,
@@ -550,10 +562,12 @@ export class RowRenderer extends BeanStub {
     this.sizeContainerToPageHeight();
     this.scrollToTopIfNewData(params);
 
-    // never recycle rows when print layout, we draw each row again from scratch. this is because print layout
-    // uses normal dom layout to put cells into dom - it doesn't allow reordering rows.
+    // never recycle rows in print layout, we draw each row again from scratch.
+    // because print layout uses normal dom layout to put cells into dom
+    // - it doesn't allow reordering rows.
     const recycleRows = !this.printLayout && params.recycleRows;
     const animate = params.animate && this.gridOptionsWrapper.isAnimateRows();
+
     const rowsToRecycle: { [key: string]: RowComp } = this.binRowComps(
       recycleRows,
     );
@@ -926,6 +940,7 @@ export class RowRenderer extends BeanStub {
     return indexesToDraw;
   }
 
+  /** 计算需要渲染的行的索引index，然后遍历这些行索引创建RowComp */
   private redraw(
     rowsToRecycle?: { [key: string]: RowComp },
     animate = false,
@@ -935,18 +950,23 @@ export class RowRenderer extends BeanStub {
     this.workOutFirstAndLastRowsToRender();
 
     // the row can already exist and be in the following:
-    // rowsToRecycle -> if model change, then the index may be different, however row may
-    //                         exist here from previous time (mapped by id).
-    // this.rowCompsByIndex -> if just a scroll, then this will contain what is currently in the viewport
+    // rowsToRecycle ->  if model change, then the index may be different,
+    //      however row may exist here from previous time (mapped by id).
+    //
+    // this.rowCompsByIndex -> if just a scroll, then this will
+    //      contain what is currently in the viewport
 
-    // this is all the indexes we want, including those that already exist, so this method
-    // will end up going through each index and drawing only if the row doesn't already exist
+    // this is all the indexes we want, including those that already exist,
+    // so this method will end up going through each index and
+    // drawing only if the row doesn't already exist
     const indexesToDraw = this.calculateIndexesToDraw(rowsToRecycle);
 
     this.removeRowCompsNotToDraw(indexesToDraw);
 
-    // never animate when doing print layout - as we want to get things ready to print as quickly as possible,
-    // otherwise we risk the printer printing a row that's half faded (half way through fading in)
+    // never animate when doing print layout -
+    // as we want to get things ready to print as quickly as possible,
+    // otherwise we risk the printer printing a row that's half faded
+    // (half way through fading in)
     if (this.printLayout) {
       animate = false;
     }
@@ -1059,6 +1079,7 @@ export class RowRenderer extends BeanStub {
     this.redrawAfterScroll();
   }
 
+  /** 更新旧的rowComp或创建新的rowComp，返回更新后的rowComp */
   private createOrUpdateRowComp(
     rowIndex: number,
     rowsToRecycle: { [key: string]: RowComp },
@@ -1066,6 +1087,7 @@ export class RowRenderer extends BeanStub {
     afterScroll: boolean,
   ): RowComp {
     let rowNode: RowNode;
+    // 最终会返回此行组件对象
     let rowComp: RowComp = this.rowCompsByIndex[rowIndex];
 
     // if no row comp, see if we can get it from the previous rowComps
@@ -1862,14 +1884,4 @@ export class RowRenderer extends BeanStub {
 
     return this.paginationProxy.getRow(cell.rowIndex);
   }
-}
-
-export interface RefreshViewParams {
-  recycleRows?: boolean;
-  animate?: boolean;
-  suppressKeepFocus?: boolean;
-  onlyBody?: boolean;
-  // when new data, grid scrolls back to top
-  newData?: boolean;
-  newPage?: boolean;
 }

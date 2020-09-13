@@ -75,7 +75,7 @@ export interface ColumnState {
 }
 
 /**
- * 表头列的状态数据及操作方法
+ * 负责表头列的渲染及状态管理
  */
 @Bean('columnController')
 export class ColumnController extends BeanStub {
@@ -104,35 +104,35 @@ export class ColumnController extends BeanStub {
   // order or state of the columns and groups change. it will only change if the client
   // provides a new set of column definitions. otherwise this tree is used to build up
   // the groups for displaying.
-  /** 树形结构的column链表，若column顺序变化，本对象不变，若colDefs变化，本对象才变 */
+  /** 树形结构的column链表，若column顺序变化，本对象不会变，若colDefs变化，本对象才变 */
   private primaryColumnTree: OriginalColumnGroupChild[];
-  // header row count, based on user provided columns
+  /** header row count, based on user provided columns */
   private primaryHeaderRowCount = 0;
-  // all columns provided by the user. basically it's the leaf level nodes of the
-  // tree above (originalBalancedTree)
-  private primaryColumns: Column[]; // every column available
+  /** all columns provided by user. basically it's the leaf level nodes of the
+  tree above (originalBalancedTree). every column available here */
+  private primaryColumns: Column[];
 
-  // if pivoting, these are the generated columns as a result of the pivot
+  /** f pivoting, these are the generated columns as a result of the pivot */
   private secondaryBalancedTree: OriginalColumnGroupChild[] | null;
   private secondaryColumns: Column[] | null;
   private secondaryHeaderRowCount = 0;
   private secondaryColumnsPresent = false;
 
-  // the columns the quick filter should use. this will be all primary columns
-  // plus the autoGroupColumns if any exist
+  /** the columns the quick filter should use. this will be all primary columns
+   plus the autoGroupColumns if any exist */
   private columnsForQuickFilter: Column[];
 
-  // these are all columns that are available to the grid for rendering after pivot
+  /** these are all columns that are available to grid for rendering after pivot */
   private gridBalancedTree: OriginalColumnGroupChild[];
   private gridColumns: Column[];
-  // header row count, either above, or based on pivoting if we are pivoting
+  /** header row count, either above, or based on pivoting if we are pivoting */
   private gridHeaderRowCount = 0;
 
   private lastPrimaryOrder: Column[];
   private gridColsArePrimary: boolean;
 
-  // these are the columns actually shown on the screen. used by the header renderer,
-  // as header needs to know about column groups and the tree structure.
+  /** these are the columns actually shown on the screen. used by the header renderer,
+   as header needs to know about column groups and the tree structure. */
   private displayedLeftColumnTree: ColumnGroupChild[];
   private displayedRightColumnTree: ColumnGroupChild[];
   private displayedCentreColumnTree: ColumnGroupChild[];
@@ -141,21 +141,24 @@ export class ColumnController extends BeanStub {
   private displayedRightHeaderRows: { [row: number]: ColumnGroupChild[] };
   private displayedCentreHeaderRows: { [row: number]: ColumnGroupChild[] };
 
-  // these are the lists used by the rowRenderer to render nodes. almost the leaf nodes of the above
-  // displayed trees, however it also takes into account if the groups are open or not.
+  /** these are the lists used by the rowRenderer to render nodes. almost the
+   * leaf nodes of the above displayed trees, however it also takes into account
+   * if the groups are open or not.
+   */
   private displayedLeftColumns: Column[] = [];
   private displayedRightColumns: Column[] = [];
   private displayedCenterColumns: Column[] = [];
-  // all three lists above combined
+
+  /** all three lists above combined */
   private allDisplayedColumns: Column[] = [];
-  // same as above, except trimmed down to only columns within the viewport
+  /** same as above, except trimmed down to only columns within the viewport */
   private allDisplayedVirtualColumns: Column[] = [];
   private allDisplayedCenterVirtualColumns: Column[] = [];
 
-  // true if we are doing column spanning
+  /** true if we are doing column spanning */
   private colSpanActive: boolean;
 
-  // grid columns that have colDef.autoHeight set
+  /** grid columns that have colDef.autoHeight set */
   private autoRowHeightColumns: Column[];
 
   private suppressColumnVirtualisation: boolean;
@@ -177,7 +180,7 @@ export class ColumnController extends BeanStub {
   private pivotMode = false;
   private usingTreeData: boolean;
 
-  // for horizontal visualisation of columns
+  /** for horizontal visualisation of columns */
   private scrollWidth: number;
   private scrollPosition: number;
 
@@ -220,22 +223,24 @@ export class ColumnController extends BeanStub {
     this.updateDisplayedColumns('gridOptionsChanged');
   }
 
-  /** 根据columnDefs计算表头结构，并触发 columnEverythingChanged 和 newColumnsLoaded 事件 */
+  /** 根据columnDefs计算表头结构，再触发columnEverythingChanged和newColumnsLoaded
+   * 事件，会渲染表头ui的dom到grid容器 */
   public setColumnDefs(
     columnDefs: (ColDef | ColGroupDef)[],
     source: ColumnEventType = 'api',
   ) {
     const colsPreviouslyExisted = !!this.columnDefs;
-
     this.columnDefs = columnDefs;
 
-    // always invalidate cache on changing columns, as the column id's for the new columns
-    // could overlap with the old id's, so the cache would return old values for new columns.
+    // always invalidate cache on changing columns, as the column id's for the
+    // new columns could overlap with the old id's, so the cache would return
+    // old values for new columns.
     this.valueCache.expire();
 
     // NOTE ==================
-    // we should be destroying the existing columns and groups if they exist, for example, the original column
-    // group adds a listener to the columns, it should be also removing the listeners
+    // we should be destroying the existing columns and groups if they exist,
+    // for example, the original column group adds a listener to the columns,
+    // it should be also removing the listeners
     this.autoGroupsNeedBuilding = true;
 
     const oldPrimaryColumns = this.primaryColumns;
@@ -2025,6 +2030,7 @@ export class ColumnController extends BeanStub {
     this.setColumnState(columnStates, suppressEverythingEvent, source);
   }
 
+  /** 更新columnStates，会触发columnEverythingChanged事件 */
   public setColumnState(
     columnStates: ColumnState[],
     suppressEverythingEvent = false,

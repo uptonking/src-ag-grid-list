@@ -91,11 +91,12 @@ export interface PropertyChangedEvent extends AgEvent {
 }
 
 /**
- * 封装对gridOptions配置对象的操作，如检验、判断boolean、获取部分值，
+ * 封装了对gridOptions取值与简单计算的类，如获取部分配置属性值、判断boolean、检查废弃属性，
  * 还封装了ag-grid使用的部分默认值
  */
 @Bean('gridOptionsWrapper')
 export class GridOptionsWrapper {
+  /** 默认表头宽度的最小值为10，headerCellMinWidth */
   private static MIN_COL_WIDTH = 10;
 
   public static PROP_HEADER_HEIGHT = 'headerHeight';
@@ -133,7 +134,8 @@ export class GridOptionsWrapper {
 
   private layoutElements: HTMLElement[] = [];
 
-  // we store this locally, so we are not calling _.getScrollWidth() multiple times as it's an expensive operation
+  /** store it locally, so we're not calling _.getScrollWidth() multiple times
+   * as it's an expensive operation */
   private scrollWidth: number;
   private updateLayoutClassesListener: any;
 
@@ -145,19 +147,6 @@ export class GridOptionsWrapper {
     this.gridOptions.columnApi = columnApi;
     this.checkForDeprecated();
     this.checkForViolations();
-  }
-
-  @PreDestroy
-  private destroy(): void {
-    // need to remove these, as we don't own the lifecycle of the gridOptions,
-    // we need to remove the references in case the user keeps the grid options,
-    // we want the rest of the grid to be picked up by the garbage collector
-    this.gridOptions.api = null;
-    this.gridOptions.columnApi = null;
-    this.removeEventListener(
-      GridOptionsWrapper.PROP_DOM_LAYOUT,
-      this.updateLayoutClassesListener,
-    );
   }
 
   @PostConstruct
@@ -251,6 +240,19 @@ export class GridOptionsWrapper {
     );
   }
 
+  @PreDestroy
+  private destroy(): void {
+    // need to remove these, as we don't own the lifecycle of the gridOptions,
+    // we need to remove the references in case the user keeps the grid options,
+    // we want the rest of the grid to be picked up by the garbage collector
+    this.gridOptions.api = null;
+    this.gridOptions.columnApi = null;
+    this.removeEventListener(
+      GridOptionsWrapper.PROP_DOM_LAYOUT,
+      this.updateLayoutClassesListener,
+    );
+  }
+
   private checkColumnDefProperties() {
     if (this.gridOptions.columnDefs == null) {
       return;
@@ -273,6 +275,7 @@ export class GridOptionsWrapper {
     });
   }
 
+  /** 检验用户传入的gridOptions对象中配置的属性，并warn无效属性 */
   private checkGridOptionsProperties() {
     const userProperties: string[] = Object.getOwnPropertyNames(
       this.gridOptions,
@@ -300,6 +303,7 @@ export class GridOptionsWrapper {
     );
   }
 
+  /** 检验userProperties不在validPropertiesAndExceptions范围内的无效属性，并打印warn */
   private checkProperties(
     userProperties: string[],
     validPropertiesAndExceptions: string[],
@@ -328,7 +332,7 @@ export class GridOptionsWrapper {
     }
   }
 
-  // returns the dom data, or undefined if not found
+  /** returns the dom data, or undefined if not found */
   public getDomData(element: Node, key: string): any {
     const domData = (element as any)[this.domDataKey];
 
@@ -569,7 +573,7 @@ export class GridOptionsWrapper {
     return isTrue(this.gridOptions.enableMultiRowDragging);
   }
 
-  /**  returns either 'print', 'autoHeight' or 'normal' (normal is the default) */
+  /** return either 'print', 'autoHeight' or 'normal'(normal is the default) */
   public getDomLayout(): string {
     const domLayout = this.gridOptions.domLayout || Constants.DOM_LAYOUT_NORMAL;
     const validLayouts = [
@@ -582,7 +586,9 @@ export class GridOptionsWrapper {
       _.doOnce(
         () =>
           console.warn(
-            `ag-Grid: ${domLayout} is not valid for DOM Layout, valid values are ${Constants.DOM_LAYOUT_NORMAL}, ${Constants.DOM_LAYOUT_AUTO_HEIGHT} and ${Constants.DOM_LAYOUT_PRINT}`,
+            `ag-Grid: ${domLayout} is not valid for DOM Layout,valid values are
+             ${Constants.DOM_LAYOUT_NORMAL},${Constants.DOM_LAYOUT_AUTO_HEIGHT}
+              and ${Constants.DOM_LAYOUT_PRINT}`,
           ),
         'warn about dom layout values',
       );
@@ -1501,6 +1507,7 @@ export class GridOptionsWrapper {
     return null;
   }
 
+  /** 计算colWidth的值，若gridOptions中未配置或宽度过小，则使用200，否则使用配置的值 */
   public getColWidth() {
     if (
       typeof this.gridOptions.colWidth !== 'number' ||
@@ -1552,6 +1559,7 @@ export class GridOptionsWrapper {
     return this.scrollWidth;
   }
 
+  /** 检查传入的gridOptions对象属性中被deprecated的配置项，并提示可替代的配置项属性 */
   private checkForDeprecated() {
     // casting to generic object, so typescript compiles even though
     // we are looking for attributes that don't exist
@@ -2064,8 +2072,9 @@ export class GridOptionsWrapper {
     return !isNaN(value) && typeof value === 'number';
   }
 
-  // Material data table has strict guidelines about whitespace, and these values are different than the ones
-  // ag-grid uses by default. We override the default ones for the sake of making it better out of the box
+  /** Material data table has strict guidelines about whitespace, and
+   * these values are different than the ones ag-grid uses by default.
+   * We override default ones for the sake of making it better out of the box */
   private getFromTheme(
     defaultValue: number,
     sassVariableName: SASS_PROPERTIES,

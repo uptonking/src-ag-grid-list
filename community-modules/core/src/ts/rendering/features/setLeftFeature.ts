@@ -6,6 +6,7 @@ import { Constants } from '../../constants';
 import { PostConstruct } from '../../context/context';
 import { _ } from '../../utils';
 
+/** 设置左边列的跨度、动画、更新 */
 export class SetLeftFeature extends BeanStub {
   private readonly columnOrGroup: ColumnGroupChild;
   private eCell: HTMLElement;
@@ -13,8 +14,7 @@ export class SetLeftFeature extends BeanStub {
 
   private actualLeft: number;
 
-  // if we are spanning columns, this tells what columns,
-  // otherwise this is empty
+  // if spanning columns, this tells what columns, otherwise this is empty
   private colsSpanning: Column[];
 
   private beans: Beans;

@@ -58,9 +58,9 @@ export class EventService implements IEventEmitter {
     const listenerMap = async ? this.allAsyncListeners : this.allSyncListeners;
     let listeners = listenerMap.get(eventType);
 
-    if (eventType === 'columnEverythingChanged') {
-      logObjSer('listeners, ', listeners);
-    }
+    // if (eventType === 'columnEverythingChanged') {
+    //   logObjSer('listeners, ', listeners);
+    // }
 
     // 若listeners不存在，则eventType类型事件添加进空的listeners集合
     if (!listeners) {
@@ -80,26 +80,16 @@ export class EventService implements IEventEmitter {
     listener: Function,
     async = false,
   ): void {
-    if (eventType === 'columnEverythingChanged') {
-      logObjSer('eventService-add1, ', this);
-      console.log(
-        this.allSyncListeners.get(eventType) &&
-          this.allSyncListeners.get(eventType).size,
-      );
-    }
+    // if (eventType === 'columnEverythingChanged') {
+    //   logObjSer('eventService-add1, ', this);
+    // }
 
     this.getListeners(eventType, async).add(listener);
 
-    if (eventType === 'columnEverythingChanged') {
-      console.log(this.allSyncListeners.get(eventType).size);
-      logObjSer('eventService-add2, ', this.allSyncListeners.get(eventType));
-      logObjSer(
-        'eventService-add2, ',
-        Array.from(this.allSyncListeners.get(eventType)),
-      );
-      console.log(jsonFnStringify(this.allSyncListeners.get(eventType)));
-      // logObjSer('eventService-add2, ', this);
-    }
+    // if (eventType === 'columnEverythingChanged') {
+    //   // console.log(this.allSyncListeners.get(eventType).size);
+    //   logObjSer('eventService-add2, ', this);
+    // }
   }
 
   public removeEventListener(
@@ -127,12 +117,12 @@ export class EventService implements IEventEmitter {
 
   /** 触发event类型的所有异步和同步事件，事件函数执行后并未从allSyncListeners映射表移除 */
   public dispatchEvent(event: AgEvent): void {
-    if (event.type === 'columnEverythingChanged') {
-      console.log(
-        'dispatchEvent-columnEverythingChanged, ',
-        this.allSyncListeners,
-      );
-    }
+    // if (event.type === 'columnEverythingChanged') {
+    //   logObjSer(
+    //     `dispatchEvent-${event.type}, `,
+    //     this.allSyncListeners,
+    //   );
+    // }
 
     this.dispatchToListeners(event, true);
     this.dispatchToListeners(event, false);

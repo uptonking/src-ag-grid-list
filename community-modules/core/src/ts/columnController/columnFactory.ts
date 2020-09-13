@@ -27,14 +27,15 @@ export class ColumnFactory extends BeanStub {
     this.logger = loggerFactory.create('ColumnFactory');
   }
 
+  /**  */
   public createColumnTree(
     defs: (ColDef | ColGroupDef)[] | null,
     primaryColumns: boolean,
     existingColumns?: Column[],
   ): { columnTree: OriginalColumnGroupChild[]; treeDept: number } {
     // column key creator dishes out unique column id's in a deterministic way,
-    // so if we have two grids (that could be master/slave) with same column definitions,
-    // then this ensures the two grids use identical id's.
+    // so if we have two grids (that could be master/slave) with same column
+    // definitions, then this ensures the two grids use identical id's.
     const columnKeyCreator = new ColumnKeyCreator();
 
     if (existingColumns) {
@@ -232,6 +233,9 @@ export class ColumnFactory extends BeanStub {
     return maxDeptThisLevel;
   }
 
+  /**
+   * 递归地根据columnDefs创建所有表头列对象
+   */
   private recursivelyCreateColumns(
     defs: (ColDef | ColGroupDef)[],
     level: number,
@@ -249,6 +253,7 @@ export class ColumnFactory extends BeanStub {
     defs.forEach((def: ColDef | ColGroupDef) => {
       let newGroupOrColumn: OriginalColumnGroupChild;
 
+      // 若def包含children属性，代表一个表头分组
       if (this.isColumnGroup(def)) {
         newGroupOrColumn = this.createColumnGroup(
           primaryColumns,
@@ -259,6 +264,8 @@ export class ColumnFactory extends BeanStub {
           parent,
         );
       } else {
+        // 若def不代表一个表头分组
+
         newGroupOrColumn = this.createColumn(
           primaryColumns,
           def as ColDef,
@@ -274,6 +281,7 @@ export class ColumnFactory extends BeanStub {
     return result;
   }
 
+  /** 会调用recursivelyCreateColumns，递归地创建该表头分组的所有表头列对象 */
   private createColumnGroup(
     primaryColumns: boolean,
     colGroupDef: ColGroupDef,
@@ -322,6 +330,7 @@ export class ColumnFactory extends BeanStub {
     return colGroupDefMerged;
   }
 
+  /** 创建一个表头列对象 */
   private createColumn(
     primaryColumns: boolean,
     colDef: ColDef,
@@ -333,7 +342,7 @@ export class ColumnFactory extends BeanStub {
 
     this.checkForDeprecatedItems(colDefMerged);
 
-    // see if column already exists
+    // see if column already exists，最后会返回此列定义对应的表头列对象
     let column = this.findExistingColumn(colDef, existingColsCopy);
 
     if (!column) {
@@ -342,9 +351,11 @@ export class ColumnFactory extends BeanStub {
         colDefMerged.colId,
         colDefMerged.field,
       );
+      // 创建新的表头列对象
       column = new Column(colDefMerged, colDef, colId, primaryColumns);
       this.context.createBean(column);
     } else {
+      /** 使用新的列定义更新表头列对象 */
       column.setColDef(colDefMerged, colDef);
     }
 
@@ -386,6 +397,7 @@ export class ColumnFactory extends BeanStub {
     return res;
   }
 
+  /** 合并表头列定义的默认配置、单独某列的配置、用户配置，最后返回合并后的colDefMerged */
   public mergeColDefs(colDef: ColDef) {
     // start with empty merged definition
     const colDefMerged: ColDef = {} as ColDef;
@@ -500,7 +512,7 @@ export class ColumnFactory extends BeanStub {
     }
   }
 
-  // if object has children, we assume it's a group
+  /** if columnDefs object has `children` prop, we assume it's a group */
   private isColumnGroup(abstractColDef: ColDef | ColGroupDef): boolean {
     return (abstractColDef as ColGroupDef).children !== undefined;
   }

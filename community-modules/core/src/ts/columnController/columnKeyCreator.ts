@@ -1,9 +1,12 @@
-// class returns a unique id to use for the column. it checks the existing columns, and if the requested
-// id is already taken, it will start appending numbers until it gets a unique id.
-// eg, if the col field is 'name', it will try ids: {name, name_1, name_2...}
-// if no field or id provided in the col, it will try the ids of natural numbers
 import { _ } from '../utils';
 
+/**
+ * class returns a unique id to use for the column.
+ * It checks the existing columns, and if the requested id is already taken,
+ * it will start appending numbers until it gets a unique id.
+ * eg, if the col field is 'name', it will try ids: {name, name_1, name_2...}.
+ * if no field or id provided in the col, it will try ids of natural numbers.
+ */
 export class ColumnKeyCreator {
   private existingKeys: { [key: string]: boolean } = {};
 

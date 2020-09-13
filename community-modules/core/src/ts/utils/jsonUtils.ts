@@ -47,7 +47,7 @@ export function jsonFnStringify(obj: any): string {
     }
 
     if (value instanceof Set) {
-      console.log('==fns, ', value);
+      // console.log('==fns, ', value);
       return {
         dataType: 'Set',
         value: Array.from(value),
@@ -265,7 +265,7 @@ export function jsonFnParse(str: string, date2obj?: RegExp): any {
 
       let firstValidFunc = true;
       if (value.dataType === 'Set') {
-        console.log('==fnp, ', value);
+        // console.log('==fnp, ', value);
         // 需要查找value数组中的重复元素，这里简单实现，实际的应用场景中函数或对象序列化后会是重复字符串
         const rmDup = value.value.map((str: any) => {
           if (typeof str === 'string' && str.endsWith('{ [native code] }')) {

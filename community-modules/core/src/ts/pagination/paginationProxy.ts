@@ -76,6 +76,7 @@ export class PaginationProxy extends BeanStub {
     return res;
   }
 
+  /** 计算分页数量，再触发 paginationChanged 事件 */
   private onModelUpdated(modelUpdatedEvent?: ModelUpdatedEvent): void {
     this.calculatePages();
     const paginationChangedEvent: PaginationChangedEvent = {

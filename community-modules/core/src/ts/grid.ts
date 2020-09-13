@@ -193,7 +193,7 @@ export class Grid {
     const gridCore = new gridCoreClass();
 
     // 给gridCore对象注入属性，会从context的bean容器中查找相关bean来初始化GridCore的属性
-    // 执行gridCore的postConstruct钩子方法时会将grid的dom元素渲染到页面显示出来
+    // 执行gridCore的postConstruct钩子方法时会将grid的最外层dom元素及内部部分结构渲染到页面显示出来
     this.context.createBean(gridCore);
 
     // 计算表头结构，并将rowData计算处理成rowModel形式的数据结构

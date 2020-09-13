@@ -1,5 +1,6 @@
 /**
- * 本class全部是静态变量，定义了grid生命周期及交互操作会涉及到的事件名称
+ * 本class全部是静态变量，定义了grid生命周期及交互操作会涉及到的事件名称.
+ * 注册的部分事件名未集中写在这里，如autoGroupColumnDef
  */
 export class Events {
   /** Everything has changed with the columns. Either complete new set of columns set, or user called setState()*/

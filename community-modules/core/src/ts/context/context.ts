@@ -340,7 +340,7 @@ export class Context {
     beanInstances: any[],
     lifeCycleMethod: string,
   ): void {
-    console.log('==', lifeCycleMethod);
+    // console.log('==', lifeCycleMethod);
 
     beanInstances.forEach((beanInstance: any) => {
       this.callLifeCycleMethodsOneBean(beanInstance, lifeCycleMethod);
@@ -373,7 +373,7 @@ export class Context {
 
     const allMethodsList = Object.keys(allMethods);
 
-    console.log(beanInstance.constructor.name, allMethodsList);
+    // console.log(beanInstance.constructor.name, allMethodsList);
 
     // 遍历调用元数据中查找到的所有方法，方法作为beanInstance对象的属性调用时内部this指向自身对象
     allMethodsList.forEach((methodName) => beanInstance[methodName]());

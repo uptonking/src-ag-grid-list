@@ -500,7 +500,7 @@ export class ClientSideRowModel
 
   /**
    * 更新数据rowModel，基于无break的switch选择分支，实现从某一步开始一直执行到结束的流程，
-   * 是columnEverythingChanged事件对应的事件处理函数之一
+   * 是columnEverythingChanged对应的事件处理函数之一
    * @param params 更新参数
    */
   public refreshModel(params: RefreshModelParams): void {
@@ -565,7 +565,7 @@ export class ClientSideRowModel
       newData: params.newData,
       newPage: false,
     };
-    // modelUpdated事件默认为空
+    // modelUpdated事件
     this.eventService.dispatchEvent(event);
 
     if (this.$scope) {
