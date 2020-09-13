@@ -76,7 +76,7 @@ export class PaginationProxy extends BeanStub {
     return res;
   }
 
-  /** 计算分页数量，再触发 paginationChanged 事件 */
+  /** 计算分页数据，再触发 paginationChanged 事件 */
   private onModelUpdated(modelUpdatedEvent?: ModelUpdatedEvent): void {
     this.calculatePages();
     const paginationChangedEvent: PaginationChangedEvent = {
@@ -93,6 +93,7 @@ export class PaginationProxy extends BeanStub {
     this.eventService.dispatchEvent(paginationChangedEvent);
   }
 
+  /** 手动调用 onModelUpdated 的函数 */
   public goToPage(page: number): void {
     if (!this.active) {
       return;
@@ -245,6 +246,7 @@ export class PaginationProxy extends BeanStub {
     }
   }
 
+  /** 计算分页数量、顶部和底部行索引 */
   private calculatePages(): void {
     if (this.active) {
       this.setPageSize();

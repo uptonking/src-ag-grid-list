@@ -105,6 +105,7 @@ export class ColumnUtils extends BeanStub {
         }
     }*/
 
+  /** 递归遍历tree多叉树，对符合条件的节点执行callback */
   public depthFirstOriginalTreeSearch(
     parent: OriginalColumnGroup | null,
     tree: OriginalColumnGroupChild[],

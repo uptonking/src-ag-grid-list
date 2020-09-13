@@ -65,17 +65,17 @@ export interface ColumnResizeSet {
 
 export interface ColumnState {
   colId: string;
-  hide?: boolean;
-  aggFunc?: string | IAggFunc | null;
   width?: number;
-  pivotIndex?: number | null;
+  hide?: boolean;
   pinned?: boolean | string | 'left' | 'right';
+  aggFunc?: string | IAggFunc | null;
+  pivotIndex?: number | null;
   rowGroupIndex?: number | null;
   flex?: number;
 }
 
 /**
- * 负责表头列的渲染及状态管理
+ * 负责表头列的渲染及状态更新
  */
 @Bean('columnController')
 export class ColumnController extends BeanStub {
@@ -224,7 +224,7 @@ export class ColumnController extends BeanStub {
   }
 
   /** 根据columnDefs计算表头结构，再触发columnEverythingChanged和newColumnsLoaded
-   * 事件，会渲染表头ui的dom到grid容器 */
+   * 事件，会渲染表头ui的dom元素到grid容器 */
   public setColumnDefs(
     columnDefs: (ColDef | ColGroupDef)[],
     source: ColumnEventType = 'api',
@@ -244,6 +244,7 @@ export class ColumnController extends BeanStub {
     this.autoGroupsNeedBuilding = true;
 
     const oldPrimaryColumns = this.primaryColumns;
+    // 创建表头树
     const balancedTreeResult = this.columnFactory.createColumnTree(
       columnDefs,
       true,
@@ -253,17 +254,21 @@ export class ColumnController extends BeanStub {
     this.primaryColumnTree = balancedTreeResult.columnTree;
     this.primaryHeaderRowCount = balancedTreeResult.treeDept + 1;
 
+    // 计算当前表头树的所有叶节点
     this.primaryColumns = this.getColumnsFromTree(this.primaryColumnTree);
 
     this.extractRowGroupColumns(source, oldPrimaryColumns);
     this.extractPivotColumns(source, oldPrimaryColumns);
 
+    //
     this.createValueColumns(source, oldPrimaryColumns);
 
     this.ready = true;
 
     this.updateGridColumns();
+
     this.updateDisplayedColumns(source);
+
     this.checkDisplayedVirtualColumns();
 
     if (this.gridOptionsWrapper.isImmutableColumns() && colsPreviouslyExisted) {
@@ -276,8 +281,8 @@ export class ColumnController extends BeanStub {
       columnApi: this.columnApi,
       source,
     };
-    logObjSer('columnEverythingChanged, ', this.eventService);
-    // columnEverythingChanged事件列表默认为空，但会立即触发modelUpdate事件
+    logObjSer('==columnEverythingChanged, ', this.eventService);
+    // columnEverythingChanged事件列表有2个函数，会触发modelUpdate事件
     this.eventService.dispatchEvent(eventEverythingChanged);
 
     const newColumnsLoadedEvent: NewColumnsLoadedEvent = {
@@ -324,11 +329,14 @@ export class ColumnController extends BeanStub {
     return columns;
   }
 
-  // checks what columns are currently displayed due to column virtualisation. fires an event
-  // if the list of columns has changed.
-  // + setColumnWidth(), setVirtualViewportPosition(), setColumnDefs(), sizeColumnsToFit()
+  /** checks what columns are currently displayed due to column virtualisation.
+   * fires an event if the list of columns has changed.
+   * setColumnWidth(), setVirtualViewportPosition(), setColumnDefs(),
+   * sizeColumnsToFit()
+   */
   private checkDisplayedVirtualColumns(): void {
-    // check displayCenterColumnTree exists first, as it won't exist when grid is initialising
+    // check displayCenterColumnTree exists first,
+    // as it won't exist when grid is initialising
     if (this.displayedCenterColumns == null) {
       return;
     }
@@ -564,6 +572,7 @@ export class ColumnController extends BeanStub {
     this.autoSizeColumns(allDisplayedColumns, skipHeader, source);
   }
 
+  /** 递归地从表头树中计算Column类型的节点 */
   private getColumnsFromTree(
     rootColumns: OriginalColumnGroupChild[],
   ): Column[] {
@@ -2735,6 +2744,7 @@ export class ColumnController extends BeanStub {
     return this.ready;
   }
 
+  /** 创建this.valueColumns并设置aggFunc */
   private createValueColumns(
     source: ColumnEventType,
     oldPrimaryColumns: Column[],
@@ -2743,13 +2753,15 @@ export class ColumnController extends BeanStub {
       oldPrimaryColumns,
       this.valueColumns,
       (col: Column, flag: boolean) => col.setValueActive(flag, source),
-      // aggFunc doesn't have index variant, cos order of value cols doesn't matter, so always return null
+      // aggFunc doesn't have index variant, cos order of value cols doesn't
+      // matter, so always return null
       () => null,
       // aggFunc is a string, so return it's existence
       (colDef: ColDef) => !!colDef.aggFunc,
     );
 
-    // all new columns added will have aggFunc missing, so set it to what is in the colDef
+    // all new columns added will have aggFunc missing,
+    // so set it to what is in the colDef
     this.valueColumns.forEach((col) => {
       if (!col.getAggFunc()) {
         col.setAggFunc(col.getColDef().aggFunc);
@@ -2770,6 +2782,7 @@ export class ColumnController extends BeanStub {
     );
   }
 
+  /** 创建更新后的列并返回， existingCols.concat(newCols) */
   private extractColumns(
     oldPrimaryColumns: Column[],
     previousCols: Column[],
@@ -2789,15 +2802,16 @@ export class ColumnController extends BeanStub {
     const colNewFunc = (col: Column) =>
       !oldPrimaryColumns || oldPrimaryColumns.indexOf(col) < 0;
     const removedCols = previousCols.filter(colMissingFromPrimaryFunc);
+    //
     const existingCols = previousCols.filter(colPresentInPrimaryFunc);
-    const newPrimaryCols = this.primaryColumns.filter(colNewFunc);
 
     removedCols.forEach((col) => setFlagFunc(col, false));
 
     const newCols: Column[] = [];
 
-    // we only want to work on new columns, as old columns already got processed first time around
-    // pull out items with xxxIndex
+    const newPrimaryCols = this.primaryColumns.filter(colNewFunc);
+    // we only want to work on new columns, as old columns already got processed
+    // first time around.  pull out items with xxxIndex
     newPrimaryCols.forEach((col) => {
       const index = getIndexFunc(col.getColDef());
 
@@ -2819,12 +2833,13 @@ export class ColumnController extends BeanStub {
 
       return 1;
     });
-    // now just pull out items xxx (boolean value), they will be added at the end
+    // now just pull out items xxx(boolean val), they will be added at the end
     // after the indexed ones, but in the order the columns appear
     newPrimaryCols.forEach((col) => {
       const booleanValue = getValueFunc(col.getColDef());
       if (booleanValue) {
-        // if user already specified xxxIndex then we skip it as this col already included
+        // if user already specified xxxIndex then we skip it
+        // as this col already included
         if (newCols.indexOf(col) >= 0) {
           return;
         }
@@ -3050,6 +3065,7 @@ export class ColumnController extends BeanStub {
     return this.groupDisplayColumns;
   }
 
+  /** 更新显示的列 */
   private updateDisplayedColumns(source: ColumnEventType): void {
     const columnsForDisplay = this.calculateColumnsForDisplay();
 
@@ -3134,7 +3150,8 @@ export class ColumnController extends BeanStub {
     }
   }
 
-  // called from: setColumnState, setColumnDefs, setSecondaryColumns
+  /** 计算自动分组和columnSpan，再触发gridColumnsChanged事件，
+   * called from: setColumnState, setColumnDefs, setSecondaryColumns */
   private updateGridColumns(): void {
     if (this.gridColsArePrimary) {
       this.lastPrimaryOrder = this.gridColumns;
@@ -3157,6 +3174,7 @@ export class ColumnController extends BeanStub {
       this.orderGridColsLikeLastPrimary();
     }
 
+    // 计算并添加自动分组的列
     this.addAutoGroupToGridColumns();
 
     this.autoRowHeightColumns = this.gridColumns.filter(
@@ -3174,7 +3192,6 @@ export class ColumnController extends BeanStub {
       api: this.gridApi,
       columnApi: this.columnApi,
     };
-
     this.eventService.dispatchEvent(event);
   }
 
@@ -3275,6 +3292,12 @@ export class ColumnController extends BeanStub {
     this.gridColumns = locked.concat(unlocked);
   }
 
+  /**
+   * 自动分组会添加一个新表头列，在此新列的单元格可以折叠展开该值下的原数据行。
+   * as there is at least one active row group, the grid will provide an
+   * additional column for displaying the groups in a tree structure with
+   * expand/collapse navigation.
+   */
   private addAutoGroupToGridColumns(): void {
     // add in auto-group here
     this.createGroupAutoColumnsIfNeeded();

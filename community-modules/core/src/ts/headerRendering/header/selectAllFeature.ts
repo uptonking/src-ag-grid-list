@@ -76,6 +76,7 @@ export class SelectAllFeature extends BeanStub {
     }
   }
 
+  /** 更新复选框的状态 */
   private onModelChanged(): void {
     if (!this.cbSelectAllVisible) {
       return;

@@ -19,6 +19,7 @@ import { _ } from '../utils';
 
 export type HeaderContainerPosition = 'left' | 'right' | 'center';
 
+/** ag-grid表头ui组件，包含表头顶层dom元素 */
 export class HeaderRootComp extends ManagedFocusComponent {
   private static TEMPLATE /* html */ = `<div class="ag-header" role="presentation">
             <div class="ag-pinned-left-header" ref="ePinnedLeftHeader" role="presentation"></div>
@@ -99,7 +100,7 @@ export class HeaderRootComp extends ManagedFocusComponent {
       this.onDomLayoutChanged.bind(this),
     );
 
-    // for setting ag-pivot-on / ag-pivot-off CSS classes
+    // for setting ag-pivot-on/ag-pivot-off CSS classes
     this.addManagedListener(
       this.eventService,
       Events.EVENT_COLUMN_PIVOT_MODE_CHANGED,
@@ -109,6 +110,7 @@ export class HeaderRootComp extends ManagedFocusComponent {
     this.onPivotModeChanged();
     this.addPreventHeaderScroll();
 
+    console.trace();
     if (this.columnController.isReady()) {
       this.refreshHeader();
     }

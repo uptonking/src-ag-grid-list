@@ -27,7 +27,7 @@ export class ColumnFactory extends BeanStub {
     this.logger = loggerFactory.create('ColumnFactory');
   }
 
-  /**  */
+  /** 创建表头多叉树平衡树 */
   public createColumnTree(
     defs: (ColDef | ColGroupDef)[] | null,
     primaryColumns: boolean,
@@ -57,6 +57,8 @@ export class ColumnFactory extends BeanStub {
     );
     const treeDept = this.findMaxDept(unbalancedTree, 0);
     this.logger.log('Number of levels for grouped columns is ' + treeDept);
+
+    // 创建平衡树
     const columnTree = this.balanceColumnTree(
       unbalancedTree,
       0,
@@ -64,6 +66,7 @@ export class ColumnFactory extends BeanStub {
       columnKeyCreator,
     );
 
+    // 设置child的parent
     const deptFirstCallback = (
       child: OriginalColumnGroupChild,
       parent: OriginalColumnGroup,
@@ -71,8 +74,9 @@ export class ColumnFactory extends BeanStub {
       if (child instanceof OriginalColumnGroup) {
         child.setupExpandable();
       }
-      // we set the original parents at the end, rather than when we go along, as balancing the tree
-      // adds extra levels into the tree. so we can only set parents when balancing is done.
+      // we set the original parents at the end, rather than when we go along,
+      // as balancing the tree adds extra levels into the tree.
+      // so we can only set parents when balancing is done.
       child.setOriginalParent(parent);
     };
 
@@ -138,6 +142,12 @@ export class ColumnFactory extends BeanStub {
     return dept;
   }
 
+  /** 查找树和排序树是一个意思，特点是中序遍历一遍的结果是单调的。
+   * 平衡树一般是排序树的一种，并且加点条件，就是任意一个节点的两个叉的深度差不多
+   * （比如差值的绝对值小于某个常数，或者一个不能比另一个深出去一倍之类的）。
+   * 这样的树可以保证二分搜索任意元素都是O(log n)的，一般还附带带有插入或者
+   * 删除某个元素也是O(log n)的的性质。
+   */
   private balanceColumnTree(
     unbalancedTree: OriginalColumnGroupChild[],
     currentDept: number,
@@ -213,6 +223,7 @@ export class ColumnFactory extends BeanStub {
     return result;
   }
 
+  /** 递归地计算表头树的最大深度 */
   private findMaxDept(
     treeChildren: OriginalColumnGroupChild[],
     dept: number,

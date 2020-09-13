@@ -368,7 +368,7 @@ export class RowRenderer extends BeanStub {
     this.removeRowComps(rowIndexesToRemove);
   }
 
-  /** 一页数据加载完成后，再触发 modelUpdated 事件 */
+  /** 当前页加载完成后，手动调用 modelUpdated 函数，重新渲染所有行组件 */
   private onPageLoaded(refreshEvent?: ModelUpdatedEvent): void {
     if (_.missing(refreshEvent)) {
       refreshEvent = {
@@ -468,7 +468,7 @@ export class RowRenderer extends BeanStub {
     this.redrawAfterModelUpdate(params);
   }
 
-  /** 行数据更新时，会 */
+  /** 重新渲染所有行组件 */
   private onModelUpdated(refreshEvent: ModelUpdatedEvent): void {
     const params: RefreshViewParams = {
       recycleRows: refreshEvent.keepRenderedRows,
@@ -482,6 +482,7 @@ export class RowRenderer extends BeanStub {
       onlyBody: true,
     };
     console.trace();
+    // 更新需要更新的所有行组件
     this.redrawAfterModelUpdate(params);
   }
 
@@ -940,7 +941,7 @@ export class RowRenderer extends BeanStub {
     return indexesToDraw;
   }
 
-  /** 计算需要渲染的行的索引index，然后遍历这些行索引创建RowComp */
+  /** 计算需要渲染的行的索引index，然后遍历这些行索引创建或更新RowComp */
   private redraw(
     rowsToRecycle?: { [key: string]: RowComp },
     animate = false,
@@ -1079,7 +1080,7 @@ export class RowRenderer extends BeanStub {
     this.redrawAfterScroll();
   }
 
-  /** 更新旧的rowComp或创建新的rowComp，返回更新后的rowComp */
+  /** 创建新的或更新旧的rowComp，返回更新后的rowComp */
   private createOrUpdateRowComp(
     rowIndex: number,
     rowsToRecycle: { [key: string]: RowComp },

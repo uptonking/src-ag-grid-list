@@ -11,7 +11,7 @@ export interface VisibleChangedEvent extends AgEvent {
 }
 
 /**
- * 对渲染的ui组件的样式、属性进行crud，还可以创建子组件的DOM元素
+ * 可以渲染到dom元素的组件，可以对渲染的ui的样式、属性进行crud，还可以创建子组件的DOM元素
  */
 export class Component extends BeanStub {
   public static EVENT_DISPLAYED_CHANGED = 'displayedChanged';

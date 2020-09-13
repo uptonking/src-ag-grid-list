@@ -53,8 +53,7 @@ export interface RowNodeMap {
  * 最常用的rowModel，仅在浏览器客户端进行计算，不涉及服务端数据通信
  */
 @Bean('rowModel')
-export class ClientSideRowModel
-  extends BeanStub
+export class ClientSideRowModel extends BeanStub
   implements IClientSideRowModel {
   @Autowired('gridOptionsWrapper')
   private gridOptionsWrapper: GridOptionsWrapper;
@@ -550,9 +549,9 @@ export class ClientSideRowModel
       // console.log('rowsToDisplay = ' + (new Date().getTime() - start));
     }
 
-    // set all row tops to null, then set row tops on all visible rows. if we don't
-    // do this, then the algorithm below only sets row tops, old row tops from old rows
-    // will still lie around
+    // set all row tops to null, then set row tops on all visible rows.
+    // if we don't do this, then the algorithm below only sets row tops,
+    // old row tops from old rows will still lie around
     this.resetRowTops(this.rootNode, changedPath);
     this.setRowTops();
 
@@ -565,7 +564,7 @@ export class ClientSideRowModel
       newData: params.newData,
       newPage: false,
     };
-    // modelUpdated事件
+    // 触发modelUpdated事件
     this.eventService.dispatchEvent(event);
 
     if (this.$scope) {

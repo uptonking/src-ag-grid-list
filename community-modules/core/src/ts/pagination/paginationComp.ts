@@ -90,6 +90,7 @@ export class PaginationComp extends Component {
     this.onPaginationChanged();
   }
 
+  /** 更新当前页的页码和当前页的首位行索引号 */
   private onPaginationChanged(): void {
     this.enableOrDisableButtons();
     this.updateRowLabels();
@@ -210,6 +211,7 @@ export class PaginationComp extends Component {
     _.addOrRemoveCssClass(this.btLast, 'ag-disabled', this.lastButtonDisabled);
   }
 
+  /** 计算并更新首尾行的行号的dom元素 */
   private updateRowLabels() {
     const currentPage = this.paginationProxy.getCurrentPage();
     const pageSize = this.paginationProxy.getPageSize();

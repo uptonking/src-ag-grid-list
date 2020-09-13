@@ -317,6 +317,7 @@ export class FilterManager extends BeanStub {
     this.externalFilterPresent = this.gridOptionsWrapper.isExternalFilterPresent();
   }
 
+  /** 触发 filterChanged 事件 */
   public onFilterChanged(
     filterInstance?: IFilterComp,
     additionalEventAttributes?: any,
@@ -677,6 +678,7 @@ export class FilterManager extends BeanStub {
     });
   }
 
+  /** 给表头列执行过滤 */
   private onNewColumnsLoaded(): void {
     let atLeastOneFilterGone = false;
 

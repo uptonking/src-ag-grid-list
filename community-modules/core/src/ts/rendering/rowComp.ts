@@ -1349,6 +1349,7 @@ export class RowComp extends Component {
     );
   }
 
+  /** 切换首尾行的样式 */
   private onModelUpdated(): void {
     const newFirst = this.isFirstRowOnPage();
     const newLast = this.isLastRowOnPage();
@@ -1825,10 +1826,11 @@ export class RowComp extends Component {
     }
   }
 
+  /** 当前页页面更新时，更新顶部行 */
   private onPaginationChanged(): void {
     const currentPage = this.beans.paginationProxy.getCurrentPage();
-    // it is possible this row is in the new page, but the page number has changed, which means
-    // it needs to reposition itself relative to the new page
+    // it is possible this row is in the new page, but the page number has
+    //changed,which means it needs to reposition itself relative to the new page
     if (this.paginationPage !== currentPage) {
       this.paginationPage = currentPage;
       this.onTopChanged();

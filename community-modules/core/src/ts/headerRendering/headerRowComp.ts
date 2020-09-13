@@ -24,6 +24,7 @@ export enum HeaderRowType {
   FLOATING_FILTER,
 }
 
+/** 代表表头中的一行的ui组件，包含表头一行的dom元素和样式 */
 export class HeaderRowComp extends Component {
   @Autowired('gridOptionsWrapper')
   private gridOptionsWrapper: GridOptionsWrapper;
@@ -54,9 +55,11 @@ export class HeaderRowComp extends Component {
     const niceClassName = HeaderRowType[type].toLowerCase().replace(/_/g, '-');
     this.addCssClass(`ag-header-row-${niceClassName}`);
 
+    console.trace();
+
     if (isBrowserSafari()) {
-      // fix for a Safari rendering bug that caused the header to flicker above chart panels
-      // as you move the mouse over the header
+      // fix for a Safari rendering bug that caused the header to flicker above
+      // chart panels as you move the mouse over the header
       this.getGui().style.transform = 'translateZ(0)';
     }
   }
