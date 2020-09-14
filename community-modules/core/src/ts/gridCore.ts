@@ -67,7 +67,7 @@ export class GridCore extends ManagedFocusComponent {
 
     // 创建ag-grid最外层dom元素及部分内部结构对应的字符串
     const template = this.createTemplate();
-    console.log('gridCore-template, ', template);
+    console.log('==template=str, ', template);
     // 将grid结构字符串创建成dom对象
     this.setTemplate(template);
 

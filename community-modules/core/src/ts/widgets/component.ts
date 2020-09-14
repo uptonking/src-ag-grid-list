@@ -17,7 +17,7 @@ export class Component extends BeanStub {
   public static EVENT_DISPLAYED_CHANGED = 'displayedChanged';
   /** 本组件渲染到页面时对应的dom元素对象 */
   private eGui: HTMLElement;
-  /** 保存注册到本dom元素上的事件监听器列表 */
+  /** 存放注册到本dom元素上的事件监听器列表，实际上注册到了dom元素上 */
   private annotatedGuiListeners: any[] = [];
 
   @Autowired('agStackComponentsRegistry')
@@ -47,7 +47,8 @@ export class Component extends BeanStub {
 
   @PreConstruct
   private createChildComponentsPreConstruct(): void {
-    // ui exists if user sets template in constructor. when this happens, we have to wait for the context
+    // ui exists if user sets template in constructor.
+    // when this happens, we have to wait for the context
     // to be autoWired first before we can create child components.
     if (!!this.getGui()) {
       this.createChildComponentsFromTags(this.getGui());
@@ -267,6 +268,7 @@ export class Component extends BeanStub {
     }
 
     listenerMethods.forEach((meta) => {
+      // 从装饰器获取ref元数据，然后在当前元素内查找this.eGui.querySelector([ref=?])
       const element = this.getRefElement(meta.ref);
       if (!element) {
         return;

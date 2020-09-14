@@ -290,10 +290,10 @@ export function isVisible(element: HTMLElement) {
  * @returns {HTMLElement}
  */
 export function loadTemplate(template: string): HTMLElement {
-  const tempDiv = document.createElement('div');
-  console.log('loadTemplate, ', template);
-  console.trace();
+  // console.log('loadTemplate, ', template);
+  // console.trace();
 
+  const tempDiv = document.createElement('div');
   tempDiv.innerHTML = (template || '').trim();
 
   return tempDiv.firstChild as HTMLElement;
