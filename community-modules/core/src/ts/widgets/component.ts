@@ -2,7 +2,7 @@ import { AgEvent } from '../events';
 import { Autowired, PostConstruct, PreConstruct } from '../context/context';
 import { AgStackComponentsRegistry } from '../components/agStackComponentsRegistry';
 import { BeanStub } from '../context/beanStub';
-import { _, NumberSequence } from '../utils';
+import { _, NumberSequence, logObjSer, jsonFnStringify } from '../utils';
 
 const compIdSequence = new NumberSequence();
 
@@ -37,6 +37,7 @@ export class Component extends BeanStub {
   private compId = compIdSequence.next();
 
   constructor(template?: string) {
+    // 基类BeanStub的构造函数是自动生成的默认为空的构造函数，这里啥事没干
     super();
 
     if (template) {
@@ -71,13 +72,15 @@ export class Component extends BeanStub {
     return this.compId;
   }
 
-  // for registered components only, eg creates AgCheckbox instance from ag-checkbox HTML tag
+  /** 递归地根据。
+   * for registered components only, eg creates AgCheckbox instance
+   *  from ag-checkbox HTML tag */
   private createChildComponentsFromTags(
     parentNode: Element,
     paramsMap?: any,
   ): void {
-    // we MUST take a copy of the list first, as the 'swapComponentForNode' adds comments into the DOM
-    // which messes up the traversal order of the children.
+    // we MUST take a copy of the list first, as 'swapComponentForNode' adds
+    // comments into the DOM, which messes up traversal order of the children.
     const childNodeList: Node[] = _.copyNodeList(parentNode.childNodes);
 
     _.forEach(childNodeList, (childNode) => {
@@ -85,11 +88,12 @@ export class Component extends BeanStub {
         return;
       }
 
+      // 若childNode是HTMLElement类型，则读取ref属性，计算对应的Component组件
       const childComp = this.createComponentFromElement(
         childNode,
         (childComp) => {
-          // copy over all attributes, including css classes, so any attributes user put on the tag
-          // wll be carried across
+          // copy over all attributes, including css classes,
+          // so any attributes user put on the tag wll be carried across
           this.copyAttributesFromNode(childNode, childComp.getGui());
         },
         paramsMap,
@@ -112,6 +116,7 @@ export class Component extends BeanStub {
     });
   }
 
+  /** 根据传入的HTMLElement，计算对应的Component组件并返回 */
   public createComponentFromElement(
     element: HTMLElement,
     afterPreCreateCallback?: (comp: Component) => void,
@@ -191,9 +196,11 @@ export class Component extends BeanStub {
     }
   }
 
-  /** 将传入的dom元素字符串创建成dom元素对象，并赋值给this.eGui属性，再给dom对象添加事件监听器和注解装饰器中指定的选择器结果 */
+  /** 将传入的dom元素字符串创建成dom元素对象，并赋值给this.eGui，
+   * 再给dom对象添加通过装饰器指定的事件监听器和选择器执行结果 */
   public setTemplate(template: string, paramsMap?: any): void {
     const eGui = _.loadTemplate(template as string);
+    logObjSer('==eGui, ', eGui);
     this.setTemplateFromElement(eGui, paramsMap);
   }
 
@@ -206,12 +213,14 @@ export class Component extends BeanStub {
 
     // context will not be available when user sets template in constructor
     if (!!this.getContext()) {
+      // 注意，若子类对象实例被依赖注入全局单例的context对象后，会执行这里
       this.createChildComponentsFromTags(this.getGui(), paramsMap);
     }
   }
 
   /**
-   * 查找各级原型对象的__agComponentMetaData的querySelectors属性值，并执行选择器，将结果保存到本对象的属性
+   * 查找各级原型对象的__agComponentMetaData的querySelectors属性值，并执行选择器，
+   * 将结果保存到本对象的属性
    */
   protected wireQuerySelectors(): void {
     if (!this.eGui) {
@@ -236,7 +245,8 @@ export class Component extends BeanStub {
   }
 
   /**
-   * 查找各级原型对象的_agComponentMetaData的guiListenerMethods属性值并将事件注册到this.eGui的dom元素上
+   * 查找各级原型对象的_agComponentMetaData的guiListenerMethods属性值，
+   * 并将事件注册到this.eGui的dom元素上
    */
   private addAnnotatedGuiEventListeners(): void {
     this.removeAnnotatedGuiEventListeners();

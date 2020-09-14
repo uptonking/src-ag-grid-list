@@ -8,21 +8,25 @@ import { Component } from '../widgets/component';
 import { _ } from '../utils';
 
 /**
- * bean的基类，可以加减事件监听器、触发bean的destroyed事件及PreDestroy钩子函数
+ * bean的基类，没有父类且只实现了IEventEmitter一个接口，
+ * 可以加减事件监听器、触发事件、触发bean的destroyed事件及PreDestroy钩子函数，
+ * 通过依赖注入只初始化context、eventService、frameworkOverrides3个bean，
+ * 每个bean对象都持有自己的localEventService，非共享。
  */
 export class BeanStub implements IEventEmitter {
   public static EVENT_DESTROYED = 'destroyed';
 
+  @Autowired('frameworkOverrides')
+  private frameworkOverrides: IFrameworkOverrides;
+  @Autowired('context') protected context: Context;
+  @Autowired('eventService') protected eventService: EventService;
+
+  /** 每个Bean对象都有自己的localEventService，非共享，不通过依赖注入初始化 */
   protected localEventService: EventService;
 
   private destroyFunctions: (() => void)[] = [];
   private destroyed = false;
 
-  @Autowired('frameworkOverrides')
-  private frameworkOverrides: IFrameworkOverrides;
-
-  @Autowired('context') protected context: Context;
-  @Autowired('eventService') protected eventService: EventService;
 
   // this was a test constructor niall built, when active, it prints after 5 seconds all beans/components that are
   // not destroyed. to use, create a new grid, then api.destroy() before 5 seconds. then anything that gets printed

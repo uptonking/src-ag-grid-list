@@ -291,6 +291,8 @@ export function isVisible(element: HTMLElement) {
  */
 export function loadTemplate(template: string): HTMLElement {
   const tempDiv = document.createElement('div');
+  console.log('loadTemplate, ', template);
+  console.trace();
 
   tempDiv.innerHTML = (template || '').trim();
 

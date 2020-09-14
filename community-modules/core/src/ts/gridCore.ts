@@ -59,12 +59,16 @@ export class GridCore extends ManagedFocusComponent {
   private logger: Logger;
   private doingVirtualPaging: boolean;
 
-  /** 在Grid构造函数中创建gridCore对象后，会在属性注入时作为钩子函数调用 */
+  /** 在Grid构造函数中创建gridCore对象后，在注入属性时作为钩子函数调用，
+   * 会将grid最外层的dom元素渲染到grid容器
+   */
   protected postConstruct(): void {
     this.logger = this.loggerFactory.create('GridCore');
 
-    // 创建ag-grid的dom元素结构对应的字符串
+    // 创建ag-grid最外层dom元素及部分内部结构对应的字符串
     const template = this.createTemplate();
+    console.log('gridCore-template, ', template);
+    // 将grid结构字符串创建成dom对象
     this.setTemplate(template);
 
     // register with services that need grid core，设置各自对象中的gridCore属性

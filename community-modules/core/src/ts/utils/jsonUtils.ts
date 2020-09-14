@@ -125,14 +125,15 @@ function jsonDecycle(object: any, replacer?: Function) {
           text += '#' + node.id;
         } else {
           if (node.className.length) {
+            // console.log(node.className); // 这里只取最外层的className
             text += '.' + node.className.replace(/ /, '.');
           }
           if ('textContent' in node) {
             text +=
               '{textContent:' +
-              (node.textContent.length < 20
+              (node.textContent.length < 48
                 ? node.textContent
-                : node.textContent.substr(0, 20) + '...') +
+                : node.textContent.substr(0, 47) + '...') +
               '}';
           }
         }
@@ -143,9 +144,9 @@ function jsonDecycle(object: any, replacer?: Function) {
         if (node.nodeValue !== null) {
           text +=
             '{value:' +
-            (node.nodeValue.length < 20
+            (node.nodeValue.length < 48
               ? node.nodeValue
-              : node.nodeValue.substr(0, 20) + '...') +
+              : node.nodeValue.substr(0, 47) + '...') +
             '}';
         }
         break;
