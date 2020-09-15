@@ -9,17 +9,21 @@ export class AgStackComponentsRegistry extends BeanStub {
   /** 存放component名称和定义class的映射表，注意名称经过小处理 */
   private componentsMappedByName: { [key: string]: any } = {};
 
-  /** 将组件的名称和class添加到 componentsMappedByName映射表 */
+  /** 将组件的名称和class添加到 componentsMappedByName 映射表 */
   public setupComponents(components: ComponentMeta[]): void {
     if (components) {
       components.forEach((componentMeta) => this.addComponent(componentMeta));
     }
   }
 
+  /** 将组件名和class添加到componentsMappedByName映射表，
+   * 组件名会进行转换，如AgGridComp会转换成AG-GRID-COMP，目的是方便匹配自定义dom元素标签
+   */
   private addComponent(componentMeta: ComponentMeta): void {
     // get name of the class as a string
     // let className = _.getNameOfClass(ComponentClass);
     // insert a dash after every capital letter
+    // 注意replace方法第2个参数中$n代表的是第1个参数正则表达式中第n个括号匹配的内容，n始于1
     // let classEscaped = className.replace(/([A-Z])/g, "-$1").toLowerCase();
     const classEscaped = componentMeta.componentName
       .replace(/([a-z])([A-Z])/g, '$1-$2')
@@ -30,6 +34,7 @@ export class AgStackComponentsRegistry extends BeanStub {
     this.componentsMappedByName[classUpperCase] = componentMeta.componentClass;
   }
 
+  /** 从componentsMappedByName映射表中取出key对应的value */
   public getComponentClass(htmlTag: string): any {
     return this.componentsMappedByName[htmlTag];
   }

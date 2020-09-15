@@ -159,7 +159,7 @@ export class Grid {
     // 获取注册的模块，如ClientSideRowModelModule
     const registeredModules: Module[] = this.getRegisteredModules(params);
 
-    // 准备要创建bean的class，包含rowModel的class，存放到数组
+    // 准备要创建bean的class，包含模块暴露出的beans属性值中的，如rowModel的class
     const beanClasses: any[] = this.createBeansList(registeredModules);
     // logObjSer('beanClasses, ', beanClasses);
 
@@ -187,6 +187,7 @@ export class Grid {
 
     // 将grid内部默认使用的组件agStackComponents添加到agStackComponentsRegistry
     this.registerStackComponents(registeredModules);
+    logObjSer('==registerComp, ', this.context);
 
     // 创建gridCore对象，包含grid数据、操作的重要类
     const gridCoreClass = (params && params.rootComponent) || GridCore;
@@ -206,6 +207,29 @@ export class Grid {
       ModuleNames.EnterpriseCoreModule,
     );
     this.logger.log(`initialised successfully, enterprise = ${isEnterprise}`);
+  }
+
+  /** 返回一个映射表，包含gridOptions、eGridDiv、与框架集成相关的各种bean，用于注入属性时查找 */
+  private createProvidedBeans(eGridDiv: HTMLElement, params: GridParams): any {
+    let frameworkOverrides = params ? params.frameworkOverrides : null;
+    if (_.missing(frameworkOverrides)) {
+      frameworkOverrides = new VanillaFrameworkOverrides();
+    }
+
+    const seed = {
+      gridOptions: this.gridOptions,
+      eGridDiv: eGridDiv,
+      $scope: params ? params.$scope : null,
+      $compile: params ? params.$compile : null,
+      quickFilterOnScope: params ? params.quickFilterOnScope : null,
+      globalEventListener: params ? params.globalEventListener : null,
+      frameworkOverrides: frameworkOverrides,
+    };
+    if (params && params.providedBeanInstances) {
+      _.assign(seed, params.providedBeanInstances);
+    }
+
+    return seed;
   }
 
   /** 获取向ag-grid core中直接或间接注册的模块 */
@@ -286,32 +310,9 @@ export class Grid {
     agStackComponentsRegistry.setupComponents(agStackComponents);
   }
 
-  /** 返回一个映射表，包含gridOptions、eGridDiv、与框架集成相关的各种bean，用于注入属性时查找 */
-  private createProvidedBeans(eGridDiv: HTMLElement, params: GridParams): any {
-    let frameworkOverrides = params ? params.frameworkOverrides : null;
-    if (_.missing(frameworkOverrides)) {
-      frameworkOverrides = new VanillaFrameworkOverrides();
-    }
-
-    const seed = {
-      gridOptions: this.gridOptions,
-      eGridDiv: eGridDiv,
-      $scope: params ? params.$scope : null,
-      $compile: params ? params.$compile : null,
-      quickFilterOnScope: params ? params.quickFilterOnScope : null,
-      globalEventListener: params ? params.globalEventListener : null,
-      frameworkOverrides: frameworkOverrides,
-    };
-    if (params && params.providedBeanInstances) {
-      _.assign(seed, params.providedBeanInstances);
-    }
-
-    return seed;
-  }
-
   /**
-   * 指定ag-grid内部使用的默认组件，组件类名都以Ag开头，如input,button,toggle,dialog,overlay，
-   * 最后加入module暴露的agStackComponents
+   * 指定ag-grid内部使用的默认组件，组件类名大多以Ag开头，如input,button,toggle,dialog,overlay，
+   * 然后再加入module暴露的agStackComponents
    */
   private createAgStackComponentsList(registeredModules: Module[]): any[] {
     let components: ComponentMeta[] = [

@@ -73,9 +73,10 @@ export class Component extends BeanStub {
     return this.compId;
   }
 
-  /** 递归地根据。
+  /** 递归地查找parentNode元素及其子元素，对各级元素创建ag-grid中对应的组件。
+   * 这里会创建自定义html元素如grid-header-body-pagination对应的组件实例。
    * for registered components only, eg creates AgCheckbox instance
-   *  from ag-checkbox HTML tag */
+   * from ag-checkbox HTML tag */
   private createChildComponentsFromTags(
     parentNode: Element,
     paramsMap?: any,
@@ -88,8 +89,9 @@ export class Component extends BeanStub {
       if (!(childNode instanceof HTMLElement)) {
         return;
       }
+      logObjSer('childNode, ', childNode);
 
-      // 若childNode是HTMLElement类型，则读取ref属性，计算对应的Component组件
+      // 若childNode是HTMLElement类型，则读取ref属性，计算对应的Component组件并创建对象
       const childComp = this.createComponentFromElement(
         childNode,
         (childComp) => {
@@ -100,7 +102,10 @@ export class Component extends BeanStub {
         paramsMap,
       );
 
+      // logObjSer('childComp, ', childComp);
+      // 若找到了子元素对应的组件
       if (childComp) {
+        // 递归地查找并创建子组件，然后将子组件添加到该组件
         if ((childComp as any).addItems && childNode.children.length) {
           this.createChildComponentsFromTags(childNode);
 
@@ -112,24 +117,31 @@ export class Component extends BeanStub {
         // replace the tag (eg ag-checkbox) with the proper HTMLElement (eg 'div') in the dom
         this.swapComponentForNode(childComp, parentNode, childNode);
       } else if (childNode.childNodes) {
+        // 若没找到子元素对应的组件，且子元素仍存在子元素
         this.createChildComponentsFromTags(childNode);
       }
     });
   }
 
-  /** 根据传入的HTMLElement，计算对应的Component组件并返回 */
+  /** 根据传入的HTMLElement对象，从agStackComponentsRegistry查找对应的Component组件类，
+   * 然后创建并返回该组件类的对象依赖注入后的实例 */
   public createComponentFromElement(
     element: HTMLElement,
     afterPreCreateCallback?: (comp: Component) => void,
     paramsMap?: any,
   ): Component {
+    // 注意，html5规范中要求，元素的nodeName总是大写字母，恰好组件映射表中组件名也是大写
     const key = element.nodeName;
+    console.log('key, ', key);
+
     const componentParams = paramsMap
       ? paramsMap[element.getAttribute('ref')]
       : undefined;
     const ComponentClass = this.agStackComponentsRegistry.getComponentClass(
       key,
     );
+    console.log('key-ComponentClass, ', ComponentClass);
+
     if (ComponentClass) {
       const newComponent = new ComponentClass(componentParams) as Component;
       this.createBean(newComponent, null, afterPreCreateCallback);

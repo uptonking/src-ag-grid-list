@@ -54,6 +54,7 @@ import { _ } from '../utils';
 
 // in the html below, it is important that there are no white space between some of the divs, as if there is white space,
 // it won't render correctly in safari, as safari renders white space as a gap
+/** 自定义ag-grid-comp标签对应的初始html元素字符串 */
 const GRID_PANEL_NORMAL_TEMPLATE =
   /* html */
   `<div class="ag-root ag-unselectable" role="grid" unselectable="on">
@@ -112,6 +113,10 @@ export type RowContainerComponents = {
   [K in RowContainerComponentNames]: RowContainerComponent;
 };
 
+/**
+ * 自定义ag-grid-comp标签对应的Component组件类，也是grid表格最外层组件，
+ * 样式标志为ag-root
+ */
 export class GridPanel extends Component {
   @Autowired('alignedGridsService')
   private alignedGridsService: AlignedGridsService;
@@ -212,7 +217,7 @@ export class GridPanel extends Component {
   private enableRtl: boolean;
   private scrollWidth: number;
 
-  // used to track if pinned panels are showing, so we can turn them off if not
+  /** used to track if pinned panels are showing, so we can turn them off if not */
   private pinningRight: boolean;
   private pinningLeft: boolean;
 

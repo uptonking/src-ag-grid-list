@@ -171,6 +171,7 @@ export class GridCore extends ManagedFocusComponent {
       ? '<ag-watermark></ag-watermark>'
       : '';
 
+    // ag-grid-comp元素后面会用来查找并创建成组件对象
     const template = `<div ref="eRootWrapper" class="ag-root-wrapper">
                 ${dropZones}
                 <div ref="rootWrapperBody" class="ag-root-wrapper-body" >
