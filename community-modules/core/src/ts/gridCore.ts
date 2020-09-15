@@ -141,8 +141,8 @@ export class GridCore extends ManagedFocusComponent {
   }
 
   /**
-   * 创建并返回ag-grid最外层的dom元素及内部结构，
-   * 最外层是div-ag-root-wrapper，内部可以包含dropZones、sideBar、statusBar、watermark
+   * 创建并返回ag-grid整体最外层的dom元素及内部结构，
+   * 最外层是div-ag-root-wrapper，内部可包含dropZones、sideBar、statusBar、watermark
    */
   private createTemplate(): string {
     const sideBarModuleLoaded = ModuleRegistry.isRegistered(

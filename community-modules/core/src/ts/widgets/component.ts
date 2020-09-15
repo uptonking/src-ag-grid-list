@@ -73,8 +73,10 @@ export class Component extends BeanStub {
     return this.compId;
   }
 
-  /** 递归地查找parentNode元素及其子元素，对各级元素创建ag-grid中对应的组件。
-   * 这里会创建自定义html元素如grid-header-body-pagination对应的组件实例。
+  /**
+   * 递归地查找parentNode及其子元素标签对应的组件类，对各级元素创建ag-grid中对应组件的对象。
+   * 这里会创建自定义html标签如grid-header-body-pagination对应的组件实例，
+   * 会创建grid表格主体的dom元素结构。
    * for registered components only, eg creates AgCheckbox instance
    * from ag-checkbox HTML tag */
   private createChildComponentsFromTags(
@@ -107,6 +109,7 @@ export class Component extends BeanStub {
       if (childComp) {
         // 递归地查找并创建子组件，然后将子组件添加到该组件
         if ((childComp as any).addItems && childNode.children.length) {
+          console.log('==addItems, ', childComp.constructor.name);
           this.createChildComponentsFromTags(childNode);
 
           // converting from HTMLCollection to Array
@@ -156,6 +159,7 @@ export class Component extends BeanStub {
     );
   }
 
+  /** 将parentNode父元素的childNode替换为newComponent */
   private swapComponentForNode(
     newComponent: Component,
     parentNode: Element,
@@ -171,6 +175,7 @@ export class Component extends BeanStub {
     this.swapInComponentForQuerySelectors(newComponent, childNode);
   }
 
+  /** 修改本组件对象的querySelector.attributeName属性值为newComponent */
   private swapInComponentForQuerySelectors(
     newComponent: Component,
     childNode: Node,
