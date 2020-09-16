@@ -253,6 +253,7 @@ export class RowRenderer extends BeanStub {
 
     // add listeners to the grid columns
     this.refreshListenersToColumnsForCellComps();
+
     // if the grid columns change, then refresh the listeners again
     this.addManagedListener(
       this.eventService,
@@ -263,18 +264,25 @@ export class RowRenderer extends BeanStub {
     this.addDestroyFunc(this.removeGridColumnListeners.bind(this));
   }
 
-  // executes all functions in destroyFuncsForColumnListeners and then clears the list
+  /** executes all functions in destroyFuncsForColumnListeners,
+   * and then clears the list */
   private removeGridColumnListeners(): void {
     this.destroyFuncsForColumnListeners.forEach((func) => func());
     this.destroyFuncsForColumnListeners.length = 0;
   }
 
-  // this function adds listeners onto all the grid columns, which are the column that we could have cellComps for.
-  // when the grid columns change, we add listeners again. in an ideal design, each CellComp would just register to
-  // the column it belongs to on creation, however this was a bottleneck with the number of cells, so do it here
-  // once instead.
+  /**
+   * 重新给所有表头列添加事件监听器。
+   * this function adds listeners onto all the grid columns, which are the
+   * column that we could have cellComps for.
+   * when the grid columns change, we add listeners again. in an ideal design,
+   * each CellComp would just register to the column it belongs to on creation,
+   * however this was a bottleneck with the number of cells, so do it here once
+   * instead.
+   */
   private refreshListenersToColumnsForCellComps(): void {
     this.removeGridColumnListeners();
+    console.log('==refreshListenersToColumnsForCellComps');
 
     const cols = this.columnController.getAllGridColumns();
 

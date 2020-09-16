@@ -149,10 +149,8 @@ export class Grid {
       console.error('ag-Grid: no gridOptions provided to the grid');
       return;
     }
-
     const debug = !!gridOptions.debug;
 
-    // console.log('==src-gridOptions, ', gridOptions);
     logObjSer('==src-gridOptions, ', gridOptions);
     this.gridOptions = gridOptions;
 
@@ -162,7 +160,6 @@ export class Grid {
     // 准备要创建bean的class，包含模块暴露出的beans属性值中的，如rowModel的class
     const beanClasses: any[] = this.createBeansList(registeredModules);
     // logObjSer('beanClasses, ', beanClasses);
-
     if (!beanClasses) {
       return; // happens when no row model found
     }
@@ -179,25 +176,26 @@ export class Grid {
     this.logger = new Logger('ag-Grid', () => gridOptions.debug);
     const contextLogger = new Logger('Context', () => contextParams.debug);
 
-    // 在context这里创建所有bean的实例
+    // 在Context构造函数中创建ioc单例容器的所有bean对象实例
     this.context = new Context(contextParams, contextLogger);
 
-    // 将注册模块暴露的的userComponents覆盖到agGridDefaults默认组件映射表
+    // 将注册模块暴露的的userComponents覆盖到UserComponentRegistry默认组件映射表
     this.registerModuleUserComponents(registeredModules);
-
-    // 将grid内部默认使用的组件agStackComponents添加到agStackComponentsRegistry
+    // 将grid内部默认使用的组件agStackComponents添加到AgStackComponentsRegistry
     this.registerStackComponents(registeredModules);
-    logObjSer('==registerComp, ', this.context);
+    logObjSer('====registerComp, ', this.context);
 
     // 创建gridCore对象，包含grid数据、操作的重要类
     const gridCoreClass = (params && params.rootComponent) || GridCore;
     const gridCore = new gridCoreClass();
 
-    // 给gridCore对象注入属性，会从context的bean容器中查找相关bean来初始化GridCore的属性
-    // 执行gridCore的postConstruct钩子方法时会将grid的最外层dom元素及内部部分结构渲染到页面显示出来
+    // 给gridCore对象注入属性，会从context的bean容器中查找bean来初始化GridCore的属性，
+    // 执行gridCore的postConstruct时，会将grid的最外层dom元素及内部部分结构渲染到页面
+    // 这里会创建ag-grid-comp、ag-header-root、ag-overlay-wrapper、ag-pagination自
+    // 定义html标签对应的Component组件类对象，并添加各种事件监听器
     this.context.createBean(gridCore);
 
-    // 计算表头结构，并将rowData计算处理成rowModel形式的数据结构
+    // 计算表头结构并创建表头组件，然后将rowData计算处理成rowModel形式的数据结构
     this.setColumnsAndData();
 
     // 触发gridReady事件，默认要执行的事件集合为空
@@ -275,7 +273,7 @@ export class Grid {
     return allModules;
   }
 
-  /** 将注册模块暴露的的userComponents，覆盖到agGridDefaults默认组件映射表 */
+  /** 将注册模块暴露的的userComponents，覆盖到UserComponentRegistry的组件映射表 */
   private registerModuleUserComponents(registeredModules: Module[]): void {
     const userComponentRegistry: UserComponentRegistry = this.context.getBean(
       'userComponentRegistry',
@@ -297,7 +295,7 @@ export class Grid {
     });
   }
 
-  /** 将默认使用的AgXx组件和注册模块暴露的agStackComponents，都添加到agStackComponentsRegistry */
+  /** 将默认使用的AgXx组件和注册模块暴露的agStackComponents，都添加到AgStackComponentsRegistry */
   private registerStackComponents(registeredModules: Module[]): void {
     // 获取ag-grid内部默认使用的以Ag开头的组件，以及module暴露的agStackComponents
     const agStackComponents = this.createAgStackComponentsList(
@@ -452,7 +450,7 @@ export class Grid {
     return [].concat(...moduleEntities.map(extractor));
   }
 
-  /** 根据columnDefs计算表头结构，并将rowData计算处理成rowModel结构 */
+  /** 根据columnDefs计算表头结构并创建表头组件，再将rowData计算处理成rowModel结构 */
   private setColumnsAndData(): void {
     const gridOptionsWrapper: GridOptionsWrapper = this.context.getBean(
       'gridOptionsWrapper',
@@ -463,7 +461,7 @@ export class Grid {
 
     const columnDefs = gridOptionsWrapper.getColumnDefs();
     if (_.exists(columnDefs)) {
-      // 根据columnDefs计算表头结构
+      // 根据columnDefs计算表头结构并创建表头组件
       columnController.setColumnDefs(columnDefs, 'gridInitializing');
     }
 

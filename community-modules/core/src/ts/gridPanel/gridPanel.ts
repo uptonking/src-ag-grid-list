@@ -52,9 +52,10 @@ import { ColumnController } from '../columnController/columnController';
 import { HeaderNavigationService } from '../headerRendering/header/headerNavigationService';
 import { _ } from '../utils';
 
-// in the html below, it is important that there are no white space between some of the divs, as if there is white space,
+// in the html below, it is important that there are no white space between some
+// of the div, as if there is white space,
 // it won't render correctly in safari, as safari renders white space as a gap
-/** 自定义ag-grid-comp标签对应的初始html元素字符串 */
+/** 自定义ag-grid-comp标签对应的初始dom元素字符串 */
 const GRID_PANEL_NORMAL_TEMPLATE =
   /* html */
   `<div class="ag-root ag-unselectable" role="grid" unselectable="on">
@@ -114,8 +115,8 @@ export type RowContainerComponents = {
 };
 
 /**
- * 自定义ag-grid-comp标签对应的Component组件类，也是grid表格最外层组件，
- * 样式标志为ag-root
+ * 自定义ag-grid-comp标签对应的Component类，也是grid表格最外层组件，样式标志为ag-root，
+ * 构造函数中会递归创建各级dom元素对象的组件对象，包括header、body-viewport、overlay，
  */
 export class GridPanel extends Component {
   @Autowired('alignedGridsService')
@@ -225,54 +226,13 @@ export class GridPanel extends Component {
 
   private rowDragFeature: RowDragFeature;
 
+  /** 初始化GridPanel作为Component的dom元素，这里会递归地创建dom元素对应的组件对象 */
   constructor() {
     super(GRID_PANEL_NORMAL_TEMPLATE);
     this.resetLastHorizontalScrollElementDebounced = _.debounce(
       this.resetLastHorizontalScrollElement.bind(this),
       500,
     );
-  }
-
-  public getVScrollPosition(): { top: number; bottom: number } {
-    const result = {
-      top: this.eBodyViewport.scrollTop,
-      bottom: this.eBodyViewport.scrollTop + this.eBodyViewport.offsetHeight,
-    };
-    return result;
-  }
-
-  public getHScrollPosition(): { left: number; right: number } {
-    const result = {
-      left: this.eCenterViewport.scrollLeft,
-      right: this.eCenterViewport.scrollLeft + this.eCenterViewport.offsetWidth,
-    };
-    return result;
-  }
-
-  private onRowDataChanged(): void {
-    this.showOrHideOverlay();
-  }
-
-  private showOrHideOverlay(): void {
-    const isEmpty = this.paginationProxy.isEmpty();
-    const isSuppressNoRowsOverlay = this.gridOptionsWrapper.isSuppressNoRowsOverlay();
-    const method =
-      isEmpty && !isSuppressNoRowsOverlay ? 'showNoRowsOverlay' : 'hideOverlay';
-
-    this[method]();
-  }
-
-  private onNewColumnsLoaded(): void {
-    // hide overlay if columns and rows exist, this can happen if columns are loaded after data.
-    // this problem exists before of the race condition between the services (column controller in this case)
-    // and the view (grid panel). if the model beans were all initialised first, and then the view beans second,
-    // this race condition would not happen.
-    if (
-      this.beans.columnController.isReady() &&
-      !this.paginationProxy.isEmpty()
-    ) {
-      this.hideOverlay();
-    }
   }
 
   @PostConstruct
@@ -356,6 +316,48 @@ export class GridPanel extends Component {
         }
       });
     });
+  }
+
+  public getVScrollPosition(): { top: number; bottom: number } {
+    const result = {
+      top: this.eBodyViewport.scrollTop,
+      bottom: this.eBodyViewport.scrollTop + this.eBodyViewport.offsetHeight,
+    };
+    return result;
+  }
+
+  public getHScrollPosition(): { left: number; right: number } {
+    const result = {
+      left: this.eCenterViewport.scrollLeft,
+      right: this.eCenterViewport.scrollLeft + this.eCenterViewport.offsetWidth,
+    };
+    return result;
+  }
+
+  private onRowDataChanged(): void {
+    this.showOrHideOverlay();
+  }
+
+  private showOrHideOverlay(): void {
+    const isEmpty = this.paginationProxy.isEmpty();
+    const isSuppressNoRowsOverlay = this.gridOptionsWrapper.isSuppressNoRowsOverlay();
+    const method =
+      isEmpty && !isSuppressNoRowsOverlay ? 'showNoRowsOverlay' : 'hideOverlay';
+
+    this[method]();
+  }
+
+  private onNewColumnsLoaded(): void {
+    // hide overlay if columns and rows exist, this can happen if columns are loaded after data.
+    // this problem exists before of the race condition between the services (column controller in this case)
+    // and the view (grid panel). if the model beans were all initialised first, and then the view beans second,
+    // this race condition would not happen.
+    if (
+      this.beans.columnController.isReady() &&
+      !this.paginationProxy.isEmpty()
+    ) {
+      this.hideOverlay();
+    }
   }
 
   private onDomLayoutChanged(): void {

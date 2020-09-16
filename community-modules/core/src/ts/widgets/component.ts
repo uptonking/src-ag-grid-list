@@ -11,7 +11,8 @@ export interface VisibleChangedEvent extends AgEvent {
 }
 
 /**
- * 可以渲染到dom元素的组件，可以对渲染的ui的样式、属性进行crud，还可以创建子组件的DOM元素
+ * Component是BeanStub的子类，代表可以渲染到dom元素的组件，
+ * 提供了对渲染的ui的样式、属性进行crud的方法，还可以创建子组件的DOM元素
  */
 export class Component extends BeanStub {
   public static EVENT_DISPLAYED_CHANGED = 'displayedChanged';
@@ -91,9 +92,10 @@ export class Component extends BeanStub {
       if (!(childNode instanceof HTMLElement)) {
         return;
       }
-      logObjSer('childNode, ', childNode);
+      // logObjSer('childNode, ', childNode);
 
-      // 若childNode是HTMLElement类型，则读取ref属性，计算对应的Component组件并创建对象
+      // 若childNode是HTMLElement类型(可以是自定义标签)，
+      // 则读取nodeName属性，计算对应的Component组件并创建对象
       const childComp = this.createComponentFromElement(
         childNode,
         (childComp) => {
@@ -107,9 +109,10 @@ export class Component extends BeanStub {
       // logObjSer('childComp, ', childComp);
       // 若找到了子元素对应的组件
       if (childComp) {
-        // 递归地查找并创建子组件，然后将子组件添加到该组件
+        // 一般组件对象并没有addItems属性，不执行下面
         if ((childComp as any).addItems && childNode.children.length) {
           console.log('==addItems, ', childComp.constructor.name);
+          // 递归地查找并创建子组件，然后将子组件添加到该组件
           this.createChildComponentsFromTags(childNode);
 
           // converting from HTMLCollection to Array
@@ -117,10 +120,15 @@ export class Component extends BeanStub {
 
           (childComp as any).addItems(items);
         }
-        // replace the tag (eg ag-checkbox) with the proper HTMLElement (eg 'div') in the dom
+
+        // console.log('before-swapComponentForNode');
+
+        // replace tag (eg ag-checkbox) with proper HTMLElement(eg 'div') in the dom
+        // 更新子节点childNode的dom元素
         this.swapComponentForNode(childComp, parentNode, childNode);
       } else if (childNode.childNodes) {
-        // 若没找到子元素对应的组件，且子元素仍存在子元素
+        // 若childComp不存在，但子元素仍存在子元素，则再递归创建
+        // console.log('childNode.childNodes');
         this.createChildComponentsFromTags(childNode);
       }
     });
@@ -135,7 +143,7 @@ export class Component extends BeanStub {
   ): Component {
     // 注意，html5规范中要求，元素的nodeName总是大写字母，恰好组件映射表中组件名也是大写
     const key = element.nodeName;
-    console.log('key, ', key);
+    // console.log('key, ', key);
 
     const componentParams = paramsMap
       ? paramsMap[element.getAttribute('ref')]
@@ -143,7 +151,7 @@ export class Component extends BeanStub {
     const ComponentClass = this.agStackComponentsRegistry.getComponentClass(
       key,
     );
-    console.log('key-ComponentClass, ', ComponentClass);
+    // console.log('key-ComponentClass, ', ComponentClass);
 
     if (ComponentClass) {
       const newComponent = new ComponentClass(componentParams) as Component;
@@ -159,7 +167,7 @@ export class Component extends BeanStub {
     );
   }
 
-  /** 将parentNode父元素的childNode替换为newComponent */
+  /** 将parentNode的childNode替换为newComponent，并插入注释，更新querySelectors元数据 */
   private swapComponentForNode(
     newComponent: Component,
     parentNode: Element,
@@ -189,7 +197,8 @@ export class Component extends BeanStub {
     });
   }
 
-  /** 遍历本对象各级原型对象的__agComponentMetaData的querySelectors属性值，并作为参数传递给action函数 */
+  /** 遍历本对象各级原型对象的__agComponentMetaData的querySelectors属性值，
+   * 并作为参数传递给action函数 */
   private iterateOverQuerySelectors(
     action: (querySelector: any) => void,
   ): void {
@@ -218,7 +227,7 @@ export class Component extends BeanStub {
    * 再给dom对象添加通过装饰器指定的事件监听器和选择器执行结果 */
   public setTemplate(template: string, paramsMap?: any): void {
     const eGui = _.loadTemplate(template as string);
-    logObjSer('==eGui, ', eGui);
+    // logObjSer('==Comp-dom-eGui, ', eGui);
     this.setTemplateFromElement(eGui, paramsMap);
   }
 

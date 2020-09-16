@@ -1545,8 +1545,9 @@ export class GridApi {
   public updateRowData(
     rowDataTransaction: RowDataTransaction,
   ): RowNodeTransaction {
-    const message =
-      'ag-Grid: as of v23.1, grid API updateRowData(transaction) is now called applyTransaction(transaction). updateRowData is deprecated and will be removed in a future major release.';
+    const message = `ag-Grid: as of v23.1, grid API
+      updateRowData(transaction) is now called applyTransaction(transaction).
+      updateRowData is deprecated and will be removed in a future major release.`;
     _.doOnce(() => console.warn(message), 'updateRowData deprecated');
 
     return this.applyTransaction(rowDataTransaction);

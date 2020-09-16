@@ -462,7 +462,7 @@ export function PreConstruct(
  * 以`@PostConstruct`注解形式使用的class属性装饰器，
  * 会给class的__agBeanMetaData静态属性加上`postConstructMethods`属性，
  * 会在对象创建和依赖注入、preConstructMethods、afterPreCreateCallback之后，执行标注的钩子函数，
- * 只记录了方法名，可能最终调用的是子类的同名方法，
+ * 只记录了方法名，可能最终调用的是子类的同名方法
  */
 export function PostConstruct(
   target: Object,

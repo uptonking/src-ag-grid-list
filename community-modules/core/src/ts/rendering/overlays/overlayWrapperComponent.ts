@@ -12,6 +12,7 @@ enum LoadingType {
   NoRows,
 }
 
+/** 自定义ag-overlay-wrapper对应的Component类 */
 export class OverlayWrapperComponent extends Component {
   // wrapping in outer div, and wrapper, is needed to center the loading icon
   // The idea for centering came from here: http://www.vanseodesign.com/css/vertical-centering/

@@ -19,7 +19,9 @@ import { _ } from '../utils';
 
 export type HeaderContainerPosition = 'left' | 'right' | 'center';
 
-/** ag-grid表头ui组件，包含表头顶层dom元素 */
+/** 自定义ag-header-root标签对应的Component类，作为表头顶层dom元素，
+ * 可包含普通表头、固定在左/右侧的表头
+ */
 export class HeaderRootComp extends ManagedFocusComponent {
   private static TEMPLATE /* html */ = `<div class="ag-header" role="presentation">
             <div class="ag-pinned-left-header" ref="ePinnedLeftHeader" role="presentation"></div>
@@ -54,6 +56,9 @@ export class HeaderRootComp extends ManagedFocusComponent {
     super(HeaderRootComp.TEMPLATE);
   }
 
+  /** 父类添加了@PostConstruct装饰器，所以本方法在本对象依赖注入后期阶段会被自动调用，
+   * 创建了表头左中右的结构，但具体表头行不在这里创建，在HeaderRowComp中创建
+   */
   protected postConstruct(): void {
     super.postConstruct();
 
@@ -67,12 +72,10 @@ export class HeaderRootComp extends ManagedFocusComponent {
       new HeaderContainer(this.eHeaderContainer, this.eHeaderViewport, null),
       'center',
     );
-
     this.registerHeaderContainer(
       new HeaderContainer(this.ePinnedLeftHeader, null, Constants.PINNED_LEFT),
       'left',
     );
-
     this.registerHeaderContainer(
       new HeaderContainer(
         this.ePinnedRightHeader,
@@ -110,7 +113,8 @@ export class HeaderRootComp extends ManagedFocusComponent {
     this.onPivotModeChanged();
     this.addPreventHeaderScroll();
 
-    console.trace();
+    // console.trace();
+
     if (this.columnController.isReady()) {
       this.refreshHeader();
     }
@@ -121,6 +125,7 @@ export class HeaderRootComp extends ManagedFocusComponent {
     this.headerContainers.forEach((c) => c.setupDragAndDrop(gridPanel));
   }
 
+  /** 将type， headerContainer作为kv添加进headerContainers映射表集合 */
   private registerHeaderContainer(
     headerContainer: HeaderContainer,
     type: HeaderContainerPosition,
@@ -204,6 +209,7 @@ export class HeaderRootComp extends ManagedFocusComponent {
     );
   }
 
+  /** 依次调用所有headerContainers的refresh方法 */
   public refreshHeader() {
     this.headerContainers.forEach((container) => container.refresh());
   }

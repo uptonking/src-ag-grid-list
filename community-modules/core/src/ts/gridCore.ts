@@ -26,7 +26,8 @@ import { Column } from './entities/column';
 import { _ } from './utils';
 
 /**
- * 包含grid配置、数据、操作、渲染的核心ui组件Component类，包括页面布局模块的判断，以及事件监听处理，
+ * 包含grid配置、数据、操作、渲染的核心ui组件Component类，是ag-grid整体最外层组件，
+ * 样式标志为ag-root-wrapper，还包括页面布局模块的判断、事件监听处理，
  * GridCore的属性字段通过在Grid类的构造函数中手动依赖注入进行初始化
  */
 export class GridCore extends ManagedFocusComponent {
@@ -59,15 +60,16 @@ export class GridCore extends ManagedFocusComponent {
   private logger: Logger;
   private doingVirtualPaging: boolean;
 
-  /** 在Grid构造函数中创建gridCore对象后，在注入属性时作为钩子函数调用，
-   * 会将grid最外层的dom元素渲染到grid容器
+  /** 因为父类同名方法添加了@PostConstruct装饰器，所以在Grid构造函数中创建gridCore对象后，
+   * 在注入属性时会作为钩子函数调用这里的postConstruct方法，
+   * 会将grid最外层的dom元素渲染到grid容器，递归创建grid部分内部dom元素
    */
   protected postConstruct(): void {
     this.logger = this.loggerFactory.create('GridCore');
 
     // 创建ag-grid最外层dom元素及部分内部结构对应的字符串
     const template = this.createTemplate();
-    console.log('==template=str, ', template);
+    console.log('==gridCore-template-str, ', template);
     // 将grid结构字符串创建成dom对象
     this.setTemplate(template);
 
@@ -141,8 +143,8 @@ export class GridCore extends ManagedFocusComponent {
   }
 
   /**
-   * 创建并返回ag-grid整体最外层的dom元素及内部结构，
-   * 最外层是div-ag-root-wrapper，内部可包含dropZones、sideBar、statusBar、watermark
+   * 创建并返回ag-grid整体最外层的dom元素及部分内部结构的字符串，
+   * 样式标志是ag-root-wrapper，内部可包含dropZones、sideBar、statusBar、watermark
    */
   private createTemplate(): string {
     const sideBarModuleLoaded = ModuleRegistry.isRegistered(
@@ -171,7 +173,7 @@ export class GridCore extends ManagedFocusComponent {
       ? '<ag-watermark></ag-watermark>'
       : '';
 
-    // ag-grid-comp元素后面会用来查找并创建成组件对象
+    // ag-grid-comp标签之后会被创建成组件对象
     const template = `<div ref="eRootWrapper" class="ag-root-wrapper">
                 ${dropZones}
                 <div ref="rootWrapperBody" class="ag-root-wrapper-body" >

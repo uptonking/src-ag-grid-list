@@ -261,6 +261,7 @@ export function setScrollLeft(
   element.scrollLeft = value;
 }
 
+/** 通过element.removeChild方法移除第一个子元素 */
 export function clearElement(el: HTMLElement): void {
   while (el && el.firstChild) {
     el.removeChild(el.firstChild);

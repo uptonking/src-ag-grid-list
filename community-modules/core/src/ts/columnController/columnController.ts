@@ -125,7 +125,8 @@ export class ColumnController extends BeanStub {
   /** these are all columns that are available to grid for rendering after pivot */
   private gridBalancedTree: OriginalColumnGroupChild[];
   private gridColumns: Column[];
-  /** header row count, either above, or based on pivoting if we are pivoting */
+  /** // todo 确认指的是表头一行的列数还是表头行数，
+   * header row count, either above, or based on pivoting if we are pivoting */
   private gridHeaderRowCount = 0;
 
   private lastPrimaryOrder: Column[];
@@ -260,11 +261,12 @@ export class ColumnController extends BeanStub {
     this.extractRowGroupColumns(source, oldPrimaryColumns);
     this.extractPivotColumns(source, oldPrimaryColumns);
 
-    //
+    // 计算this.valueColumns的值并设置其中各列的aggFunc
     this.createValueColumns(source, oldPrimaryColumns);
 
     this.ready = true;
 
+    // 计算自动分组和columnSpan，再触发gridColumnsChanged事件
     this.updateGridColumns();
 
     this.updateDisplayedColumns(source);
@@ -1661,7 +1663,7 @@ export class ColumnController extends BeanStub {
     return this.columnsForQuickFilter;
   }
 
-  // + moveColumnController
+  /** 直接返回 this.gridColumns */
   public getAllGridColumns(): Column[] {
     return this.gridColumns;
   }
@@ -2744,7 +2746,7 @@ export class ColumnController extends BeanStub {
     return this.ready;
   }
 
-  /** 创建this.valueColumns并设置aggFunc */
+  /** 计算this.valueColumns的值并设置其中各列的aggFunc */
   private createValueColumns(
     source: ColumnEventType,
     oldPrimaryColumns: Column[],
@@ -3150,7 +3152,7 @@ export class ColumnController extends BeanStub {
     }
   }
 
-  /** 计算自动分组和columnSpan，再触发gridColumnsChanged事件，
+  /** 计算自动表头分组和columnSpan，再触发gridColumnsChanged事件，
    * called from: setColumnState, setColumnDefs, setSecondaryColumns */
   private updateGridColumns(): void {
     if (this.gridColsArePrimary) {
@@ -3168,9 +3170,11 @@ export class ColumnController extends BeanStub {
       this.gridColumns = this.primaryColumns.slice();
       this.gridColsArePrimary = true;
 
-      // updateGridColumns gets called after user adds a row group. we want to maintain the order of the columns
-      // when this happens (eg if user moved a column) rather than revert back to the original column order.
-      // likewise if changing in/out of pivot mode, we want to maintain the order of the primary cols
+      // updateGridColumns gets called after user adds a row group.
+      // we want to maintain the order of columns when this happens (eg if
+      // user moved a column) rather than revert back to original column order.
+      // likewise if changing in/out of pivot mode, we want to maintain the
+      // order of the primary cols
       this.orderGridColsLikeLastPrimary();
     }
 
@@ -3192,6 +3196,7 @@ export class ColumnController extends BeanStub {
       api: this.gridApi,
       columnApi: this.columnApi,
     };
+    // 这这里会触发headerContainer的onGridColumnsChanged方法
     this.eventService.dispatchEvent(event);
   }
 

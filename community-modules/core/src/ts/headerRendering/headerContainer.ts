@@ -12,6 +12,8 @@ import { setFixedWidth, clearElement } from '../utils/dom';
 import { BeanStub } from '../context/beanStub';
 import { GridPanel } from '../gridPanel/gridPanel';
 
+/** 表头的容器，在HeaderRootComp中创建了左中右3各对象实例，
+ * 每个表头行是HeaderRowComp组件的实例 */
 export class HeaderContainer extends BeanStub {
   @Autowired('gridOptionsWrapper')
   private gridOptionsWrapper: GridOptionsWrapper;
@@ -21,6 +23,7 @@ export class HeaderContainer extends BeanStub {
 
   private eContainer: HTMLElement;
   private eViewport: HTMLElement;
+  /** 所有表头行对象构成的数组 */
   private headerRowComps: HeaderRowComp[] = [];
   private pinned: string;
   private scrollWidth: number;
@@ -135,9 +138,14 @@ export class HeaderContainer extends BeanStub {
     return this.headerRowComps;
   }
 
-  // grid cols have changed - this also means the number of rows in the header can have
-  // changed. so we remove all the old rows and insert new ones for a complete refresh
+  /** 先执行removeHeaderRowComps()，再执行createHeaderRowComps()。
+   * grid cols have changed - this also means the number of rows in the header
+   * can have changed. so we remove all the old rows and insert new ones
+   * for a complete refresh
+   */
   private onGridColumnsChanged() {
+    console.log('==onGridColumnsChanged-removeAndCreateAllRowComps');
+
     this.removeAndCreateAllRowComps();
   }
 
@@ -146,7 +154,9 @@ export class HeaderContainer extends BeanStub {
     this.createHeaderRowComps();
   }
 
-  // we expose this for gridOptions.api.refreshHeader() to call
+  /** 先执行removeHeaderRowComps()，再执行createHeaderRowComps()。
+   * we expose this for gridOptions.api.refreshHeader() to call
+   */
   public refresh(): void {
     this.removeAndCreateAllRowComps();
   }
@@ -158,6 +168,7 @@ export class HeaderContainer extends BeanStub {
     bodyDropTarget.registerGridComp(gridComp);
   }
 
+  /** 卸载表头各行，先遍历headerRowComps并调用destroyBean方法，最后移除dom元素 */
   @PreDestroy
   private removeHeaderRowComps(): void {
     this.headerRowComps.forEach((headerRowComp) =>
@@ -168,6 +179,7 @@ export class HeaderContainer extends BeanStub {
     clearElement(this.eContainer);
   }
 
+  /** 创建表头各行，行中可包含表头列或分组表头列 */
   private createHeaderRowComps(): void {
     // if we are displaying header groups, then we have many rows here.
     // go through each row of the header, one by one.
@@ -176,6 +188,7 @@ export class HeaderContainer extends BeanStub {
     for (let dept = 0; dept < rowCount; dept++) {
       const groupRow = dept !== rowCount - 1;
       const type = groupRow ? HeaderRowType.COLUMN_GROUP : HeaderRowType.COLUMN;
+      // 创建一个表头行
       const headerRowComp = new HeaderRowComp(
         dept,
         type,
@@ -188,6 +201,7 @@ export class HeaderContainer extends BeanStub {
       this.eContainer.appendChild(headerRowComp.getGui());
     }
 
+    // 若表头包含FloatingFilters，则创建FLOATING_FILTER类型的表头行
     if (
       !this.columnController.isPivotMode() &&
       this.columnController.hasFloatingFilters()

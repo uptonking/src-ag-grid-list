@@ -26,6 +26,7 @@ export class ManagedFocusComponent extends Component {
 
   @Autowired('focusController') protected focusController: FocusController;
 
+  /** 本方法添加了@PostConstruct装饰器，装饰器只保存了方法名，最后可能只调用子类的同名方法 */
   @PostConstruct
   protected postConstruct(): void {
     const focusableElement = this.getFocusableElement();

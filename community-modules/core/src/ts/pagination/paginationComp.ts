@@ -10,6 +10,7 @@ import { IRowModel } from '../interfaces/iRowModel';
 import { Constants } from '../constants';
 import { _ } from '../utils';
 
+/** 自定义ag-pagination标签对应的Component类 */
 export class PaginationComp extends Component {
   @Autowired('gridOptionsWrapper')
   private gridOptionsWrapper: GridOptionsWrapper;

@@ -12,7 +12,7 @@ import { _ } from '../utils';
 import { BeanStub } from '../context/beanStub';
 
 /**
- * 根据表头列定义信息计算表头列对象和表头分组对象。
+ * 根据表头列定义信息计算表头列对象和分组表头对象。
  * takes ColDefs and ColGroupDefs and turns them into Columns and OriginalGroups
  */
 @Bean('columnFactory')
@@ -27,7 +27,7 @@ export class ColumnFactory extends BeanStub {
     this.logger = loggerFactory.create('ColumnFactory');
   }
 
-  /** 创建表头多叉树平衡树 */
+  /** 创建多叉树平衡树结构的表头columnTree */
   public createColumnTree(
     defs: (ColDef | ColGroupDef)[] | null,
     primaryColumns: boolean,
