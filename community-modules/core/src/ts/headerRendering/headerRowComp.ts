@@ -25,7 +25,7 @@ export enum HeaderRowType {
 }
 
 /** 代表表头中的一行的ui组件，包含一行表头的dom元素和样式，
- * 注册了各种事件监听器，提供了重新创建的方法 */
+ * 注册了各种事件监听器，提供了重新创建表头行的方法 */
 export class HeaderRowComp extends Component {
   @Autowired('gridOptionsWrapper')
   private gridOptionsWrapper: GridOptionsWrapper;
@@ -338,6 +338,7 @@ export class HeaderRowComp extends Component {
     }
   }
 
+  /** 创建不同类型的表头行 */
   private createHeaderComp(
     columnGroupChild: ColumnGroupChild,
   ): AbstractHeaderWrapper {

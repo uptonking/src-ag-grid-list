@@ -197,6 +197,7 @@ export class Grid {
 
     // 计算表头结构并创建表头组件，然后将rowData计算处理成rowModel形式的数据结构
     this.setColumnsAndData();
+    // logObjSer('====setColumnsAndData, ', this.context);
 
     // 触发gridReady事件，默认要执行的事件集合为空
     this.dispatchGridReadyEvent(gridOptions);

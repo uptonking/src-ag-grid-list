@@ -78,5 +78,15 @@
 				"label": ""
 			}
 		]
+	},
+	{
+		"path": "$ROOTPATH$/examples-modules/sample-vanilla-js/src/simple/A0VanillaGrid.ts",
+		"bookmarks": [
+			{
+				"line": 8,
+				"column": 13,
+				"label": ""
+			}
+		]
 	}
 ]

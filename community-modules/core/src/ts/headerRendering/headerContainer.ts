@@ -44,6 +44,7 @@ export class HeaderContainer extends BeanStub {
     );
   }
 
+  /** 第一次执行是由gridCore的postConstruct方法逐层触发 */
   @PostConstruct
   private init(): void {
     this.scrollWidth = this.gridOptionsWrapper.getScrollbarWidth();

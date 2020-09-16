@@ -33,6 +33,7 @@ import { AbstractHeaderWrapper } from './abstractHeaderWrapper';
 import { HeaderRowComp } from '../headerRowComp';
 import { _ } from '../../utils';
 
+/** 表头行中一个单元格对应的Component类，样式标志是ag-header-cell" */
 export class HeaderWrapperComp extends AbstractHeaderWrapper {
   private static TEMPLATE /* html */ = `<div class="ag-header-cell" role="presentation" unselectable="on" tabindex="-1">
             <div ref="eResize" class="ag-header-cell-resize" role="presentation"></div>

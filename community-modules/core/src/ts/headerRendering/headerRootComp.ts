@@ -85,6 +85,7 @@ export class HeaderRootComp extends ManagedFocusComponent {
       'right',
     );
 
+    // 每个对象都会执行postConstruct，注意有些事件监听器会对应左中右表头添加3次
     this.headerContainers.forEach((container) =>
       this.createManagedBean(container),
     );

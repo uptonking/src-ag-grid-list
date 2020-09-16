@@ -80,16 +80,17 @@ export class EventService implements IEventEmitter {
     listener: Function,
     async = false,
   ): void {
-    // if (eventType === 'columnEverythingChanged') {
-    //   logObjSer('eventService-add1, ', this);
-    // }
+    if (eventType === 'gridColumnsChanged') {
+      logObjSer('eventService-add1, ', this.allSyncListeners.get(eventType));
+    }
 
     this.getListeners(eventType, async).add(listener);
 
     // if (eventType === 'columnEverythingChanged') {
-    //   // console.log(this.allSyncListeners.get(eventType).size);
-    //   logObjSer('eventService-add2, ', this);
-    // }
+    if (eventType === 'gridColumnsChanged') {
+      logObjSer('eventService-add2, ', this.allSyncListeners.get(eventType));
+      console.trace();
+    }
   }
 
   public removeEventListener(

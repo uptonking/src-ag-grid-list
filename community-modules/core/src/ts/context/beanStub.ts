@@ -19,6 +19,7 @@ export class BeanStub implements IEventEmitter {
   @Autowired('frameworkOverrides')
   private frameworkOverrides: IFrameworkOverrides;
   @Autowired('context') protected context: Context;
+  /** ioc容器中全局单例的事件注册中心 */
   @Autowired('eventService') protected eventService: EventService;
 
   /** 每个Bean对象都有自己的localEventService，非共享，不通过依赖注入初始化 */
@@ -26,7 +27,6 @@ export class BeanStub implements IEventEmitter {
 
   private destroyFunctions: (() => void)[] = [];
   private destroyed = false;
-
 
   // this was a test constructor niall built, when active, it prints after 5 seconds all beans/components that are
   // not destroyed. to use, create a new grid, then api.destroy() before 5 seconds. then anything that gets printed
@@ -65,6 +65,7 @@ export class BeanStub implements IEventEmitter {
     this.dispatchEvent({ type: BeanStub.EVENT_DESTROYED });
   }
 
+  /** 添加事件监听器到 this.localEventService */
   public addEventListener(eventType: string, listener: Function): void {
     if (!this.localEventService) {
       this.localEventService = new EventService();
@@ -73,6 +74,7 @@ export class BeanStub implements IEventEmitter {
     this.localEventService.addEventListener(eventType, listener);
   }
 
+  /** 从 this.localEventService 移除事件监听器 */
   public removeEventListener(eventType: string, listener: Function): void {
     if (this.localEventService) {
       this.localEventService.removeEventListener(eventType, listener);
