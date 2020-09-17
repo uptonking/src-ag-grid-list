@@ -145,7 +145,7 @@ export class HeaderContainer extends BeanStub {
    * for a complete refresh
    */
   private onGridColumnsChanged() {
-    console.log('==onGridColumnsChanged-removeAndCreateAllRowComps');
+    // console.log('==onGridColumnsChanged-removeAndCreateAllRowComps');
 
     this.removeAndCreateAllRowComps();
   }
@@ -169,7 +169,7 @@ export class HeaderContainer extends BeanStub {
     bodyDropTarget.registerGridComp(gridComp);
   }
 
-  /** 卸载表头各行，先遍历headerRowComps并调用destroyBean方法，最后移除dom元素 */
+  /** 卸载所有表头行，先遍历headerRowComps并调用destroyBean方法，最后移除dom元素 */
   @PreDestroy
   private removeHeaderRowComps(): void {
     this.headerRowComps.forEach((headerRowComp) =>

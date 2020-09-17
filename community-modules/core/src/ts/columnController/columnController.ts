@@ -266,7 +266,7 @@ export class ColumnController extends BeanStub {
 
     this.ready = true;
 
-    // 计算自动分组和columnSpan，再触发gridColumnsChanged事件
+    // 计算自动分组和colSpan，再触发gridColumnsChanged事件，事件中会具体创建表头单元格
     this.updateGridColumns();
 
     this.updateDisplayedColumns(source);
@@ -284,7 +284,7 @@ export class ColumnController extends BeanStub {
       source,
     };
     logObjSer('==columnEverythingChanged, ', this.eventService);
-    // columnEverythingChanged事件列表有2个函数，会触发modelUpdate事件
+    // columnEverythingChanged事件列表有2个函数，会触发modelUpdate事件，重渲染数据行
     this.eventService.dispatchEvent(eventEverythingChanged);
 
     const newColumnsLoadedEvent: NewColumnsLoadedEvent = {
@@ -3152,7 +3152,7 @@ export class ColumnController extends BeanStub {
     }
   }
 
-  /** 计算自动表头分组和columnSpan，再触发gridColumnsChanged事件，
+  /** 计算自动分组表头和columnSpan，再触发gridColumnsChanged事件，
    * called from: setColumnState, setColumnDefs, setSecondaryColumns */
   private updateGridColumns(): void {
     if (this.gridColsArePrimary) {

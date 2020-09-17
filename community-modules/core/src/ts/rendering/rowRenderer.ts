@@ -106,7 +106,6 @@ export class RowRenderer extends BeanStub {
    */
   private refreshInProgress = false;
 
-
   private printLayout: boolean;
   private embedFullWidthRows: boolean;
 
@@ -259,7 +258,8 @@ export class RowRenderer extends BeanStub {
       );
     }
 
-    // add listeners to the grid columns
+    // add listeners to the grid columns，
+    // 注意此方法也是gridColumnsChanged的事件函数，这里先执行了一次
     this.refreshListenersToColumnsForCellComps();
 
     // if the grid columns change, then refresh the listeners again
@@ -280,7 +280,7 @@ export class RowRenderer extends BeanStub {
   }
 
   /**
-   * 重新给所有表头列添加事件监听器。
+   * 重新给所有表头列添加事件监听器，而不是创建一列就添加一个。
    * this function adds listeners onto all the grid columns, which are the
    * column that we could have cellComps for.
    * when the grid columns change, we add listeners again. in an ideal design,
@@ -290,8 +290,9 @@ export class RowRenderer extends BeanStub {
    */
   private refreshListenersToColumnsForCellComps(): void {
     this.removeGridColumnListeners();
-    console.log('==refreshListenersToColumnsForCellComps');
-    console.trace();
+    console.log('==ing refreshListenersToColumnsForCellComps');
+    // console.trace();
+
     const cols = this.columnController.getAllGridColumns();
 
     if (!cols) {
@@ -565,9 +566,10 @@ export class RowRenderer extends BeanStub {
       activeElement,
       CellComp.DOM_DATA_KEY_CELL_COMP,
     );
-    const elementIsNotACellDev = _.missing(domData);
+    const elementIsNotACellDiv = _.missing(domData);
 
-    return elementIsNotACellDev ? null : focusedCell;
+    // 若在当前焦点元素对象中没找到cellComp属性
+    return elementIsNotACellDiv ? null : focusedCell;
   }
 
   /** gets called after changes to the model. */
@@ -872,10 +874,13 @@ export class RowRenderer extends BeanStub {
     super.destroy();
   }
 
+  /** 计算要移除的行索引并移除该行组件，最后返回会被重用的行组件的集合 */
   private binRowComps(recycleRows: boolean): { [key: string]: RowComp } {
+    // 会被重用的行组件的映射表
     const rowsToRecycle: { [key: string]: RowComp } = {};
     let indexesToRemove: string[];
 
+    // 若传入的参数对象存在
     if (recycleRows) {
       indexesToRemove = [];
       _.iterateObject(
@@ -891,6 +896,7 @@ export class RowRenderer extends BeanStub {
         },
       );
     } else {
+      // 若未传入参数，则准备移除所有行
       indexesToRemove = Object.keys(this.rowCompsByIndex);
     }
 
@@ -962,13 +968,14 @@ export class RowRenderer extends BeanStub {
     return indexesToDraw;
   }
 
-  /** 计算需要渲染的行的索引index，然后遍历这些行索引创建或更新RowComp */
+  /** 计算需要重新渲染的行的索引index，然后遍历这些行索引创建或更新RowComp */
   private redraw(
     rowsToRecycle?: { [key: string]: RowComp },
     animate = false,
     afterScroll = false,
   ) {
     this.maxDivHeightScaler.updateOffset();
+
     this.workOutFirstAndLastRowsToRender();
 
     // the row can already exist and be in the following:
@@ -1021,7 +1028,6 @@ export class RowRenderer extends BeanStub {
       afterScroll &&
       !this.gridOptionsWrapper.isSuppressAnimationFrame() &&
       !this.printLayout;
-
     if (useAnimationFrame) {
       this.beans.taskQueue.addDestroyTask(
         this.destroyRowComps.bind(this, rowsToRecycle, animate),

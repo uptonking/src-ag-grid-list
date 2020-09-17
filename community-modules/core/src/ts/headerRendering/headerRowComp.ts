@@ -245,7 +245,7 @@ export class HeaderRowComp extends Component {
 
   /** 移除所有表头行的dom元素，并执行destroyBean的钩子函数 */
   private onGridColumnsChanged(): void {
-    console.log('==onGridColumnsChanged-removeAndDestroyAllChildComponents');
+    // console.log('==onGridColumnsChanged-removeAndDestroyAllChildComponents');
 
     this.removeAndDestroyAllChildComponents();
   }
