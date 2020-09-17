@@ -54,7 +54,8 @@ export interface RefreshViewParams {
 }
 
 /**
- * 渲染所有行ui组件，注册各种事件监听器，监听rowModel的渲染与更新，如redrawRows,onModelUpdated
+ * 渲染所有行ui的BeanStub子类，注册各种事件监听器，监听rowModel的渲染与更新，
+ * 提供了很多方法如redrawRows、onModelUpdated
  */
 @Bean('rowRenderer')
 export class RowRenderer extends BeanStub {
@@ -78,6 +79,7 @@ export class RowRenderer extends BeanStub {
   private animationFrameService: AnimationFrameService;
   @Autowired('rowPositionUtils') private rowPositionUtils: RowPositionUtils;
   @Optional('rangeController') private rangeController: IRangeController;
+  private logger: Logger;
 
   private gridPanel: GridPanel;
 
@@ -97,13 +99,13 @@ export class RowRenderer extends BeanStub {
   private pinningLeft: boolean;
   private pinningRight: boolean;
 
-  // we only allow one refresh at a time, otherwise the internal memory structure here
-  // will get messed up. this can happen if the user has a cellRenderer, and inside the
-  // renderer they call an API method that results in another pass of the refresh,
-  // then it will be trying to draw rows in the middle of a refresh.
+  /** we only allow one refresh at a time, otherwise the internal memory structure here
+   * will get messed up. this can happen if the user has a cellRenderer, and inside the
+   * renderer they call an API method that results in another pass of the refresh,
+   * then it will be trying to draw rows in the middle of a refresh.
+   */
   private refreshInProgress = false;
 
-  private logger: Logger;
 
   private printLayout: boolean;
   private embedFullWidthRows: boolean;
@@ -122,11 +124,13 @@ export class RowRenderer extends BeanStub {
     this.logger = loggerFactory.create('RowRenderer');
   }
 
-  /** 给grid组件注册各种事件监听器，在表头模型或数据模型变化后触发更新ui */
+  /** 先初始化this.gridPanel，然后注册各种事件监听器到全局单例的eventService，
+   * 再给cell所在row注册事件监听器，最后调用redrawAfterModelUpdate */
   public registerGridComp(gridPanel: GridPanel): void {
     this.gridPanel = gridPanel;
 
     this.rowContainers = this.gridPanel.getRowContainers();
+
     this.addManagedListener(
       this.eventService,
       Events.EVENT_PAGINATION_CHANGED,
@@ -158,6 +162,7 @@ export class RowRenderer extends BeanStub {
       this.onDomLayoutChanged.bind(this),
     );
 
+    // 给cell所在的row注册事件监听器
     this.registerCellEventListeners();
 
     this.printLayout =
@@ -168,9 +173,12 @@ export class RowRenderer extends BeanStub {
     this.redrawAfterModelUpdate();
   }
 
-  // in a clean design, each cell would register for each of these events. however when scrolling, all the cells
-  // registering and de-registering for events is a performance bottleneck. so we register here once and inform
-  // all active cells.
+  /**
+   * 为提升性能，通过给row注册事件监听器之后再通知具体cell，而不是直接给所有cell注册监听器。
+   * in a clean design, each cell would register for each of these events.
+   * however when scrolling, all the cells registering and de-registering for
+   * events is a performance bottleneck. so we register here once and inform
+   * all active cells. */
   private registerCellEventListeners(): void {
     this.addManagedListener(
       this.eventService,
@@ -283,7 +291,7 @@ export class RowRenderer extends BeanStub {
   private refreshListenersToColumnsForCellComps(): void {
     this.removeGridColumnListeners();
     console.log('==refreshListenersToColumnsForCellComps');
-
+    console.trace();
     const cols = this.columnController.getAllGridColumns();
 
     if (!cols) {
@@ -544,12 +552,14 @@ export class RowRenderer extends BeanStub {
       return null;
     }
 
-    // if the dom is not actually focused on a cell, then we don't try to refocus. the problem this
-    // solves is with editing - if the user is editing, eg focus is on a text field, and not on the
-    // cell itself, then the cell can be registered as having focus, however it's the text field that
-    // has the focus and not the cell div. therefore, when the refresh is finished, the grid will focus
-    // the cell, and not the textfield. that means if the user is in a text field, and the grid refreshes,
-    // the focus is lost from the text field. we do not want this.
+    // if dom is not actually focused on a cell, then we don't try to refocus.
+    // the problem this solves is with editing - if the user is editing, eg
+    // focus is on a text field, and not on the cell itself, then the cell can
+    // be registered as having focus, however it's the text field that has the
+    // focus and not the cell div. therefore, when the refresh is finished, the
+    // grid will focus the cell, and not the textfield.
+    // that means if the user is in a text field, and the grid refreshes,
+    // the focus is lost from the text field.  we do not want this.
     const activeElement = document.activeElement;
     const domData = this.gridOptionsWrapper.getDomData(
       activeElement,
@@ -562,6 +572,7 @@ export class RowRenderer extends BeanStub {
 
   /** gets called after changes to the model. */
   public redrawAfterModelUpdate(params: RefreshViewParams = {}): void {
+    // 执行锁定，这里设置实例属性this.refreshInProgress为true
     this.getLockOnRefresh();
 
     const focusedCell: CellPosition = this.getCellToRestoreFocusToAfterRefresh(
@@ -630,6 +641,7 @@ export class RowRenderer extends BeanStub {
     containers.forEach((container) => container.setHeight(realHeight));
   }
 
+  /** 设置this.refreshInProgress为true，若已是true，则抛出异常 */
   private getLockOnRefresh(): void {
     if (this.refreshInProgress) {
       throw new Error(
@@ -644,6 +656,7 @@ export class RowRenderer extends BeanStub {
     this.refreshInProgress = true;
   }
 
+  /** 设置this.refreshInProgress为false */
   private releaseLockOnRefresh(): void {
     this.refreshInProgress = false;
   }

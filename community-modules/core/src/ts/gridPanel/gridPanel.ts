@@ -65,7 +65,7 @@ const GRID_PANEL_NORMAL_TEMPLATE =
             <div class="ag-floating-top-viewport" ref="eTopViewport" role="presentation" unselectable="on">
                 <div class="ag-floating-top-container" ref="eTopContainer" role="presentation" unselectable="on"></div>
             </div>
-            <div class="ag-pinned-right-floating-top" ref="eRightTop" role="presentation" unselectable="on"></div>
+            <div class="ag-pinned-right-floating-top" ref="eRightTop" role="presentation" u+nselectable="on"></div>
             <div class="ag-floating-top-full-width-container" ref="eTopFullWidthContainer" role="presentation" unselectable="on"></div>
         </div>
         <div class="ag-body-viewport" ref="eBodyViewport" role="presentation">
@@ -228,6 +228,8 @@ export class GridPanel extends Component {
 
   /** 初始化GridPanel作为Component的dom元素，这里会递归地创建dom元素对应的组件对象 */
   constructor() {
+    // 这里调用父类构造方法创建字符串对应的组件对象，此过程中会再创建子dom元素对应的组件对象，
+    // 注意会先依赖注入子元素组件对象并调用PostConstruct，然后逐级向上依赖注入
     super(GRID_PANEL_NORMAL_TEMPLATE);
     this.resetLastHorizontalScrollElementDebounced = _.debounce(
       this.resetLastHorizontalScrollElement.bind(this),
@@ -235,6 +237,7 @@ export class GridPanel extends Component {
     );
   }
 
+  /** 字符串中子dom对象的PostConstruct钩子方法会先被调用 */
   @PostConstruct
   private init() {
     this.scrollWidth = this.gridOptionsWrapper.getScrollbarWidth();
@@ -248,11 +251,11 @@ export class GridPanel extends Component {
 
     this.suppressScrollOnFloatingRow();
     this.setupRowAnimationCssClass();
+
     this.buildRowContainerComponents();
 
     this.addEventListeners();
     this.addDragListeners();
-
     this.addScrollListener();
 
     if (
@@ -265,9 +268,12 @@ export class GridPanel extends Component {
 
     this.setPinnedContainerSize();
     this.setHeaderAndFloatingHeights();
+
     this.disableBrowserDragging();
+
     this.addMouseListeners();
     this.addKeyboardEvents();
+
     this.addBodyViewportListener();
     this.addStopEditingWhenGridLosesFocus();
     this.mockContextMenuForIPad();
@@ -291,6 +297,8 @@ export class GridPanel extends Component {
     this.paginationAutoPageSizeService.registerGridComp(this);
     this.mouseEventService.registerGridComp(this);
     this.beans.registerGridComp(this);
+
+    // 这里逻辑很复杂，会触发rowRenderer的重绘
     this.rowRenderer.registerGridComp(this);
 
     if (this.rangeController) {
@@ -309,7 +317,6 @@ export class GridPanel extends Component {
       this.addManagedListener(element, 'focusin', () => {
         _.addCssClass(element, 'ag-has-focus');
       });
-
       this.addManagedListener(element, 'focusout', (e: FocusEvent) => {
         if (!element.contains(e.relatedTarget as HTMLElement)) {
           _.removeCssClass(element, 'ag-has-focus');
@@ -484,6 +491,7 @@ export class GridPanel extends Component {
     });
   }
 
+  /** 注册各种事件函数到ioc容器单例的eventService对象 */
   private addEventListeners(): void {
     this.addManagedListener(
       this.eventService,

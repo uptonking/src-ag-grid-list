@@ -7,10 +7,12 @@ export function makeNull<T>(value?: T): T | null {
   return value == null || (value as any) === '' ? null : value;
 }
 
+/** value不为null且value不为空字符串时，返回true */
 export function exists<T>(value: T, allowEmptyString = false): boolean {
   return value != null && (allowEmptyString || (value as any) !== '');
 }
 
+/** value为null，或value为空字符串时，返回true */
 export function missing<T>(value: T): boolean {
   return !exists(value);
 }

@@ -130,6 +130,7 @@ export class GridOptionsWrapper {
 
   private propertyEventService: EventService = new EventService();
 
+  /** 返回一个字符串 __AG_randomString */
   private domDataKey = '__AG_' + Math.random().toString();
 
   private layoutElements: HTMLElement[] = [];

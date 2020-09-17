@@ -56,13 +56,69 @@ export class HeaderRowComp extends Component {
     const niceClassName = HeaderRowType[type].toLowerCase().replace(/_/g, '-');
     this.addCssClass(`ag-header-row-${niceClassName}`);
 
-    console.trace();
+    // console.trace();
 
     if (isBrowserSafari()) {
       // fix for a Safari rendering bug that caused the header to flicker above
       // chart panels as you move the mouse over the header
       this.getGui().style.transform = 'translateZ(0)';
     }
+  }
+
+  @PostConstruct
+  private init(): void {
+    this.onRowHeightChanged();
+    this.onVirtualColumnsChanged();
+    this.setWidth();
+
+    this.addManagedListener(
+      this.gridOptionsWrapper,
+      GridOptionsWrapper.PROP_HEADER_HEIGHT,
+      this.onRowHeightChanged.bind(this),
+    );
+    this.addManagedListener(
+      this.gridOptionsWrapper,
+      GridOptionsWrapper.PROP_PIVOT_HEADER_HEIGHT,
+      this.onRowHeightChanged.bind(this),
+    );
+
+    this.addManagedListener(
+      this.gridOptionsWrapper,
+      GridOptionsWrapper.PROP_GROUP_HEADER_HEIGHT,
+      this.onRowHeightChanged.bind(this),
+    );
+    this.addManagedListener(
+      this.gridOptionsWrapper,
+      GridOptionsWrapper.PROP_PIVOT_GROUP_HEADER_HEIGHT,
+      this.onRowHeightChanged.bind(this),
+    );
+
+    this.addManagedListener(
+      this.gridOptionsWrapper,
+      GridOptionsWrapper.PROP_FLOATING_FILTERS_HEIGHT,
+      this.onRowHeightChanged.bind(this),
+    );
+
+    this.addManagedListener(
+      this.eventService,
+      Events.EVENT_VIRTUAL_COLUMNS_CHANGED,
+      this.onVirtualColumnsChanged.bind(this),
+    );
+    this.addManagedListener(
+      this.eventService,
+      Events.EVENT_DISPLAYED_COLUMNS_CHANGED,
+      this.onDisplayedColumnsChanged.bind(this),
+    );
+    this.addManagedListener(
+      this.eventService,
+      Events.EVENT_COLUMN_RESIZED,
+      this.onColumnResized.bind(this),
+    );
+    this.addManagedListener(
+      this.eventService,
+      Events.EVENT_GRID_COLUMNS_CHANGED,
+      this.onGridColumnsChanged.bind(this),
+    );
   }
 
   public forEachHeaderElement(callback: (comp: Component) => void): void {
@@ -154,63 +210,6 @@ export class HeaderRowComp extends Component {
 
     this.getGui().style.top = rowHeight + 'px';
     this.getGui().style.height = sizes[this.dept] + 'px';
-  }
-
-  //noinspection JSUnusedLocalSymbols
-  @PostConstruct
-  private init(): void {
-    this.onRowHeightChanged();
-    this.onVirtualColumnsChanged();
-    this.setWidth();
-
-    this.addManagedListener(
-      this.gridOptionsWrapper,
-      GridOptionsWrapper.PROP_HEADER_HEIGHT,
-      this.onRowHeightChanged.bind(this),
-    );
-    this.addManagedListener(
-      this.gridOptionsWrapper,
-      GridOptionsWrapper.PROP_PIVOT_HEADER_HEIGHT,
-      this.onRowHeightChanged.bind(this),
-    );
-
-    this.addManagedListener(
-      this.gridOptionsWrapper,
-      GridOptionsWrapper.PROP_GROUP_HEADER_HEIGHT,
-      this.onRowHeightChanged.bind(this),
-    );
-    this.addManagedListener(
-      this.gridOptionsWrapper,
-      GridOptionsWrapper.PROP_PIVOT_GROUP_HEADER_HEIGHT,
-      this.onRowHeightChanged.bind(this),
-    );
-
-    this.addManagedListener(
-      this.gridOptionsWrapper,
-      GridOptionsWrapper.PROP_FLOATING_FILTERS_HEIGHT,
-      this.onRowHeightChanged.bind(this),
-    );
-
-    this.addManagedListener(
-      this.eventService,
-      Events.EVENT_VIRTUAL_COLUMNS_CHANGED,
-      this.onVirtualColumnsChanged.bind(this),
-    );
-    this.addManagedListener(
-      this.eventService,
-      Events.EVENT_DISPLAYED_COLUMNS_CHANGED,
-      this.onDisplayedColumnsChanged.bind(this),
-    );
-    this.addManagedListener(
-      this.eventService,
-      Events.EVENT_COLUMN_RESIZED,
-      this.onColumnResized.bind(this),
-    );
-    this.addManagedListener(
-      this.eventService,
-      Events.EVENT_GRID_COLUMNS_CHANGED,
-      this.onGridColumnsChanged.bind(this),
-    );
   }
 
   private onColumnResized(): void {

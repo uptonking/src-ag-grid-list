@@ -121,6 +121,7 @@ export class HeaderRootComp extends ManagedFocusComponent {
     }
   }
 
+  /** 用传入的gridPanel参数对象初始化this.gridPanel，再对headerContainer准备拖拽方法 */
   public registerGridComp(gridPanel: GridPanel): void {
     this.gridPanel = gridPanel;
     this.headerContainers.forEach((c) => c.setupDragAndDrop(gridPanel));

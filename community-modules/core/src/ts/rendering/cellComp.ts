@@ -37,6 +37,7 @@ import { DndSourceComp } from './dndSourceComp';
 import { TooltipFeature } from '../widgets/tooltipFeature';
 import { TooltipParentComp } from '../widgets/tooltipFeature';
 
+/** 代表单元格的Component类 */
 export class CellComp extends Component implements TooltipParentComp {
   public static DOM_DATA_KEY_CELL_COMP = 'cellComp';
 
@@ -70,14 +71,14 @@ export class CellComp extends Component implements TooltipParentComp {
 
   private lastIPadMouseClickEvent: number;
 
-  // true if we are using a cell renderer
+  /** true if we are using a cell renderer */
   private usingCellRenderer: boolean;
-  // the cellRenderer class to use - this is decided once when the grid is initialised
+  /** the cellRenderer class to use - this is decided once when grid is initialised */
   private cellRendererType: string;
 
-  // instance of the cellRenderer class
+  /** instance of the cellRenderer class */
   private cellRenderer: ICellRendererComp | null;
-  // the GUI is initially element or string, however once the UI is created, it becomes UI
+  /** the GUI is initially element or string, however once UI is created, it becomes UI */
   private cellRendererGui: HTMLElement | null;
   private cellEditor: ICellEditorComp | null;
   private selectionHandle: ISelectionHandle | null;
@@ -104,15 +105,16 @@ export class CellComp extends Component implements TooltipParentComp {
 
   private readonly printLayout: boolean;
 
-  // every time we go into edit mode, or back again, this gets incremented.
-  // it's the components way of dealing with the async nature of framework components,
-  // so if a framework component takes a while to be created, we know if the object
-  // is still relevant when creating is finished. eg we could click edit / un-edit 20
-  // times before the first React edit component comes back - we should discard
-  // the first 19.
+  /** every time we go into edit mode, or back again, this gets incremented.
+   * it's the components way of dealing with the async nature of framework components,
+   * so if a framework component takes a while to be created, we know if the object
+   * is still relevant when creating is finished.
+   * eg we could click edit/un-edit 20 times before the first React edit component
+   * comes back - we should discard the first 19. */
   private cellEditorVersion = 0;
   private cellRendererVersion = 0;
 
+  /** 单元格初始化流程，valueAndFormat > wrapper > renderer > colSpan > rowSpan */
   constructor(
     scope: any,
     beans: Beans,
@@ -139,6 +141,7 @@ export class CellComp extends Component implements TooltipParentComp {
     this.cellFocused = this.beans.focusController.isCellFocused(
       this.cellPosition,
     );
+
     this.firstRightPinned = this.column.isFirstRightPinned();
     this.lastLeftPinned = this.column.isLastLeftPinned();
 
@@ -149,8 +152,11 @@ export class CellComp extends Component implements TooltipParentComp {
     }
 
     this.getValueAndFormat();
+
     this.setUsingWrapper();
+
     this.chooseCellRenderer();
+
     this.setupColSpan();
     this.rowSpan = this.column.getRowSpan(this.rowNode);
   }
