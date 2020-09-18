@@ -24,7 +24,7 @@ export enum HeaderRowType {
   FLOATING_FILTER,
 }
 
-/** 代表表头中的一行的ui组件，包含一行表头的dom元素和样式，
+/** 代表表头中的一行的Component类，包含一行表头的dom元素和样式，样式标志是ag-header-row，
  * 注册了各种事件监听器，提供了重新创建表头行的方法 */
 export class HeaderRowComp extends Component {
   @Autowired('gridOptionsWrapper')
@@ -146,7 +146,7 @@ export class HeaderRowComp extends Component {
     this.destroyChildComponents(idsOfAllChildren);
   }
 
-  /** 通过element.removeChild移除dom元素，再执行HeaderRowComp的destroyBean钩子函数 */
+  /** 通过element.removeChild移除dom元素，再执行HeaderRowComp的destroyBean钩子方法 */
   private destroyChildComponents(
     idsToDestroy: string[],
     keepFocused?: boolean,
@@ -243,7 +243,7 @@ export class HeaderRowComp extends Component {
     return this.columnController.getContainerWidth(this.pinned);
   }
 
-  /** 移除所有表头行的dom元素，并执行destroyBean的钩子函数 */
+  /** 移除所有表头行的dom元素，并执行destroyBean的钩子方法 */
   private onGridColumnsChanged(): void {
     // console.log('==onGridColumnsChanged-removeAndDestroyAllChildComponents');
 

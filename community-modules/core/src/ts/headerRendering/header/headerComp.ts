@@ -36,6 +36,7 @@ export interface IHeaderComp extends IHeader, IComponent<IHeaderParams> {
   setActiveParent?(activeParent: boolean): void;
 }
 
+/** 表头单元格对应的Component类，样式标志是ag-cell-label-container */
 export class HeaderComp extends Component implements IHeaderComp {
   private static TEMPLATE /* html */ = `<div class="ag-cell-label-container">
             <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button" aria-hidden="true"></span>

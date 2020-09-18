@@ -123,8 +123,9 @@ export class RowRenderer extends BeanStub {
     this.logger = loggerFactory.create('RowRenderer');
   }
 
-  /** 先初始化this.gridPanel，然后注册各种事件监听器到全局单例的eventService，
-   * 再给cell所在row注册事件监听器，最后调用redrawAfterModelUpdate */
+  /** 本方法会在GridPanel的PostConstruct过程中被调用执行，先初始化this.gridPanel，
+   * 然后注册各种事件监听器到全局单例的eventService， 再给cell所在row注册事件监听器，
+   * 最后调用重渲染要更新的行组件 */
   public registerGridComp(gridPanel: GridPanel): void {
     this.gridPanel = gridPanel;
 
@@ -169,11 +170,13 @@ export class RowRenderer extends BeanStub {
     this.embedFullWidthRows =
       this.printLayout || this.gridOptionsWrapper.isEmbedFullWidthRows();
 
+    // 重渲染需要更新的行组件
     this.redrawAfterModelUpdate();
   }
 
   /**
    * 为提升性能，通过给row注册事件监听器之后再通知具体cell，而不是直接给所有cell注册监听器。
+   * 本方法全部内容都是在添加各种全局事件监听器，中间会触发一次
    * in a clean design, each cell would register for each of these events.
    * however when scrolling, all the cells registering and de-registering for
    * events is a performance bottleneck. so we register here once and inform
@@ -258,7 +261,7 @@ export class RowRenderer extends BeanStub {
       );
     }
 
-    // add listeners to the grid columns，
+    // add listeners to the grid columns，重新给所有列单元格添加事件，
     // 注意此方法也是gridColumnsChanged的事件函数，这里先执行了一次
     this.refreshListenersToColumnsForCellComps();
 
@@ -280,7 +283,7 @@ export class RowRenderer extends BeanStub {
   }
 
   /**
-   * 重新给所有表头列添加事件监听器，而不是创建一列就添加一个。
+   * 重新给所有单元格(列)添加事件监听器，而不是创建一列就添加一个。
    * this function adds listeners onto all the grid columns, which are the
    * column that we could have cellComps for.
    * when the grid columns change, we add listeners again. in an ideal design,
@@ -356,14 +359,16 @@ export class RowRenderer extends BeanStub {
     });
   }
 
+  /** layout变为printLayout，或由printLayout变到其他layout时，会重新渲染所有行组件 */
   private onDomLayoutChanged(): void {
     const printLayout =
       this.gridOptionsWrapper.getDomLayout() === Constants.DOM_LAYOUT_PRINT;
     const embedFullWidthRows =
       printLayout || this.gridOptionsWrapper.isEmbedFullWidthRows();
 
-    // if moving towards or away from print layout, means we need to destroy all rows, as rows are not laid
-    // out using absolute positioning when doing print layout
+    // if moving towards or away from print layout, means we need to destroy all
+    // rows, as rows are not laid out using absolute positioning when doing
+    // print layout
     const destroyRows =
       embedFullWidthRows !== this.embedFullWidthRows ||
       this.printLayout !== printLayout;
@@ -383,22 +388,6 @@ export class RowRenderer extends BeanStub {
     this.lastRenderedRow = -1;
     const rowIndexesToRemove = Object.keys(this.rowCompsByIndex);
     this.removeRowComps(rowIndexesToRemove);
-  }
-
-  /** 当前页加载完成后，手动调用 modelUpdated 函数，重新渲染所有行组件 */
-  private onPageLoaded(refreshEvent?: ModelUpdatedEvent): void {
-    if (_.missing(refreshEvent)) {
-      refreshEvent = {
-        type: Events.EVENT_MODEL_UPDATED,
-        api: this.gridApi,
-        columnApi: this.columnApi,
-        animate: false,
-        keepRenderedRows: false,
-        newData: false,
-        newPage: false,
-      };
-    }
-    this.onModelUpdated(refreshEvent);
   }
 
   public getAllCellsForColumn(column: Column): HTMLElement[] {
@@ -485,21 +474,37 @@ export class RowRenderer extends BeanStub {
     this.redrawAfterModelUpdate(params);
   }
 
-  /** 重新渲染所有行组件 */
+  /** 当前页加载完成后，手动调用 modelUpdated 函数，重新渲染所有数据行组件 */
+  private onPageLoaded(refreshEvent?: ModelUpdatedEvent): void {
+    if (_.missing(refreshEvent)) {
+      refreshEvent = {
+        type: Events.EVENT_MODEL_UPDATED,
+        api: this.gridApi,
+        columnApi: this.columnApi,
+        animate: false,
+        keepRenderedRows: false,
+        newData: false,
+        newPage: false,
+      };
+    }
+    this.onModelUpdated(refreshEvent);
+  }
+
+  /** 会调用重新渲染需要更新的行组件的方法，本方法不会更新pinned rows */
   private onModelUpdated(refreshEvent: ModelUpdatedEvent): void {
     const params: RefreshViewParams = {
       recycleRows: refreshEvent.keepRenderedRows,
       animate: refreshEvent.animate,
       newData: refreshEvent.newData,
       newPage: refreshEvent.newPage,
-      // because this is a model updated event (not pinned rows), we
-      // can skip updating the pinned rows. this is needed so that if user
-      // is doing transaction updates, the pinned rows are not getting constantly
-      // trashed - or editing cells in pinned rows are not refreshed and put into read mode
+      // because this is a model updated event (not pinned rows), we can skip
+      // updating the pinned rows. this is needed so that if user is doing
+      // transaction updates, the pinned rows are not getting constantly trashed
+      // or editing cells in pinned rows are not refreshed and put into read mode
       onlyBody: true,
     };
-    console.trace();
-    // 更新需要更新的所有行组件
+    // console.trace();
+    // 更新需要更新的行组件
     this.redrawAfterModelUpdate(params);
   }
 
@@ -524,6 +529,7 @@ export class RowRenderer extends BeanStub {
     return result;
   }
 
+  /** 先计算需要移除的行索引，并移除对应的行组件，最后重渲染需要更新的行组件 */
   public redrawRows(rowNodes: RowNode[]): void {
     if (!rowNodes || rowNodes.length == 0) {
       return;
@@ -572,7 +578,7 @@ export class RowRenderer extends BeanStub {
     return elementIsNotACellDiv ? null : focusedCell;
   }
 
-  /** gets called after changes to the model. */
+  /** 重渲染那些需要更新的数据行，gets called after changes to the model. */
   public redrawAfterModelUpdate(params: RefreshViewParams = {}): void {
     // 执行锁定，这里设置实例属性this.refreshInProgress为true
     this.getLockOnRefresh();
@@ -594,6 +600,7 @@ export class RowRenderer extends BeanStub {
       recycleRows,
     );
 
+    // 重新创建行组件，或更新旧的行组件
     this.redraw(rowsToRecycle, animate);
 
     if (!params.onlyBody) {
@@ -874,7 +881,7 @@ export class RowRenderer extends BeanStub {
     super.destroy();
   }
 
-  /** 计算要移除的行索引并移除该行组件，最后返回会被重用的行组件的集合 */
+  /** 计算要移除的行索引并移除对应的行组件，最后返回会被重用的行组件的集合 */
   private binRowComps(recycleRows: boolean): { [key: string]: RowComp } {
     // 会被重用的行组件的映射表
     const rowsToRecycle: { [key: string]: RowComp } = {};

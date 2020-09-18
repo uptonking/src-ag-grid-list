@@ -94,47 +94,46 @@ import { logObjSer } from './utils/logUtils';
 
 /** 主要是关于ag-grid module及第3方框架集成的配置 */
 export interface GridParams {
-  // used by Web Components
+  /** used by Web Components */
   globalEventListener?: Function;
   // these are used by ng1 only
   $scope?: any;
   $compile?: any;
   quickFilterOnScope?: any;
-  // this allows the base frameworks (React, NG2, etc) to provide alternative cellRenderers and cellEditors
+  /** this allows the base frameworks (React, NG2, etc) to provide alternative cellRenderers and cellEditors */
   frameworkOverrides?: IFrameworkOverrides;
-  // bean instances to add to the context
+  /** bean instances to add to the context */
   providedBeanInstances?: { [key: string]: any };
-  // Alternative UI root class. Default is GridCore.
+  /** Alternative UI root class. Default is GridCore. */
   rootComponent?: { new (): Component };
-  // modules to be registered to ag-grid
+  /** modules to be registered to ag-grid */
   modules?: Module[];
 }
 
+// 本文件全部是这一个class的内容。
 /**
- * Grid数据及操作的入口。
- * 本文件全部是这一个class的内容。
+ * Grid类是ag-grid数据、操作、渲染的总入口。
  */
 export class Grid {
   protected logger: Logger;
 
-  /** 创建grid的上下文信息对象，会创建并保存各种bean */
+  /** 全局单例的ioc容器，会创建并保存各种bean */
   private context: Context;
-
-  /** grid配置对象，主要包括properties、events和callbacks相关配置，与第3方框架无关 */
+  /** ag-grid总配置对象，主要包括properties、events和callbacks，与第3方框架无关 */
   private readonly gridOptions: GridOptions;
 
   /**
-   * Grid初始化的任务：
-   * 准备bean class及配置，
-   * 创建基础bean对象，
-   * 注册ag-grid内部使用的默认组件到注册表，
-   * 创建gridCore对象并注入属性，
-   * 将rowData计算处理成rowModel的结构，
-   * 触发gridReady事件。
+   * Grid初始化的任务流程：
+   * 1. 准备待实例化的bean class列表，
+   * 2. 由ioc容器Context创建全局单例的各种bean对象实例并注入属性，
+   * 3. 注册ag-grid内部使用的默认组件class到组件映射表，
+   * 4. 创建gridCore对象后在注入属性调用钩子方法时执行初步渲染，
+   * 5. 先后计算表头行和数据行的模型并执行主要渲染
+   * 6. 触发gridReady事件。
    *
-   * @param eGridDiv grid最终添加到的DOM容器
-   * @param gridOptions grid的各种配置
-   * @param params ag-grid module相关配置
+   * @param eGridDiv 渲染的ag-grid元素会被添加到的DOM容器
+   * @param gridOptions ag-grid的各种配置
+   * @param params ag-grid ag-grid module及第3方框架相关配置
    */
   constructor(
     eGridDiv: HTMLElement,
@@ -176,7 +175,7 @@ export class Grid {
     this.logger = new Logger('ag-Grid', () => gridOptions.debug);
     const contextLogger = new Logger('Context', () => contextParams.debug);
 
-    // 在Context构造函数中创建ioc单例容器的所有bean对象实例
+    // 创建参数中对应的所有bean对象并添加到ioc容器，再注入属性，然后调用各bean的钩子方法
     this.context = new Context(contextParams, contextLogger);
 
     // 将注册模块暴露的的userComponents覆盖到UserComponentRegistry默认组件映射表
@@ -185,12 +184,11 @@ export class Grid {
     this.registerStackComponents(registeredModules);
     logObjSer('====registerComp, ', this.context);
 
-    // 创建gridCore对象，包含grid数据、操作的重要类
     const gridCoreClass = (params && params.rootComponent) || GridCore;
     const gridCore = new gridCoreClass();
 
-    // 给gridCore对象注入属性，会从context的bean容器中查找bean来初始化GridCore的属性，
-    // 执行gridCore的postConstruct时，会将grid的最外层dom元素及内部部分结构渲染到页面
+    // 给gridCore对象注入属性，会从Context的bean容器中查找bean来初始化gridCore的属性，
+    // 执行gridCore的postConstruct时，会将grid的最外层dom元素及部分内部结构渲染到页面
     // 这里会创建ag-grid-comp、ag-header-root、ag-overlay-wrapper、ag-pagination自
     // 定义html标签对应的Component组件类对象，并添加各种事件监听器
     this.context.createBean(gridCore);
@@ -208,7 +206,8 @@ export class Grid {
     this.logger.log(`initialised successfully, enterprise = ${isEnterprise}`);
   }
 
-  /** 返回一个映射表，包含gridOptions、eGridDiv、与框架集成相关的各种bean，用于注入属性时查找 */
+  /** 返回一个映射表，包含gridOptions、eGridDiv、与框架集成相关的各种bean，
+   * 用于依赖注入过程中，查找bean实例不仅从ioc容器中查找，也从这里返回的映射表集合中查找 */
   private createProvidedBeans(eGridDiv: HTMLElement, params: GridParams): any {
     let frameworkOverrides = params ? params.frameworkOverrides : null;
     if (_.missing(frameworkOverrides)) {
@@ -231,9 +230,9 @@ export class Grid {
     return seed;
   }
 
-  /** 获取向ag-grid core中直接或间接注册的模块 */
+  /** 获取向ag-grid core中直接或间接注册的模块的集合 */
   private getRegisteredModules(params: GridParams): Module[] {
-    // 传参到Grid构造函数时注册的模块
+    // 通过直接传参到Grid构造函数时注册的模块
     const passedViaConstructor: Module[] = params ? params.modules : null;
     // 通过ModuleRegistry注册的模块
     const registered = ModuleRegistry.getRegisteredModules();
@@ -310,8 +309,8 @@ export class Grid {
   }
 
   /**
-   * 指定ag-grid内部使用的默认组件，组件类名大多以Ag开头，如input,button,toggle,dialog,overlay，
-   * 然后再加入module暴露的agStackComponents
+   * 指定ag-grid自定义标签相关的ui组件，组件类的名称以Ag开头，包括ag-grid-comp、ag-header-root、
+   * ag-panel、ag-checkbox等，还包括module暴露的agStackComponents列出的组件类
    */
   private createAgStackComponentsList(registeredModules: Module[]): any[] {
     let components: ComponentMeta[] = [
@@ -351,7 +350,7 @@ export class Grid {
     return components;
   }
 
-  /** 准备要创建bean的class，包含rowModel的class */
+  /** 返回待实例化的bean对应的class的集合(去重后)，其中包含rowModel的class */
   private createBeansList(registeredModules: Module[]): any[] {
     // 先从注册的module中获取要使用的rowModel
     const rowModelClass = this.getRowModelClass(registeredModules);
@@ -360,7 +359,7 @@ export class Grid {
     }
 
     // beans should only contain SERVICES, it should NEVER contain COMPONENTS
-    // 这里只列出service功能的bean，不包含component功能的bean
+    // 这里只列出Service功能的bean，不包含ui相关的Component功能的bean
     const beans = [
       rowModelClass,
       PinnedRowModel,
@@ -422,15 +421,14 @@ export class Grid {
       LoggerFactory,
     ];
 
-    // 再提取出注册的modules顶层暴露beans属性值，并加入bean class数组等待初始化
+    // 再提取出注册module顶层暴露的beans属性值，并加入bean class数组等待初始化
     const moduleBeans = this.extractModuleEntity(registeredModules, (module) =>
       module.beans ? module.beans : [],
     );
-
     // 对于ClientSideRowModel，这里会加入 Sort/Filter-Stage/Service,FlattenStage,ImmutableService
     beans.push(...moduleBeans);
 
-    // check for duplicates, as different modules could include the same beans that
+    // check for duplicates, as different modules could include same beans that
     // they depend on, eg ClientSideRowModel in enterprise, and ClientSideRowModel in community
     const beansNoDuplicates: any[] = [];
     beans.forEach((bean) => {

@@ -64,9 +64,7 @@ export class UserComponentRegistry extends BeanStub {
   @Autowired('gridOptions')
   private gridOptions: GridOptions;
 
-  /**
-   * ag-grid内部使用的各种默认组件的映射表，这里的组件名不以Ag开头
-   */
+  /** ag-grid内部使用的各种默认组件的映射表，包括表头、行、单元格等，这里的组件名不以Ag开头 */
   private agGridDefaults: {
     [key: string]: AgGridRegisteredComponentInput<any>;
   } = {

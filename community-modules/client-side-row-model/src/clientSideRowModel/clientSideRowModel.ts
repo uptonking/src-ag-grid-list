@@ -53,7 +53,8 @@ export interface RowNodeMap {
  * 最常用的rowModel，仅在浏览器客户端进行计算，不涉及服务端数据通信
  */
 @Bean('rowModel')
-export class ClientSideRowModel extends BeanStub
+export class ClientSideRowModel
+  extends BeanStub
   implements IClientSideRowModel {
   @Autowired('gridOptionsWrapper')
   private gridOptionsWrapper: GridOptionsWrapper;
@@ -498,7 +499,8 @@ export class ClientSideRowModel extends BeanStub
   }
 
   /**
-   * 更新数据rowModel，基于无break的switch选择分支，实现从某一步开始一直执行到结束的流程，
+   * 重新计算数据rowModel，然后触发 modelUpdated 事件，导致数据行重渲染，
+   * 计算rowModel时基于无break的switch分支，实现从某一步开始一直执行到结束的流程，
    * 是columnEverythingChanged对应的事件处理函数之一
    * @param params 更新参数
    */
@@ -564,7 +566,7 @@ export class ClientSideRowModel extends BeanStub
       newData: params.newData,
       newPage: false,
     };
-    // 触发modelUpdated事件
+    // 触发modelUpdated事件，会重新渲染数据行组件
     this.eventService.dispatchEvent(event);
 
     if (this.$scope) {

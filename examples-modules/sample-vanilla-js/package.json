@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build-babel": "babel src --out-dir dist --config-file ./babel.config.js --extensions \".ts,.js\"  --source-maps inline",
-    "build-demo": "webpack --config ./config/webpack.config.vanilla.js",
+    "build-demo": "webpack --config ./config/webpack.config.prod.js",
     "build-es": "yarn run clean && yarn run build-tsc",
     "build-tsc": "tsc -p ./tsconfig.json",
     "build-types": "tsc --emitDeclarationOnly",

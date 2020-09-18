@@ -12,7 +12,7 @@ import { setFixedWidth, clearElement } from '../utils/dom';
 import { BeanStub } from '../context/beanStub';
 import { GridPanel } from '../gridPanel/gridPanel';
 
-/** 表头的容器，在HeaderRootComp中创建了左中右3各对象实例，
+/** 表头的容器，是BeanStub的子类，在HeaderRootComp中创建了左中右3各对象实例，
  * 每个表头行是HeaderRowComp组件的实例 */
 export class HeaderContainer extends BeanStub {
   @Autowired('gridOptionsWrapper')
@@ -189,13 +189,14 @@ export class HeaderContainer extends BeanStub {
     for (let dept = 0; dept < rowCount; dept++) {
       const groupRow = dept !== rowCount - 1;
       const type = groupRow ? HeaderRowType.COLUMN_GROUP : HeaderRowType.COLUMN;
-      // 创建一个表头行
+      // 创建一个表头行对象
       const headerRowComp = new HeaderRowComp(
         dept,
         type,
         this.pinned,
         this.dropTarget,
       );
+      // 调用表头行对象的钩子方法，这里会给ioc容器中单例的eventService添加各种事件
       this.createBean(headerRowComp);
       this.headerRowComps.push(headerRowComp);
       headerRowComp.setRowIndex(this.headerRowComps.length - 1);

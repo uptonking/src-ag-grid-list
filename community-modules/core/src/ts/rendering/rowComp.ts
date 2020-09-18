@@ -29,6 +29,7 @@ interface CellTemplate {
   cellComps: CellComp[];
 }
 
+/** 一个数据行对应的Component类 */
 export class RowComp extends Component {
   public static DOM_DATA_KEY_RENDERED_ROW = 'renderedRow';
 
@@ -1349,7 +1350,7 @@ export class RowComp extends Component {
     );
   }
 
-  /** 切换首尾行的样式 */
+  /** 添加或删除首尾行样式名 */
   private onModelUpdated(): void {
     const newFirst = this.isFirstRowOnPage();
     const newLast = this.isLastRowOnPage();
@@ -1826,7 +1827,7 @@ export class RowComp extends Component {
     }
   }
 
-  /** 当前页页面更新时，更新顶部行 */
+  /** 当前页页面更新时，更新顶部行对象 */
   private onPaginationChanged(): void {
     const currentPage = this.beans.paginationProxy.getCurrentPage();
     // it is possible this row is in the new page, but the page number has

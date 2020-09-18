@@ -1,48 +1,29 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-// production webpack config for back-garden-react
+// production webpack config for demo
 
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-
 module.exports = {
-  mode: 'production',
-  optimization: {
-    minimizer: [
-      new TerserPlugin({
-        /* additional options here */
-      }),
-    ],
-  },
-  entry: path.join(__dirname, '../src/index.ts'),
+  entry: path.join(__dirname, '../src/render.ts'),
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: 'main.js',
+    path: path.resolve(__dirname, '../dist'),
   },
   module: {
     rules: [
       {
         test: /\.(ts|js)x?$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            rootMode: 'upward',
-          },
-        },
+        use: 'babel-loader',
         exclude: /node_modules/,
       },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
-        sideEffects: true,
+        test: /\.(sa|sc|c)ss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
-      // {
-      //   test: /\.js$/,
-      //   use: 'source-map-loader',
-      //   enforce: 'pre',
-      // },
     ],
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -51,12 +32,12 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin(),
   ],
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js', 'jsx'],
-  },
-
+  mode: 'development',
+  devtool: 'eval-source-map',
+  // devServer config flags are only read by WDS but not Webpack
+  // 若要使用热加载，还需要在cli上传入 --hot
   devServer: {
-    contentBase: path.resolve(__dirname, 'build'),
+    contentBase: path.resolve(__dirname, '../dist'),
     host: '0.0.0.0',
     port: 8999,
     // open: true,

@@ -152,7 +152,8 @@ export class BeanStub implements IEventEmitter {
     return res;
   }
 
-  /** 给传入的参数bean对象注入其属性值中依赖的其他bean，bean对象实际不在这里创建，会从参数或属性context中查找bean */
+  /** 给传入的bean参数对象注入其属性值中依赖的其他bean，并调用该对象的钩子方法
+   * pre/postConstructMethods，bean对象实际不在这里创建 */
   protected createBean<T>(
     bean: T,
     context?: Context,

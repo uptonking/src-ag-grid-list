@@ -27,7 +27,7 @@ import { _ } from './utils';
 
 /**
  * 包含grid配置、数据、操作、渲染的核心ui组件Component类，是ag-grid整体最外层组件，
- * 样式标志为ag-root-wrapper，还包括页面布局模块的判断、事件监听处理，
+ * 样式标志为ag-root-wrapper，还提供页面布局模块的判断、事件处理等方法，
  * GridCore的属性字段通过在Grid类的构造函数中手动依赖注入进行初始化
  */
 export class GridCore extends ManagedFocusComponent {
@@ -61,8 +61,9 @@ export class GridCore extends ManagedFocusComponent {
   private doingVirtualPaging: boolean;
 
   /** 因为父类同名方法添加了@PostConstruct装饰器，所以在Grid构造函数中创建gridCore对象后，
-   * 在注入属性时会作为钩子函数调用这里的postConstruct方法，
-   * 会将grid最外层的dom元素渲染到grid容器，递归创建grid部分内部dom元素
+   * 在注入过程中会作为钩子函数调用这里的postConstruct方法，
+   * 会将grid最外层的dom元素渲染到DOM容器，再递归创建grid部分内部结构层级的dom元素，
+   * 这里不会创建具体的表头列和数据单元格
    */
   protected postConstruct(): void {
     this.logger = this.loggerFactory.create('GridCore');
@@ -70,10 +71,12 @@ export class GridCore extends ManagedFocusComponent {
     // 创建ag-grid最外层dom元素及部分内部结构对应的字符串
     const template = this.createTemplate();
     console.log('==gridCore-template-str, ', template);
-    // 将grid结构字符串创建成dom对象
+
+    // 将代表grid结构的字符串创建成dom对象，当碰到自定义标签时会创建组件对象
     this.setTemplate(template);
 
-    // register with services that need grid core，设置各自对象中的gridCore属性
+    // register with services that need grid core
+    // 设置各自对象中的gridCore属性，方法都只有一行代码，执行时无副作用
     [
       this.gridApi,
       this.rowRenderer,
@@ -88,7 +91,8 @@ export class GridCore extends ManagedFocusComponent {
     // 设置本组件dom元素的layout样式名
     this.gridOptionsWrapper.addLayoutElement(this.getGui());
 
-    // 将本对象代表grid的dom元素对象追加到要渲染的容器dom元素内，此时就会渲染到页面，但只有grid结构dom没有各行数据元素的dom
+    // 将本对象代表grid的dom元素对象追加到要渲染的容器dom元素内，
+    // todo 此时就会渲染到页面(似乎并没有)，但只有grid结构dom没有各行数据元素的dom
     this.eGridDiv.appendChild(this.getGui());
     this.addDestroyFunc(() => {
       this.eGridDiv.removeChild(this.getGui());
@@ -107,7 +111,7 @@ export class GridCore extends ManagedFocusComponent {
     // which doLayout indirectly depends on
     this.addRtlSupport();
 
-    this.logger.log('ready');
+    this.logger.log('appendChild ready');
 
     // 设置eRootWrapperBody的dom元素的layout样式名
     this.gridOptionsWrapper.addLayoutElement(this.eRootWrapperBody);
@@ -136,6 +140,9 @@ export class GridCore extends ManagedFocusComponent {
     });
 
     super.postConstruct();
+
+    // 通过alert阻塞渲染时观察，此时表格组件内容并没有渲染到页面
+    // alert('==gridCore-postConstruct');;
   }
 
   public getFocusableElement(): HTMLElement {
@@ -175,7 +182,7 @@ export class GridCore extends ManagedFocusComponent {
 
     // ag-grid-comp标签之后会被创建成组件对象
     const template = `<div ref="eRootWrapper" class="ag-root-wrapper">
-                ${dropZones}
+                ${dropZones} 1111
                 <div ref="rootWrapperBody" class="ag-root-wrapper-body" >
                     <ag-grid-comp ref="gridPanel"></ag-grid-comp>
                     ${sideBar}

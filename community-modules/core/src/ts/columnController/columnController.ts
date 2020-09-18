@@ -225,7 +225,7 @@ export class ColumnController extends BeanStub {
   }
 
   /** 根据columnDefs计算表头结构，再触发columnEverythingChanged和newColumnsLoaded
-   * 事件，会渲染表头ui的dom元素到grid容器 */
+   * 事件，会创建并渲染表头ui的dom元素 */
   public setColumnDefs(
     columnDefs: (ColDef | ColGroupDef)[],
     source: ColumnEventType = 'api',
@@ -266,7 +266,7 @@ export class ColumnController extends BeanStub {
 
     this.ready = true;
 
-    // 计算自动分组和colSpan，再触发gridColumnsChanged事件，事件中会具体创建表头单元格
+    // 计算自动分组和colSpan，再触发gridColumnsChanged事件，事件中会具体创建表头行组件
     this.updateGridColumns();
 
     this.updateDisplayedColumns(source);
@@ -283,7 +283,7 @@ export class ColumnController extends BeanStub {
       columnApi: this.columnApi,
       source,
     };
-    logObjSer('==columnEverythingChanged, ', this.eventService);
+    // logObjSer('==columnEverythingChanged, ', this.eventService);
     // columnEverythingChanged事件列表有2个函数，会触发modelUpdate事件，重渲染数据行
     this.eventService.dispatchEvent(eventEverythingChanged);
 
@@ -3196,7 +3196,7 @@ export class ColumnController extends BeanStub {
       api: this.gridApi,
       columnApi: this.columnApi,
     };
-    // 这这里会触发headerContainer的onGridColumnsChanged方法
+    // 这这里会触发重渲染表头组件的方法，如headerContainer的onGridColumnsChanged
     this.eventService.dispatchEvent(event);
   }
 

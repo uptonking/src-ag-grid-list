@@ -298,7 +298,7 @@ export class GridPanel extends Component {
     this.mouseEventService.registerGridComp(this);
     this.beans.registerGridComp(this);
 
-    // 这里逻辑很复杂，会触发rowRenderer的重绘
+    // 这里逻辑很复杂，会重渲染需要更新的行组件
     this.rowRenderer.registerGridComp(this);
 
     if (this.rangeController) {

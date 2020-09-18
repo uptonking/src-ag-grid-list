@@ -91,6 +91,7 @@ export class FocusController extends BeanStub {
   }
 
   /**
+   * 根据新数据，判断是继续保持焦点单元格，还是丢弃旧的焦点单元格。
    * if the columns change, check and see if this column still exists.
    * if it does, then we can keep the focused cell.
    * if it doesn't, then we need to drop the focused cell.

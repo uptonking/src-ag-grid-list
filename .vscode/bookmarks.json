@@ -88,5 +88,35 @@
 				"label": ""
 			}
 		]
+	},
+	{
+		"path": "$ROOTPATH$/community-modules/core/src/ts/headerRendering/headerContainer.ts",
+		"bookmarks": [
+			{
+				"line": 183,
+				"column": 10,
+				"label": ""
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$/community-modules/core/src/ts/rendering/rowRenderer.ts",
+		"bookmarks": [
+			{
+				"line": 493,
+				"column": 10,
+				"label": ""
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$/community-modules/core/src/ts/gridPanel/gridPanel.ts",
+		"bookmarks": [
+			{
+				"line": 58,
+				"column": 0,
+				"label": ""
+			}
+		]
 	}
 ]

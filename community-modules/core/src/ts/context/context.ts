@@ -31,21 +31,23 @@ interface BeanWrapper {
 }
 
 /**
- * Context是创建Grid的上下文，负责创建并保存所有bean
+ * Context是创建Grid的上下文，也是本框架全局单例的ioc容器，负责创建并保存所有bean对象实例
  */
 export class Context {
   private logger: ILogger;
 
-  /** 存放所有bean对象实例的映射表容器，包含rowModel的bean */
+  /** 全局单例的ioc容器，是存放所有bean对象实例的映射表，包含rowModel的bean */
   private beanWrappers: { [key: string]: BeanWrapper } = {};
-
-  /** 创建Context时传入的参数，主要包含所有bean对应的class */
+  /** 调用Context构造函数时传入的参数，主要包含所有bean对应的class */
   private contextParams: ContextParams;
-
   /** 所有bean对象是否已调用过destroy()方法 */
   private destroyed = false;
 
-  /** Context初始化时的任务，创建所有bean对象，再注入属性中依赖的其他bean对象，再调用参数依赖其他bean的方法 */
+  /** Context初始化时的任务流程，
+   * 1. 创建所有bean对象实例并存放到容器
+   * 2. 为各bean注入属性中依赖的其他bean对象，
+   * 3. 调用各bean的钩子方法
+   */
   public constructor(params: ContextParams, logger: ILogger) {
     if (!params || !params.beanClasses) {
       return;
@@ -60,10 +62,10 @@ export class Context {
     this.createBeans();
     logObjSer('==createBeans, ', this.beanWrappers);
 
-    // 获取所有bean对象存放到到数组
+    // 获取ioc容器中所有bean对象存放到数组
     const beanInstances = this.getBeanInstances();
 
-    // 给所有bean对象注入自身属性依赖的其他bean对象，再调用参数带有依赖注入其他bean的方法
+    // 给各bean对象注入自身属性值或方法参数依赖的其他bean，再调用各bean的钩子方法
     this.wireBeans(beanInstances);
     logObjSer('==wireBeans, ', this.beanWrappers);
 
@@ -77,7 +79,8 @@ export class Context {
     );
   }
 
-  /** 给传入的参数bean对象注入其属性值中依赖的其他bean，bean对象实际不在这里创建 */
+  /** 给传入的单个bean参数对象注入其属性值中依赖的其他bean，并调用参数对象的钩子方法
+   * pre/postConstructMethods，参数bean对象实际不在这里创建 */
   public createBean<T extends any>(
     bean: T,
     afterPreCreateCallback?: (comp: Component) => void,
@@ -90,7 +93,8 @@ export class Context {
   }
 
   /**
-   * 给所有beanInstances对象注入属性，并调用生命周期方法pre/postConstructMethods
+   * 给所有beanInstances注入属性值或方法参数中依赖的其他bean，
+   * 并调用各bean对象的钩子方法pre/postConstructMethods
    */
   private wireBeans(
     beanInstances: any[],
@@ -116,10 +120,10 @@ export class Context {
     this.callLifeCycleMethods(beanInstances, 'postConstructMethods');
   }
 
-  /** 通过apply调用构造函数创建所有bean对象，存放到beanWrappers映射表容器 */
+  /** 通过apply调用构造函数创建所有bean对象，存放到beanWrappers映射表，即ioc容器 */
   private createBeans(): void {
     // register all normal beans，
-    // 这里会向beanWrappers容器中添加beanEntry，bind(o)方法会创建一个函数的实例，函数中的this会指向参数o
+    // 向beanWrappers中添加beanEntry，bind(o)会创建函数的实例，函数中的this会指向参数o
     this.contextParams.beanClasses.forEach(this.createBeanWrapper.bind(this));
     // register override beans, these will overwrite beans above of same name
 

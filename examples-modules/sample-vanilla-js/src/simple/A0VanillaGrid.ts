@@ -28,7 +28,7 @@ export class SimpleGrid {
       { headerName: 'Make', field: 'make' },
       { headerName: 'Model', field: 'model' },
       { headerName: 'Price', field: 'price' },
-      { headerName: 'Note', field: 'note' },
+      { headerName: 'Note', field: 'status' },
     ];
   }
   // specify the data

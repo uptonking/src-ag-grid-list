@@ -2,11 +2,12 @@ import { Bean, ComponentMeta } from '../context/context';
 import { BeanStub } from '../context/beanStub';
 
 /**
- * 将组件名,组件对应的class及元数据存放到 componentsMappedByName 映射表
+ * 将组件名,组件对应的class及元数据存放到 componentsMappedByName 映射表，
+ * 这里的组件是与自定义标签相关的ui组件类
  */
 @Bean('agStackComponentsRegistry')
 export class AgStackComponentsRegistry extends BeanStub {
-  /** 存放component名称和定义class的映射表，注意名称经过小处理 */
+  /** 存放component名称和定义class的映射表，注意名称经过归一化处理 */
   private componentsMappedByName: { [key: string]: any } = {};
 
   /** 将组件的名称和class添加到 componentsMappedByName 映射表 */

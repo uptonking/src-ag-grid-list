@@ -18,6 +18,7 @@ export class EventService implements IEventEmitter {
   private allSyncListeners = new Map<string, Set<Function>>();
   private allAsyncListeners = new Map<string, Set<Function>>();
 
+  /** globalEventListener is used by Web Components, 默认为null */
   private globalSyncListeners = new Set<Function>();
   private globalAsyncListeners = new Set<Function>();
 
@@ -39,7 +40,6 @@ export class EventService implements IEventEmitter {
   //
   // the times when this class is used outside of the context (eg RowNode has an instance of this
   // class) then it is not a bean, and this setBeans method is not called.
-  // globalEventListener is used by Web Components, 默认为null
   public setBeans(
     @Qualifier('loggerFactory') loggerFactory: LoggerFactory,
     @Qualifier('gridOptionsWrapper') gridOptionsWrapper: GridOptionsWrapper,
@@ -47,6 +47,7 @@ export class EventService implements IEventEmitter {
   ) {
     this.logger = loggerFactory.create('EventService');
 
+    // globalEventListener is used by Web Components, 默认为null
     if (globalEventListener) {
       const async = gridOptionsWrapper.useAsyncEvents();
       this.addGlobalListener(globalEventListener, async);
@@ -81,15 +82,15 @@ export class EventService implements IEventEmitter {
     async = false,
   ): void {
     if (eventType === 'columnEverythingChanged') {
-      logObjSer('eventService-add1, ', this.allSyncListeners.get(eventType));
+      // logObjSer('eventService-add1, ', this.allSyncListeners.get(eventType));
     }
 
     this.getListeners(eventType, async).add(listener);
 
     // if (eventType === 'columnEverythingChanged') {
     if (eventType === 'columnEverythingChanged') {
-      logObjSer('eventService-add2, ', this.allSyncListeners.get(eventType));
-      console.trace();
+      // logObjSer('eventService-add2, ', this.allSyncListeners.get(eventType));
+      // console.trace();
     }
   }
 
