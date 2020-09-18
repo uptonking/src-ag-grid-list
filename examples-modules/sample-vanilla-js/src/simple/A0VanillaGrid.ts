@@ -27,16 +27,28 @@ export class SimpleGrid {
     return [
       { headerName: 'Make', field: 'make' },
       { headerName: 'Model', field: 'model' },
-      { headerName: 'Price', field: 'price' },
-      { headerName: 'Note', field: 'status' },
+      // { headerName: 'Price', field: 'price' },
+      // { headerName: 'Note', field: 'status' },
     ];
   }
   // specify the data
   private createRowData() {
     return [
-      { make: 'Toyota 丰田', model: 'Celica', price: 240000, note: '待付款' },
-      { make: 'Ford 福特', model: 'Mondeo', price: 220000, note: '退单' },
-      { make: 'Porsche 保时捷', model: 'Boxter', price: 500000, note: '下单' },
+      {
+        make: 'Toyota 丰田',
+        model: 'Celica',
+        //  price: 240000, note: '待付款'
+      },
+      {
+        make: 'Ford 福特',
+        model: 'Mondeo',
+        //  price: 220000, note: '退单'
+      },
+      {
+        make: 'Porsche 保时捷',
+        model: 'Boxter',
+        // price: 500000, note: '下单'
+      },
     ];
   }
 }

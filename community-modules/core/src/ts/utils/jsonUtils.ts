@@ -72,6 +72,11 @@ export function jsonFnStringify(obj: any): string {
       return '_PxEgEr_' + value;
     }
 
+    // 进一步简化dom元素的显示
+    if (value instanceof Node) {
+      return value.nodeName;
+    }
+
     // 默认会调用toJSON()方法
     return value;
   };

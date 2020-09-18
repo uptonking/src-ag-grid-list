@@ -10,6 +10,7 @@ import { Autowired, Bean, Qualifier } from '../context/context';
 import { DefaultColumnTypes } from '../entities/defaultColumnTypes';
 import { _ } from '../utils';
 import { BeanStub } from '../context/beanStub';
+import { logObjSer } from '../utils/logUtils';
 
 /**
  * 根据表头列定义信息计算表头列对象和分组表头对象。
@@ -55,6 +56,10 @@ export class ColumnFactory extends BeanStub {
       columnKeyCreator,
       null,
     );
+    console.log('unbalancedTree, ', unbalancedTree);
+    // console.log(JSON.stringify(unbalancedTree));
+    // logObjSer('unbalancedTree, ', unbalancedTree);
+
     const treeDept = this.findMaxDept(unbalancedTree, 0);
     this.logger.log('Number of levels for grouped columns is ' + treeDept);
 

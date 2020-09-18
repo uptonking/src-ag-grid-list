@@ -70,7 +70,7 @@ export class GridCore extends ManagedFocusComponent {
 
     // 创建ag-grid最外层dom元素及部分内部结构对应的字符串
     const template = this.createTemplate();
-    console.log('==gridCore-template-str, ', template);
+    // console.log('==gridCore-template-str, ', template);
 
     // 将代表grid结构的字符串创建成dom对象，当碰到自定义标签时会创建组件对象
     this.setTemplate(template);
@@ -83,7 +83,6 @@ export class GridCore extends ManagedFocusComponent {
       this.popupService,
       this.focusController,
     ].forEach((service) => service.registerGridCore(this));
-
     if (ModuleRegistry.isRegistered(ModuleNames.ClipboardModule)) {
       this.clipboardService.registerGridCore(this);
     }
@@ -94,6 +93,7 @@ export class GridCore extends ManagedFocusComponent {
     // 将本对象代表grid的dom元素对象追加到要渲染的容器dom元素内，
     // todo 此时就会渲染到页面(似乎并没有)，但只有grid结构dom没有各行数据元素的dom
     this.eGridDiv.appendChild(this.getGui());
+
     this.addDestroyFunc(() => {
       this.eGridDiv.removeChild(this.getGui());
     });
@@ -122,7 +122,7 @@ export class GridCore extends ManagedFocusComponent {
     );
     this.addDestroyFunc(() => unsubscribeFromResize());
 
-    // 获取本对象代表grid的dom元素
+    // 获取本ui组件对象代表的dom元素
     const eGui = this.getGui();
 
     // 添加keyboardFocus事件
@@ -182,7 +182,7 @@ export class GridCore extends ManagedFocusComponent {
 
     // ag-grid-comp标签之后会被创建成组件对象
     const template = `<div ref="eRootWrapper" class="ag-root-wrapper">
-                ${dropZones} 1111
+                ${dropZones}
                 <div ref="rootWrapperBody" class="ag-root-wrapper-body" >
                     <ag-grid-comp ref="gridPanel"></ag-grid-comp>
                     ${sideBar}

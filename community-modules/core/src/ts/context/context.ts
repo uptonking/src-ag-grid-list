@@ -162,7 +162,7 @@ export class Context {
     );
 
     const createdBeanNames = Object.keys(this.beanWrappers).join(', ');
-    this.logger.log(`created beans: ${createdBeanNames}`);
+    // this.logger.log(`created beans: ${createdBeanNames}`);
   }
 
   /** 向beanWrappers容器添加beanName到beanEntry的映射 */

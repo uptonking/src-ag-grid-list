@@ -251,6 +251,7 @@ export class ColumnController extends BeanStub {
       true,
       oldPrimaryColumns,
     );
+    // logObjSer('==balancedTreeResult, ', balancedTreeResult);
 
     this.primaryColumnTree = balancedTreeResult.columnTree;
     this.primaryHeaderRowCount = balancedTreeResult.treeDept + 1;

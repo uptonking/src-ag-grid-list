@@ -156,7 +156,7 @@ export class Grid {
     // 获取注册的模块，如ClientSideRowModelModule
     const registeredModules: Module[] = this.getRegisteredModules(params);
 
-    // 准备要创建bean的class，包含模块暴露出的beans属性值中的，如rowModel的class
+    // 准备待实例化bean的class，包含注册模块暴露出的beans属性值中的，如rowModel的class
     const beanClasses: any[] = this.createBeansList(registeredModules);
     // logObjSer('beanClasses, ', beanClasses);
     if (!beanClasses) {
@@ -175,7 +175,7 @@ export class Grid {
     this.logger = new Logger('ag-Grid', () => gridOptions.debug);
     const contextLogger = new Logger('Context', () => contextParams.debug);
 
-    // 创建参数中对应的所有bean对象并添加到ioc容器，再注入属性，然后调用各bean的钩子方法
+    // 创建参数中类对应的所有bean对象并添加到ioc容器，再注入属性，然后调用各bean的钩子方法
     this.context = new Context(contextParams, contextLogger);
 
     // 将注册模块暴露的的userComponents覆盖到UserComponentRegistry默认组件映射表
@@ -188,14 +188,14 @@ export class Grid {
     const gridCore = new gridCoreClass();
 
     // 给gridCore对象注入属性，会从Context的bean容器中查找bean来初始化gridCore的属性，
-    // 执行gridCore的postConstruct时，会将grid的最外层dom元素及部分内部结构渲染到页面
+    // 执行gridCore的postConstruct时，会将grid的最外层dom元素及部分内部结构渲染到页面。
     // 这里会创建ag-grid-comp、ag-header-root、ag-overlay-wrapper、ag-pagination自
     // 定义html标签对应的Component组件类对象，并添加各种事件监听器
     this.context.createBean(gridCore);
 
-    // 计算表头结构并创建表头组件，然后将rowData计算处理成rowModel形式的数据结构
+    // 计算表头结构并创建表头组件，然后将rowData计算成rowModel结构创建数据行组件
     this.setColumnsAndData();
-    // logObjSer('====setColumnsAndData, ', this.context);
+    // logObjSer('====grid-ready-header-body, ', this.context);
 
     // 触发gridReady事件，默认要执行的事件集合为空
     this.dispatchGridReadyEvent(gridOptions);
@@ -466,11 +466,11 @@ export class Grid {
 
     const rowModel: IRowModel = this.context.getBean('rowModel');
 
-    // 将rowData处理成grid内部rowModel结构
+    // 将rowData处理成grid内部rowModel结构，并触发数据行的创建或更新
     rowModel.start();
   }
 
-  /** 通过eventService触发gridReady事件，在event对象中可以获取api和columnApi */
+  /** 通过全局单例的eventService触发gridReady事件，在event对象中可以获取api和columnApi */
   private dispatchGridReadyEvent(gridOptions: GridOptions): void {
     const eventService: EventService = this.context.getBean('eventService');
     const readyEvent: GridReadyEvent = {
