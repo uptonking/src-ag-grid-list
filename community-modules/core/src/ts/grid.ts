@@ -197,7 +197,7 @@ export class Grid {
     this.setColumnsAndData();
     // logObjSer('====grid-ready-header-body, ', this.context);
 
-    // 触发gridReady事件，默认要执行的事件集合为空
+    // 触发gridReady事件，默认要执行的事件不存在
     this.dispatchGridReadyEvent(gridOptions);
 
     const isEnterprise = ModuleRegistry.isRegistered(
@@ -470,7 +470,8 @@ export class Grid {
     rowModel.start();
   }
 
-  /** 通过全局单例的eventService触发gridReady事件，在event对象中可以获取api和columnApi */
+  /** 通过全局单例的eventService触发gridReady事件，默认事件不存在，可通过gridOptions传入，
+   * The Grid API (both api and columnApi) will only be available after the gridReady event has been fired. */
   private dispatchGridReadyEvent(gridOptions: GridOptions): void {
     const eventService: EventService = this.context.getBean('eventService');
     const readyEvent: GridReadyEvent = {

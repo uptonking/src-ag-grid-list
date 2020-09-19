@@ -75,7 +75,7 @@ export interface ColumnState {
 }
 
 /**
- * 负责表头列的渲染及状态更新
+ * 表头管理类,计算并存放表头列的数据，还提供表头组件渲染及状态更新的方法。
  */
 @Bean('columnController')
 export class ColumnController extends BeanStub {
@@ -108,8 +108,8 @@ export class ColumnController extends BeanStub {
   private primaryColumnTree: OriginalColumnGroupChild[];
   /** header row count, based on user provided columns */
   private primaryHeaderRowCount = 0;
-  /** all columns provided by user. basically it's the leaf level nodes of the
-  tree above (originalBalancedTree). every column available here */
+  /** 叶节点类型的表头列的集合。all columns provided by user. basically it's leaf level
+   * nodes of the tree above (originalBalancedTree). every column available here */
   private primaryColumns: Column[];
 
   /** f pivoting, these are the generated columns as a result of the pivot */
@@ -200,6 +200,7 @@ export class ColumnController extends BeanStub {
 
   @PostConstruct
   public init(): void {
+    // 默认false，即会对列进行virtualize
     this.suppressColumnVirtualisation = this.gridOptionsWrapper.isSuppressColumnVirtualisation();
 
     const pivotMode = this.gridOptionsWrapper.isPivotMode();
@@ -217,6 +218,7 @@ export class ColumnController extends BeanStub {
     );
   }
 
+  /** 计算自动分组表头和columnSpan，再触发gridColumnsChanged事件，重渲染表头组件 */
   public onAutoGroupColumnDefChanged() {
     this.autoGroupsNeedBuilding = true;
     this.forceRecreateAutoGroups = true;
@@ -225,7 +227,11 @@ export class ColumnController extends BeanStub {
   }
 
   /** 根据columnDefs计算表头结构，再触发columnEverythingChanged和newColumnsLoaded
-   * 事件，会创建并渲染表头ui的dom元素 */
+   * 事件，会创建并渲染表头ui的dom元素
+   *
+   * @columnDefs this.gridOptions.columnDefs的值
+   * @source 触发本方法的时机，预定义的column事件类型之一
+   */
   public setColumnDefs(
     columnDefs: (ColDef | ColGroupDef)[],
     source: ColumnEventType = 'api',

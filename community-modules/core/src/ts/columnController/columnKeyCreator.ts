@@ -8,6 +8,7 @@ import { _ } from '../utils';
  * if no field or id provided in the col, it will try ids of natural numbers.
  */
 export class ColumnKeyCreator {
+  /** 保存所有已使用key的映射表，用来去重复 */
   private existingKeys: { [key: string]: boolean } = {};
 
   public addExistingKeys(keys: string[]): void {
@@ -16,6 +17,11 @@ export class ColumnKeyCreator {
     }
   }
 
+  /**
+   * 计算与现有colId不同的唯一key，具体实现是添加不重复的 _数字后缀
+   * @param colId 该列现有id
+   * @param colField 该列字段名
+   */
   public getUniqueKey(colId: string, colField: string): string {
     // in case user passed in number for colId, convert to string
     colId = _.toStringOrNull(colId);

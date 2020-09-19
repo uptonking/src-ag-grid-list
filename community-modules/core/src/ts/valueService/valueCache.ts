@@ -33,6 +33,7 @@ export class ValueCache extends BeanStub {
     this.cacheVersion++;
   }
 
+  /** 设置 rowNode.__cacheData[colId] 的值为value */
   public setValue(rowNode: RowNode, colId: string, value: any): any {
     if (this.active) {
       if (rowNode.__cacheVersion !== this.cacheVersion) {
@@ -44,6 +45,7 @@ export class ValueCache extends BeanStub {
     }
   }
 
+  /** 返回 rowNode.__cacheData[colId] 的值 */
   public getValue(rowNode: RowNode, colId: string): any {
     if (!this.active || rowNode.__cacheVersion !== this.cacheVersion) {
       return undefined;

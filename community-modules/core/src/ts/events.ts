@@ -235,14 +235,15 @@ export interface ExpandCollapseAllEvent extends AgGridEvent {
 /** COLUMN EVENTS */
 /**---------------*/
 
+/** 预定义的column事件类型 */
 export type ColumnEventType =
+  | 'gridInitializing'
+  | 'gridOptionsChanged'
   | 'sizeColumnsToFit'
   | 'autosizeColumns'
   | 'alignedGridChanged'
   | 'filterChanged'
   | 'filterDestroyed'
-  | 'gridOptionsChanged'
-  | 'gridInitializing'
   | 'toolPanelDragAndDrop'
   | 'toolPanelUi'
   | 'uiColumnMoved'

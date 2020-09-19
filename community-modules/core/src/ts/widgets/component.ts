@@ -360,7 +360,7 @@ export class Component extends BeanStub {
     this.annotatedGuiListeners = [];
   }
 
-  /** 返回本ui组件对应的dom对象，即this.eGui */
+  /** 返回本ui组件对应的dom对象，即this.eGui的值，注意此属性定义在基类Component中 */
   public getGui(): HTMLElement {
     return this.eGui;
   }

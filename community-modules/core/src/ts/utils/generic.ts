@@ -102,6 +102,7 @@ export function defaultComparator(
   return doQuickCompare(valueA, valueB);
 }
 
+/** 从collection的值构成的数组中，查找执行predicate方法后第一个返回true的item */
 export function find<T>(
   collection: T[] | { [id: string]: T },
   predicate: string | boolean | ((item: T) => boolean),
@@ -138,8 +139,9 @@ export function find<T>(
 
   return firstMatchingItem;
 }
+
 /**
- *取出对象的各key对应的value，返回value构成的数组
+ * 取出对象的各key对应的value，返回value构成的数组
  * @param object 对象
  */
 export function values<T>(

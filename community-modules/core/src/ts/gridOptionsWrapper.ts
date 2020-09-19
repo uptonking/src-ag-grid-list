@@ -907,6 +907,7 @@ export class GridOptionsWrapper {
     return isTrue(this.gridOptions.debug);
   }
 
+  /** 返回 this.gridOptions.columnDefs */
   public getColumnDefs() {
     return this.gridOptions.columnDefs;
   }
@@ -1489,6 +1490,7 @@ export class GridOptionsWrapper {
     return document;
   }
 
+  /** 获取一列的最小宽度，默认为10，也可为gridOptions.minColWidth */
   public getMinColWidth() {
     if (this.gridOptions.minColWidth > GridOptionsWrapper.MIN_COL_WIDTH) {
       return this.gridOptions.minColWidth;
@@ -1497,6 +1499,7 @@ export class GridOptionsWrapper {
     return Math.max(measuredMin, GridOptionsWrapper.MIN_COL_WIDTH);
   }
 
+  /** 获取一列的最大宽度，默认为null */
   public getMaxColWidth() {
     if (
       this.gridOptions.maxColWidth &&

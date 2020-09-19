@@ -123,7 +123,7 @@ export class GridCore extends ManagedFocusComponent {
     this.addDestroyFunc(() => unsubscribeFromResize());
 
     // 获取本ui组件对象代表的dom元素
-    const eGui = this.getGui();
+    const eGui: HTMLElement = this.getGui();
 
     // 添加keyboardFocus事件
     this.addManagedListener(

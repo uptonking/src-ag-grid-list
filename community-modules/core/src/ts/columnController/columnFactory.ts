@@ -28,10 +28,10 @@ export class ColumnFactory extends BeanStub {
     this.logger = loggerFactory.create('ColumnFactory');
   }
 
-  /** 创建多叉树平衡树结构的表头columnTree */
+  /** 创建多叉树平衡树结构的表头对象 columnTree */
   public createColumnTree(
     defs: (ColDef | ColGroupDef)[] | null,
-    primaryColumns: boolean,
+    isPrimaryColumns: boolean,
     existingColumns?: Column[],
   ): { columnTree: OriginalColumnGroupChild[]; treeDept: number } {
     // column key creator dishes out unique column id's in a deterministic way,
@@ -51,7 +51,7 @@ export class ColumnFactory extends BeanStub {
     const unbalancedTree = this.recursivelyCreateColumns(
       defs,
       0,
-      primaryColumns,
+      isPrimaryColumns,
       existingColsCopy,
       columnKeyCreator,
       null,
@@ -255,7 +255,7 @@ export class ColumnFactory extends BeanStub {
   private recursivelyCreateColumns(
     defs: (ColDef | ColGroupDef)[],
     level: number,
-    primaryColumns: boolean,
+    isPrimaryColumns: boolean,
     existingColsCopy: Column[],
     columnKeyCreator: ColumnKeyCreator,
     parent: OriginalColumnGroup | null,
@@ -269,10 +269,10 @@ export class ColumnFactory extends BeanStub {
     defs.forEach((def: ColDef | ColGroupDef) => {
       let newGroupOrColumn: OriginalColumnGroupChild;
 
-      // 若def包含children属性，代表一个表头分组
+      // 若def包含children属性，，则创建一个分组表头，过程中会递归创建子表头的列
       if (this.isColumnGroup(def)) {
         newGroupOrColumn = this.createColumnGroup(
-          primaryColumns,
+          isPrimaryColumns,
           def as ColGroupDef,
           level,
           existingColsCopy,
@@ -280,10 +280,10 @@ export class ColumnFactory extends BeanStub {
           parent,
         );
       } else {
-        // 若def不代表一个表头分组
+        // 若def不不包含children属性，则创建一个表头列
 
         newGroupOrColumn = this.createColumn(
-          primaryColumns,
+          isPrimaryColumns,
           def as ColDef,
           existingColsCopy,
           columnKeyCreator,
@@ -346,7 +346,7 @@ export class ColumnFactory extends BeanStub {
     return colGroupDefMerged;
   }
 
-  /** 创建一个表头列对象 */
+  /** 返回一个表头列Column对象，可能是现有列，也可能是新创建的列 */
   private createColumn(
     primaryColumns: boolean,
     colDef: ColDef,
@@ -355,29 +355,31 @@ export class ColumnFactory extends BeanStub {
     parent: OriginalColumnGroup | null,
   ): Column {
     const colDefMerged = this.mergeColDefs(colDef);
-
     this.checkForDeprecatedItems(colDefMerged);
 
-    // see if column already exists，最后会返回此列定义对应的表头列对象
+    // see if column already exists，先在现有表头列中查找与colDef内容相同的那一列
     let column = this.findExistingColumn(colDef, existingColsCopy);
-
+    // 若没找到
     if (!column) {
       // no existing column, need to create one
       const colId = columnKeyCreator.getUniqueKey(
         colDefMerged.colId,
         colDefMerged.field,
       );
-      // 创建新的表头列对象
+
+      // 创建新的表头列对象并注入属性
       column = new Column(colDefMerged, colDef, colId, primaryColumns);
       this.context.createBean(column);
     } else {
-      /** 使用新的列定义更新表头列对象 */
+      // 若在现有列中找到了相同的column，则使用新的列定义数据更新现有表头列对象
+
       column.setColDef(colDefMerged, colDef);
     }
 
     return column;
   }
 
+  /** 在现有表头列中查找与当前表头列colDef内容相同的那一列，并返回现有表头列中的那一列 */
   private findExistingColumn(
     colDef: ColDef,
     existingColsCopy: Column[],
@@ -417,15 +419,12 @@ export class ColumnFactory extends BeanStub {
   public mergeColDefs(colDef: ColDef) {
     // start with empty merged definition
     const colDefMerged: ColDef = {} as ColDef;
-
     // merge properties from default column definitions
     _.assign(colDefMerged, this.gridOptionsWrapper.getDefaultColDef());
-
     // merge properties from column type properties
     if (colDef.type) {
       this.assignColumnTypes(colDef, colDefMerged);
     }
-
     // merge properties from column definitions
     _.assign(colDefMerged, colDef);
 

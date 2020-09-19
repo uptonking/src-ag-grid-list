@@ -26,7 +26,7 @@ import { Constants } from '../constants';
 import { ModuleNames } from '../modules/moduleNames';
 import { ModuleRegistry } from '../modules/moduleRegistry';
 
-/** 封装了一个表头列定义的属性及操作方法。
+/** Column类，无父类，封装了一个表头列定义的属性及操作方法。
  * 注意部分属性由ioc注入，部分属性如eventService由对象自己创建，没有使用ioc容器中的bean。
  * Wrapper around a user provided column definition.
  * The grid treats the column definition as ready only.
@@ -75,6 +75,7 @@ export class Column
   @Autowired('context') private context: Context;
 
   private readonly colId: any;
+  /** merge默认列定义信息、列类型信息、用户提供的列定义信息之后的详细列定义 */
   private colDef: ColDef;
 
   /** We do NOT use this anywhere, we just keep a reference.
@@ -135,19 +136,18 @@ export class Column
     this.primary = primary;
   }
 
+  /** 钩子函数主要任务是计算列宽度 */
   @PostConstruct
   public initialise(): void {
     this.setPinned(this.colDef.pinned);
 
     const minColWidth = this.gridOptionsWrapper.getMinColWidth();
     const maxColWidth = this.gridOptionsWrapper.getMaxColWidth();
-
     if (this.colDef.minWidth) {
       this.minWidth = this.colDef.minWidth;
     } else {
       this.minWidth = minColWidth;
     }
-
     if (this.colDef.maxWidth) {
       this.maxWidth = this.colDef.maxWidth;
     } else {
@@ -158,6 +158,7 @@ export class Column
       this.flex = this.colDef.flex;
     }
 
+    // 计算一列的初始宽度，并赋值到 this.actualWidth
     this.resetActualWidth();
 
     const suppressDotNotation = this.gridOptionsWrapper.isSuppressFieldDotNotation();
@@ -199,6 +200,7 @@ export class Column
     return this.originalParent;
   }
 
+  /** 调用columnUtils的方法，计算一列的初始宽度 */
   public resetActualWidth(): void {
     this.actualWidth = this.columnUtils.calculateColInitialWidth(this.colDef);
   }
@@ -696,6 +698,7 @@ export class Column
     this.eventService.dispatchEvent(filterChangedEvent);
   }
 
+  /** 设置本表头列的pinned类型，null，left，right */
   public setPinned(pinned: string | boolean | null | undefined): void {
     if (pinned === true || pinned === Constants.PINNED_LEFT) {
       this.pinned = Constants.PINNED_LEFT;
