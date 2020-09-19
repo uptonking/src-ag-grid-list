@@ -278,7 +278,7 @@ export class ColumnController extends BeanStub {
     // 计算自动分组和colSpan，再触发gridColumnsChanged事件，事件中会具体创建表头行组件
     this.updateGridColumns();
 
-    // 更新显示的表头列
+    // 更新显示的表头列，会触发displayedColumnsChanged事件
     this.updateDisplayedColumns(source);
 
     this.checkDisplayedVirtualColumns();
