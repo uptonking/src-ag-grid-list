@@ -106,11 +106,13 @@ export class ColumnController extends BeanStub {
   // the groups for displaying.
   /** 树形结构的column链表，若column顺序变化，本对象不会变，若colDefs变化，本对象才变 */
   private primaryColumnTree: OriginalColumnGroupChild[];
-  /** header row count, based on user provided columns */
+  /** 用户提供的列定义计算出的表头行数。header row count, based on user provided columns */
   private primaryHeaderRowCount = 0;
   /** 叶节点类型的表头列的集合。all columns provided by user. basically it's leaf level
    * nodes of the tree above (originalBalancedTree). every column available here */
   private primaryColumns: Column[];
+  /**  */
+  private gridColumns: Column[];
 
   /** f pivoting, these are the generated columns as a result of the pivot */
   private secondaryBalancedTree: OriginalColumnGroupChild[] | null;
@@ -124,8 +126,7 @@ export class ColumnController extends BeanStub {
 
   /** these are all columns that are available to grid for rendering after pivot */
   private gridBalancedTree: OriginalColumnGroupChild[];
-  private gridColumns: Column[];
-  /** // todo 确认指的是表头一行的列数还是表头行数，
+  /** 表头行数，最简单的无嵌套表头行数为1。
    * header row count, either above, or based on pivoting if we are pivoting */
   private gridHeaderRowCount = 0;
 
@@ -172,6 +173,7 @@ export class ColumnController extends BeanStub {
 
   private groupDisplayColumns: Column[];
 
+  /** 表头树形结构及表头其他信息是否已计算好，好了后就可以开始渲染 */
   private ready = false;
   private logger: Logger;
 
@@ -251,7 +253,7 @@ export class ColumnController extends BeanStub {
     this.autoGroupsNeedBuilding = true;
 
     const oldPrimaryColumns = this.primaryColumns;
-    // 创建表头树
+    // 根据表头列数据，计算并创建表头树
     const balancedTreeResult = this.columnFactory.createColumnTree(
       columnDefs,
       true,
@@ -276,6 +278,7 @@ export class ColumnController extends BeanStub {
     // 计算自动分组和colSpan，再触发gridColumnsChanged事件，事件中会具体创建表头行组件
     this.updateGridColumns();
 
+    // 更新显示的表头列
     this.updateDisplayedColumns(source);
 
     this.checkDisplayedVirtualColumns();
@@ -581,7 +584,7 @@ export class ColumnController extends BeanStub {
     this.autoSizeColumns(allDisplayedColumns, skipHeader, source);
   }
 
-  /** 递归地从表头树中计算Column类型的节点 */
+  /** 递归地从表头树中计算Column类型的对象，即所有代表表头列的叶节点 */
   private getColumnsFromTree(
     rootColumns: OriginalColumnGroupChild[],
   ): Column[] {
@@ -2753,7 +2756,7 @@ export class ColumnController extends BeanStub {
     return this.ready;
   }
 
-  /** 计算this.valueColumns的值并设置其中各列的aggFunc */
+  /** 更新 this.valueColumns，并设置其中各列的aggFunc */
   private createValueColumns(
     source: ColumnEventType,
     oldPrimaryColumns: Column[],
@@ -2778,6 +2781,7 @@ export class ColumnController extends BeanStub {
     });
   }
 
+  /** 更新 this.rowGroupColumns */
   private extractRowGroupColumns(
     source: ColumnEventType,
     oldPrimaryColumns: Column[],
@@ -2791,7 +2795,8 @@ export class ColumnController extends BeanStub {
     );
   }
 
-  /** 创建更新后的列并返回， existingCols.concat(newCols) */
+  /** // todo 太复杂，
+   * 返回更新后的列， existingCols.concat(newCols) */
   private extractColumns(
     oldPrimaryColumns: Column[],
     previousCols: Column[],
@@ -2810,14 +2815,14 @@ export class ColumnController extends BeanStub {
       this.primaryColumns.indexOf(col) < 0;
     const colNewFunc = (col: Column) =>
       !oldPrimaryColumns || oldPrimaryColumns.indexOf(col) < 0;
+
     const removedCols = previousCols.filter(colMissingFromPrimaryFunc);
-    //
     const existingCols = previousCols.filter(colPresentInPrimaryFunc);
 
+    // 对要移除的列设置移除标记
     removedCols.forEach((col) => setFlagFunc(col, false));
 
     const newCols: Column[] = [];
-
     const newPrimaryCols = this.primaryColumns.filter(colNewFunc);
     // we only want to work on new columns, as old columns already got processed
     // first time around.  pull out items with xxxIndex
@@ -2828,7 +2833,6 @@ export class ColumnController extends BeanStub {
         newCols.push(col);
       }
     });
-
     // then sort them
     newCols.sort(function (colA: Column, colB: Column): number {
       const indexA = getIndexFunc(colA.getColDef());
@@ -2839,7 +2843,6 @@ export class ColumnController extends BeanStub {
       } else if (indexA < indexB) {
         return -1;
       }
-
       return 1;
     });
     // now just pull out items xxx(boolean val), they will be added at the end
@@ -2863,6 +2866,7 @@ export class ColumnController extends BeanStub {
     return res;
   }
 
+  /** 更新 this.pivotColumns */
   private extractPivotColumns(
     source: ColumnEventType,
     oldPrimaryColumns: Column[],
@@ -3014,6 +3018,7 @@ export class ColumnController extends BeanStub {
     return res;
   }
 
+  /** 计算要显示的表头列的集合，普通模式和透视表模式计算方法不同 */
   private calculateColumnsForDisplay(): Column[] {
     let columnsForDisplay: Column[];
 
@@ -3053,6 +3058,7 @@ export class ColumnController extends BeanStub {
     return result;
   }
 
+  /** 计算出设置了showRowGroup为true的表头列 */
   private calculateColumnsForGroupDisplay(): void {
     this.groupDisplayColumns = [];
 
@@ -3074,11 +3080,12 @@ export class ColumnController extends BeanStub {
     return this.groupDisplayColumns;
   }
 
-  /** 更新显示的列 */
+  /** 更新显示的表头列 */
   private updateDisplayedColumns(source: ColumnEventType): void {
     const columnsForDisplay = this.calculateColumnsForDisplay();
 
     this.buildDisplayedTrees(columnsForDisplay);
+
     this.calculateColumnsForGroupDisplay();
 
     // also called when group opened/closed
@@ -3185,7 +3192,7 @@ export class ColumnController extends BeanStub {
       this.orderGridColsLikeLastPrimary();
     }
 
-    // 计算并添加自动分组的列
+    // 计算并添加自动分组的列，更新表头树模型
     this.addAutoGroupToGridColumns();
 
     this.autoRowHeightColumns = this.gridColumns.filter(
@@ -3281,11 +3288,14 @@ export class ColumnController extends BeanStub {
     return this.primaryHeaderRowCount > 1;
   }
 
-  // if we are using autoGroupCols, then they should be included for quick filter. this covers the
-  // following scenarios:
-  // a) user provides 'field' into autoGroupCol of normal grid, so now because a valid col to filter leafs on
-  // b) using tree data and user depends on autoGroupCol for first col, and we also want to filter on this
-  //    (tree data is a bit different, as parent rows can be filtered on, unlike row grouping)
+  // if we are using autoGroupCols, then they should be included for quick filter.
+  // this covers the following scenarios:
+  // a) user provides 'field' into autoGroupCol of normal grid, so now because
+  //    a valid col to filter leafs on
+  // b) using tree data and user depends on autoGroupCol for first col, and we
+  //    also want to filter on this
+  // (tree data is a bit different, as parent rows can be filtered on, unlike row grouping)
+  /** 使autoGroupCols产生的列支持quick filter */
   private setupQuickFilterColumns(): void {
     if (this.groupAutoColumns) {
       this.columnsForQuickFilter = this.primaryColumns.concat(
@@ -3296,6 +3306,7 @@ export class ColumnController extends BeanStub {
     }
   }
 
+  /** 将需要固定的表头列的数据放在this.gridColumns之前，返回扩大后的数组 */
   private putFixedColumnsFirst(): void {
     const locked = this.gridColumns.filter((c) => c.getColDef().lockPosition);
     const unlocked = this.gridColumns.filter(
@@ -3306,6 +3317,7 @@ export class ColumnController extends BeanStub {
 
   /**
    * 自动分组会添加一个新表头列，在此新列的单元格可以折叠展开该值下的原数据行。
+   * 这里会将新列加入现有表头树。
    * as there is at least one active row group, the grid will provide an
    * additional column for displaying the groups in a tree structure with
    * expand/collapse navigation.
@@ -3322,6 +3334,7 @@ export class ColumnController extends BeanStub {
       ? this.groupAutoColumns.concat(this.gridColumns)
       : this.gridColumns;
 
+    // 重新计算表头树
     const autoColBalancedTree = this.columnFactory.createForAutoGroups(
       this.groupAutoColumns,
       this.gridBalancedTree,
@@ -3330,11 +3343,14 @@ export class ColumnController extends BeanStub {
     this.gridBalancedTree = autoColBalancedTree.concat(this.gridBalancedTree);
   }
 
-  // gets called after we copy down grid columns, to make sure any part of the gui
+  /**
+   * 将this.displayedXxxColumn/Tree的值都清空，避免渲染过期值。
+   * gets called after we copy down grid columns, to make sure any part of the gui
   // that tries to draw, eg the header, it will get empty lists of columns rather
   // than stale columns. for example, the header will received gridColumnsChanged
   // event, so will try and draw, but it will draw successfully when it acts on the
   // virtualColumnsChanged event
+  */
   private clearDisplayedColumns(): void {
     this.displayedLeftColumnTree = [];
     this.displayedRightColumnTree = [];
@@ -3351,14 +3367,16 @@ export class ColumnController extends BeanStub {
     this.allDisplayedVirtualColumns = [];
   }
 
+  /** 更新分组表头的显示状态、显示树、宽度，最后触发displayedColumnsChanged事件 */
   private updateGroupsAndDisplayedColumns(source: ColumnEventType) {
     this.updateOpenClosedVisibilityInColumnGroups();
     this.updateDisplayedColumnsFromTrees(source);
     this.updateVirtualSets();
     this.refreshFlexedColumns(undefined, undefined, true);
     this.updateBodyWidths();
-    // this event is picked up by the gui, headerRenderer and rowRenderer, to recalculate what columns to display
 
+    // this event is picked up by the gui,
+    // headerRenderer and rowRenderer, to recalculate what columns to display
     const event: DisplayedColumnsChangedEvent = {
       type: Events.EVENT_DISPLAYED_COLUMNS_CHANGED,
       api: this.gridApi,
@@ -3571,6 +3589,7 @@ export class ColumnController extends BeanStub {
     );
   }
 
+  /** 会调用 updateDisplayedVirtualGroups  */
   private updateVirtualSets(): void {
     const virtualColIds = this.updateDisplayedCenterVirtualColumns();
     this.updateDisplayedVirtualGroups(virtualColIds);
@@ -3771,6 +3790,7 @@ export class ColumnController extends BeanStub {
     });
   }
 
+  /** 根据要显示的表头列数据，计算成左中右3棵显示树 */
   private buildDisplayedTrees(visibleColumns: Column[]) {
     const leftVisibleColumns: Column[] = [];
     const rightVisibleColumns: Column[] = [];

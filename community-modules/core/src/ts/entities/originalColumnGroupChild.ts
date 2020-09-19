@@ -2,6 +2,7 @@
 // See the note at the top of Column class.
 import { OriginalColumnGroup } from './originalColumnGroup';
 
+/** 表头列和分组表头都实现了本接口 */
 export interface OriginalColumnGroupChild {
   isVisible(): boolean;
   getColumnGroupShow(): string | undefined;

@@ -6,14 +6,17 @@ import { EventService } from '../eventService';
 import { IEventEmitter } from '../interfaces/iEventEmitter';
 import { AgEvent } from '../events';
 
+/** 代表一个表头分组的类，无父类 */
 export class OriginalColumnGroup
   implements OriginalColumnGroupChild, IEventEmitter {
   public static EVENT_EXPANDED_CHANGED = 'expandedChanged';
   public static EVENT_EXPANDABLE_CHANGED = 'expandableChanged';
 
+  /** 本对象的事件管理中心，非共享 */
   private localEventService = new EventService();
 
   private colGroupDef: ColGroupDef;
+  /** 本分组表头的父分组表头 */
   private originalParent: OriginalColumnGroup;
 
   private children: OriginalColumnGroupChild[];
@@ -23,6 +26,7 @@ export class OriginalColumnGroup
   private expanded: boolean;
   private padding: boolean;
 
+  /** 本分组表头的层级，顶级为0 */
   private level: number;
 
   constructor(
@@ -138,6 +142,7 @@ export class OriginalColumnGroup
     );
   }
 
+  /** 计算表头展开关闭时的表头状态 */
   public setExpandable() {
     if (this.isPadding()) {
       return;
@@ -146,7 +151,7 @@ export class OriginalColumnGroup
     let atLeastOneShowingWhenOpen = false;
     // want to make sure the group doesn't disappear when it's closed
     let atLeastOneShowingWhenClosed = false;
-    // want to make sure the group has something to show / hide
+    // want to make sure the group has something to show/hide
     let atLeastOneChangeable = false;
 
     const children = this.findChildren();

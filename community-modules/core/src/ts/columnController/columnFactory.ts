@@ -28,7 +28,7 @@ export class ColumnFactory extends BeanStub {
     this.logger = loggerFactory.create('ColumnFactory');
   }
 
-  /** 创建多叉树平衡树结构的表头对象 columnTree */
+  /** 传入表头列定义，计算成多叉树平衡树结构的表头对象 columnTree */
   public createColumnTree(
     defs: (ColDef | ColGroupDef)[] | null,
     isPrimaryColumns: boolean,
@@ -60,10 +60,11 @@ export class ColumnFactory extends BeanStub {
     // console.log(JSON.stringify(unbalancedTree));
     // logObjSer('unbalancedTree, ', unbalancedTree);
 
+    // 计算表头树深度，无嵌套分组表头时，深度为0
     const treeDept = this.findMaxDept(unbalancedTree, 0);
     this.logger.log('Number of levels for grouped columns is ' + treeDept);
 
-    // 创建平衡树
+    // 计算成平衡树
     const columnTree = this.balanceColumnTree(
       unbalancedTree,
       0,
@@ -97,6 +98,7 @@ export class ColumnFactory extends BeanStub {
     };
   }
 
+  /** 设置过自动分组会产生的新列，这里将新列添加到现有多叉树表头模型 */
   public createForAutoGroups(
     autoGroupCols: Column[] | null,
     gridBalancedTree: OriginalColumnGroupChild[],
@@ -250,7 +252,13 @@ export class ColumnFactory extends BeanStub {
   }
 
   /**
-   * 递归地根据columnDefs创建所有表头列对象
+   * 根据columnDefs，递归地创建此层级所有表头列或分组表头对象
+   * @param defs
+   * @param level 从0开始
+   * @param isPrimaryColumns
+   * @param existingColsCopy 现有所有列
+   * @param columnKeyCreator 列id存储及生成器
+   * @param parent 父表头对象，顶层为null
    */
   private recursivelyCreateColumns(
     defs: (ColDef | ColGroupDef)[],
@@ -269,7 +277,7 @@ export class ColumnFactory extends BeanStub {
     defs.forEach((def: ColDef | ColGroupDef) => {
       let newGroupOrColumn: OriginalColumnGroupChild;
 
-      // 若def包含children属性，，则创建一个分组表头，过程中会递归创建子表头的列
+      // 若def包含children属性，则创建一个分组表头，此过程中会递归创建子表头的列
       if (this.isColumnGroup(def)) {
         newGroupOrColumn = this.createColumnGroup(
           isPrimaryColumns,
@@ -306,20 +314,24 @@ export class ColumnFactory extends BeanStub {
     columnKeyCreator: ColumnKeyCreator,
     parent: OriginalColumnGroup | null,
   ): OriginalColumnGroup {
+    // 合并当前表头分组的属性
     const colGroupDefMerged = this.createMergedColGroupDef(colGroupDef);
     const groupId = columnKeyCreator.getUniqueKey(
       colGroupDefMerged.groupId,
       null,
     );
+
+    // 创建本层级的分组表头对象，最后会返回它
     const originalGroup = new OriginalColumnGroup(
       colGroupDefMerged,
       groupId,
       false,
       level,
     );
-
+    // OriginalColumnGroup对象没有钩子方法
     this.context.createBean(originalGroup);
 
+    // 创建本分组表头内所有表头列
     const children = this.recursivelyCreateColumns(
       colGroupDefMerged.children,
       level + 1,
