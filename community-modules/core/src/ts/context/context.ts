@@ -31,7 +31,8 @@ interface BeanWrapper {
 }
 
 /**
- * Context是创建Grid的上下文，也是本框架全局单例的ioc容器，负责创建并保存所有bean对象实例
+ * Context是创建Grid的上下文信息，也是本框架全局单例的ioc容器，负责创建并保存所有bean对象实例。
+ * 使用ioc的优点是方便解耦对象的创建和使用，同时方便批量对多个bean执行某种操作。
  */
 export class Context {
   private logger: ILogger;

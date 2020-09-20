@@ -479,6 +479,11 @@ export class CellComp extends Component implements TooltipParentComp {
   // + rowComp: event dataChanged {animate: update, newData: !update}
   // + rowComp: api refreshCells() {animate: true/false}
   // + rowRenderer: api softRefreshView() {}
+  /**
+   * During change detection the grid calls refreshCell method for each cell.
+   * This is where DOM updates happen synchronously.
+   * @param params
+   */
   public refreshCell(params?: {
     suppressFlash?: boolean;
     newData?: boolean;
