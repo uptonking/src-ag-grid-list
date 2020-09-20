@@ -740,6 +740,7 @@ export class RowComp extends Component {
     );
   }
 
+  /**  */
   private onDisplayedColumnsChanged(): void {
     if (this.fullWidthRow) {
       return;
@@ -810,6 +811,7 @@ export class RowComp extends Component {
     this.refreshCells();
   }
 
+  /** 开始执行重新渲染一行的所有单元格，可根据配置跳过动画*/
   private refreshCells() {
     if (!this.areAllContainersReady()) {
       this.refreshNeeded = true;
@@ -834,6 +836,7 @@ export class RowComp extends Component {
     }
   }
 
+  /** 重新渲染一行的所有单元格，分左中右3个容器 */
   private refreshCellsInAnimationFrame() {
     if (!this.active) {
       return;

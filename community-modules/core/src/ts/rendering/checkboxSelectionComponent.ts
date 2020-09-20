@@ -120,6 +120,7 @@ export class CheckboxSelectionComponent extends Component {
     this.eCheckbox.setInputAriaLabel('Toggle Row Selection');
   }
 
+  /** 设置一个checkbox的显示或隐藏状态值 */
   private showOrHideSelect(): void {
     // if the isRowSelectable() is not provided the row node is selectable by default
     let selectable = this.rowNode.selectable;

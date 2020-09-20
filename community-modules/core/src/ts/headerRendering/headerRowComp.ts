@@ -216,6 +216,7 @@ export class HeaderRowComp extends Component {
     this.setWidth();
   }
 
+  /** 设置本组件dom对象的width属性值 */
   private setWidth(): void {
     const width = this.getWidthForRow();
     this.getGui().style.width = width + 'px';
@@ -255,6 +256,7 @@ export class HeaderRowComp extends Component {
     this.destroyChildComponents(idsOfAllChildren);
   }
 
+  /** 更新viewport中的表头列和表头行宽度值 */
   private onDisplayedColumnsChanged(): void {
     this.onVirtualColumnsChanged();
     this.setWidth();
@@ -292,6 +294,7 @@ export class HeaderRowComp extends Component {
     );
   }
 
+  /** 更新viewport中的表头组件，会保留仍有的、移除旧的、创建新的 */
   private onVirtualColumnsChanged(): void {
     const currentChildIds = Object.keys(this.headerComps);
     const correctChildIds: string[] = [];

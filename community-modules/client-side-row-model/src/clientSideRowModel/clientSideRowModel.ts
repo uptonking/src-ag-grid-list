@@ -50,7 +50,7 @@ export interface RowNodeMap {
 }
 
 /**
- * 最常用的rowModel，仅在浏览器客户端进行计算，不涉及服务端数据通信
+ * 最常用的rowModel，仅在浏览器客户端进行计算，不涉及服务端数据通信。
  */
 @Bean('rowModel')
 export class ClientSideRowModel
@@ -79,7 +79,7 @@ export class ClientSideRowModel
   @Optional('aggregationStage') private aggregationStage: IRowNodeStage;
   @Optional('pivotStage') private pivotStage: IRowNodeStage;
 
-  /** top most node of the tree. the children are the user provided data. */
+  /** the top most node of the tree. the children are the user provided data. */
   private rootNode: RowNode;
   /** the rows mapped to rows to display */
   private rowsToDisplay: RowNode[];
@@ -88,7 +88,8 @@ export class ClientSideRowModel
   private lastHighlightedRow: RowNode | null;
 
   /**
-   * PostConstruct阶段会调用，这里会注册各种事件监听器到eventService，创建rootNode和ClientSideNodeManager对象
+   * PostConstruct阶段会调用此方法，这里会注册各种事件监听器到全局单例的eventService，
+   * 还会创建rootNode和clientSideNodeManager对象
    */
   @PostConstruct
   public init(): void {
@@ -142,8 +143,6 @@ export class ClientSideRowModel
       refreshEverythingFunc,
     );
 
-    // logObjSer('rowModel-post-construct ,', this.eventService);
-
     const refreshMapListener = this.refreshModel.bind(this, {
       step: Constants.STEP_MAP,
       keepRenderedRows: true,
@@ -172,12 +171,12 @@ export class ClientSideRowModel
       this.columnApi,
       this.selectionController,
     );
-    // 给rootNode注入依赖的bean
+    // 给rootNode注入依赖的bean，再调用rootNode的钩子方法
     this.createBean(this.rootNode);
   }
 
   /**
-   * 开始将输入的rowData处理成grid内部的rowModel结构
+   * 开始执行计算的入口，会将输入的rowData计算成grid内部的rowModel结构，并触发数据行的重渲染
    */
   public start(): void {
     const rowData = this.gridOptionsWrapper.getRowData();
@@ -499,9 +498,10 @@ export class ClientSideRowModel
   }
 
   /**
-   * 重新计算数据rowModel，然后触发 modelUpdated 事件，导致数据行重渲染，
-   * 计算rowModel时基于无break的switch分支，实现从某一步开始一直执行到结束的流程，
-   * 是columnEverythingChanged对应的事件处理函数之一
+   * 重新计算数据，依次进行 group > filter > pivot > aggregate > sort,
+   * 然后触发 modelUpdated 事件，从而触发数据行重渲染。
+   * 处理数据是基于无break的switch分支，实现从某一步开始一直执行到结束的流程。
+   * 本方法是columnEverythingChanged事件对应的事件处理函数之一
    * @param params 更新参数
    */
   public refreshModel(params: RefreshModelParams): void {
@@ -566,7 +566,7 @@ export class ClientSideRowModel
       newData: params.newData,
       newPage: false,
     };
-    // 触发modelUpdated事件，会重新渲染数据行组件
+    // 触发modelUpdated事件，会触发重新渲染数据行组件
     this.eventService.dispatchEvent(event);
 
     if (this.$scope) {
@@ -828,8 +828,9 @@ export class ClientSideRowModel
     return index;
   }
 
-  // it's possible to recompute the aggregate without doing the other parts
-  // + gridApi.recomputeAggregates()
+  /** 计算应用聚合运算后的数据。
+   * it's possible to recompute the aggregate without doing the other parts
+   gridApi.recomputeAggregates() */
   public doAggregate(changedPath?: ChangedPath): void {
     if (this.aggregationStage) {
       this.aggregationStage.execute({
@@ -875,6 +876,7 @@ export class ClientSideRowModel
     this.eventService.dispatchEvent(event);
   }
 
+  /** 计算排序后的数据 */
   private doSort(
     rowNodeTransactions: RowNodeTransaction[],
     changedPath: ChangedPath,
@@ -886,6 +888,7 @@ export class ClientSideRowModel
     });
   }
 
+  /** 计算分组后的数据 */
   private doRowGrouping(
     groupState: any,
     rowNodeTransactions: (RowNodeTransaction | null)[] | undefined,
@@ -949,6 +952,7 @@ export class ClientSideRowModel
     );
   }
 
+  /** 计算应用过滤条件后的数据 */
   private doFilter(changedPath: ChangedPath) {
     this.filterStage.execute({
       rowNode: this.rootNode,
@@ -956,6 +960,7 @@ export class ClientSideRowModel
     });
   }
 
+  /** 计算应用透视分析后的数据 */
   private doPivot(changedPath: ChangedPath) {
     if (this.pivotStage) {
       this.pivotStage.execute({
@@ -988,7 +993,8 @@ export class ClientSideRowModel
     return this.nodeManager.getRowNode(id);
   }
 
-  /** rows: the rows to put into the model，只是处理rowData的入口 */
+  /** 通过nodeManager将rowData计算成rowModel结构，然后触发rowDataChanged事件，
+   * 最后调用this.refreshModel()方法进一步处理rowModel和触发更新渲染视图 */
   public setRowData(rowData: any[]): void {
     // no need to invalidate cache, as the cache is stored on the rowNode,
     // so new rowNodes means the cache is wiped anyway.
@@ -1008,9 +1014,10 @@ export class ClientSideRowModel
       api: this.gridApi,
       columnApi: this.columnApi,
     };
-    // 触发 rowDataChanged 事件，默认为空
+    // 触发 rowDataChanged 事件
     this.eventService.dispatchEvent(rowDataChangedEvent);
 
+    // 进一步处理rowModel，并触发更新渲染视图
     this.refreshModel({
       step: Constants.STEP_EVERYTHING,
       groupState: groupState,
@@ -1103,6 +1110,7 @@ export class ClientSideRowModel
     this.eventService.dispatchEvent(event);
   }
 
+  /** 计算要显示的行对应的rowNode的集合 */
   private doRowsToDisplay() {
     this.rowsToDisplay = this.flattenStage.execute({
       rowNode: this.rootNode,

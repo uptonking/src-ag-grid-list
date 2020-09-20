@@ -470,7 +470,7 @@ export class Grid {
     rowModel.start();
   }
 
-  /** 通过全局单例的eventService触发gridReady事件，默认事件不存在，可通过gridOptions传入，
+  /** 通过全局单例的eventService触发gridReady事件，默认事件不存在，可通过gridOptions传入。
    * The Grid API (both api and columnApi) will only be available after the gridReady event has been fired. */
   private dispatchGridReadyEvent(gridOptions: GridOptions): void {
     const eventService: EventService = this.context.getBean('eventService');

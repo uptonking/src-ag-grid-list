@@ -64,6 +64,7 @@ export class SelectAllFeature extends BeanStub {
     );
   }
 
+  /** 更新全选框显示或隐藏的状态值 */
   private showOrHideSelectAll(): void {
     this.cbSelectAllVisible = this.isCheckboxSelection();
     this.cbSelectAll.setDisplayed(this.cbSelectAllVisible);

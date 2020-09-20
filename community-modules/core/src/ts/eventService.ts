@@ -9,7 +9,7 @@ import { logObjSer } from './utils/logUtils';
 import { jsonFnStringify } from './utils';
 
 /**
- * 处理事件监听器的add/remove，以及通过dispatchEvent触发异步和同步事件
+ * 作为事件管理中心的类，处理事件监听器的add/remove，通过dispatchEvent触发异步和同步事件
  */
 @Bean('eventService')
 export class EventService implements IEventEmitter {

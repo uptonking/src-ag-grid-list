@@ -9,6 +9,9 @@ import { GridOptionsWrapper } from '../gridOptionsWrapper';
 import { AgEvent } from '../events';
 import { _ } from '../utils';
 
+/** 一个分组表头，无父类，
+ * 包含所有表头列、可见的表头列
+ */
 export class ColumnGroup implements ColumnGroupChild {
   public static HEADER_GROUP_SHOW_OPEN = 'open';
   public static HEADER_GROUP_SHOW_CLOSED = 'closed';
@@ -24,9 +27,9 @@ export class ColumnGroup implements ColumnGroupChild {
 
   @Autowired('gridOptionsWrapper') gridOptionsWrapper: GridOptionsWrapper;
 
-  // all the children of this group, regardless of whether they are opened or closed
+  /** all the children of this group, regardless of whether they are opened or closed */
   private children: ColumnGroupChild[];
-  // depends on the open/closed state of the group, only displaying columns are stored here
+  /** depends on the open/closed state of the group, only displaying columns are stored here */
   private displayedChildren: ColumnGroupChild[] = [];
 
   private readonly groupId: string;
@@ -53,8 +56,8 @@ export class ColumnGroup implements ColumnGroupChild {
     this.pinned = pinned;
   }
 
-  // as the user is adding and removing columns, the groups are recalculated.
-  // this reset clears out all children, ready for children to be added again
+  /** as the user is adding and removing columns, the groups are recalculated.
+   this reset clears out all children, ready for children to be added again */
   public reset(): void {
     this.parent = null;
     this.children = null;

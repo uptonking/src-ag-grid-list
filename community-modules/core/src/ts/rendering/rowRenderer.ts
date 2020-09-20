@@ -1060,6 +1060,7 @@ export class RowRenderer extends BeanStub {
     rowComps.forEach((rowComp) => rowComp.afterFlush());
   }
 
+  /** 更新this.pinningLeft/Right的属性值 */
   private onDisplayedColumnsChanged(): void {
     const pinningLeft = this.columnController.isPinningLeft();
     const pinningRight = this.columnController.isPinningRight();

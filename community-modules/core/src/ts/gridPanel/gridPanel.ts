@@ -1094,6 +1094,7 @@ export class GridPanel extends Component {
     }
   }
 
+  /** 由于动画的影响，调用2次更新滚动条可见性的方法 */
   private updateScrollVisibleService(): void {
     // because of column animation (which takes 200ms), we have to do this twice.
     // eg if user removes cols anywhere except at the RHS, then the cols on the RHS
@@ -1105,6 +1106,7 @@ export class GridPanel extends Component {
     setTimeout(this.updateScrollVisibleServiceImpl.bind(this), 500);
   }
 
+  /** 设置水平或竖直滚动条的可见性 */
   private updateScrollVisibleServiceImpl(): void {
     const params: SetScrollsVisibleParams = {
       horizontalScrollShowing: false,
@@ -1154,6 +1156,7 @@ export class GridPanel extends Component {
     this.getGui().setAttribute('aria-rowcount', total);
   }
 
+  /** 给grid表格dom元素设置aria-colcount自定义属性 */
   private updateColumnCount(): void {
     const columns = this.columnController.getAllDisplayedColumns();
 
@@ -1414,6 +1417,7 @@ export class GridPanel extends Component {
     return [this.eTop, this.eBottom];
   }
 
+  /** 更新pinned容器尺寸、表头高度、水平视口、滚动条可见性 */
   public onDisplayedColumnsChanged(): void {
     this.setPinnedContainerSize();
     this.setHeaderAndFloatingHeights();

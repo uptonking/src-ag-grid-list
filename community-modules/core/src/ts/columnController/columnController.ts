@@ -75,7 +75,7 @@ export interface ColumnState {
 }
 
 /**
- * 表头管理类,计算并存放表头列的数据，还提供表头组件渲染及状态更新的方法。
+ * 表头管理类，计算表头树形结构，并存放表头列的数据，还提供表头组件渲染及状态更新的方法。
  */
 @Bean('columnController')
 export class ColumnController extends BeanStub {
@@ -104,7 +104,7 @@ export class ColumnController extends BeanStub {
   // order or state of the columns and groups change. it will only change if the client
   // provides a new set of column definitions. otherwise this tree is used to build up
   // the groups for displaying.
-  /** 树形结构的column链表，若column顺序变化，本对象不会变，若colDefs变化，本对象才变 */
+  /** 树形结构的column链表，若column顺序变化，本对象不会变，若columnDefs更新了，本对象才变 */
   private primaryColumnTree: OriginalColumnGroupChild[];
   /** 用户提供的列定义计算出的表头行数。header row count, based on user provided columns */
   private primaryHeaderRowCount = 0;
@@ -114,7 +114,7 @@ export class ColumnController extends BeanStub {
   /**  */
   private gridColumns: Column[];
 
-  /** f pivoting, these are the generated columns as a result of the pivot */
+  /** If pivoting, these are the generated columns as a result of the pivot */
   private secondaryBalancedTree: OriginalColumnGroupChild[] | null;
   private secondaryColumns: Column[] | null;
   private secondaryHeaderRowCount = 0;
@@ -204,7 +204,6 @@ export class ColumnController extends BeanStub {
   public init(): void {
     // 默认false，即会对列进行virtualize
     this.suppressColumnVirtualisation = this.gridOptionsWrapper.isSuppressColumnVirtualisation();
-
     const pivotMode = this.gridOptionsWrapper.isPivotMode();
 
     if (this.isPivotSettingAllowed(pivotMode)) {
@@ -3080,14 +3079,18 @@ export class ColumnController extends BeanStub {
     return this.groupDisplayColumns;
   }
 
-  /** 更新显示的表头列 */
+  /** 更新显示的表头列，过程中会触发displayedColumnsChanged事件 */
   private updateDisplayedColumns(source: ColumnEventType): void {
+    // 计算要显示的表头列，支持普通模式和透视表模式
     const columnsForDisplay = this.calculateColumnsForDisplay();
 
+    // 计算左中右3课显示树
     this.buildDisplayedTrees(columnsForDisplay);
 
+    // 计算出设置了showRowGroup为true的表头列
     this.calculateColumnsForGroupDisplay();
 
+    // 更新分组表头的显示状态、显示树、宽度，最后触发displayedColumnsChanged事件
     // also called when group opened/closed
     this.updateGroupsAndDisplayedColumns(source);
 
@@ -3166,7 +3169,7 @@ export class ColumnController extends BeanStub {
     }
   }
 
-  /** 计算自动分组表头和columnSpan，再触发gridColumnsChanged事件，
+  /** 计算自动分组表头和columnSpan，再触发gridColumnsChanged事件，此事件会重新渲染表头组件，
    * called from: setColumnState, setColumnDefs, setSecondaryColumns */
   private updateGridColumns(): void {
     if (this.gridColsArePrimary) {

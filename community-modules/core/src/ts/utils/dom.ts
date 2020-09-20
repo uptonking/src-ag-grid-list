@@ -444,6 +444,7 @@ export function setElementWidth(element: HTMLElement, width: string | number) {
   }
 }
 
+/** 设置element的width、minWidth、maxWidth为相同的值 */
 export function setFixedWidth(element: HTMLElement, width: string | number) {
   width = formatSize(width);
   element.style.width = width.toString();

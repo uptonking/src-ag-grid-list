@@ -422,6 +422,7 @@ export class Component extends BeanStub {
     }
   }
 
+  /** 设置本Component的this.displayed属性值，然后触发本对象的comp.displayedChanged事件 */
   public setDisplayed(displayed: boolean): void {
     if (displayed !== this.displayed) {
       this.displayed = displayed;

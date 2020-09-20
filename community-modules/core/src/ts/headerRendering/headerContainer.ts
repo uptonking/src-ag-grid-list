@@ -21,7 +21,9 @@ export class HeaderContainer extends BeanStub {
   @Autowired('scrollVisibleService')
   private scrollVisibleService: ScrollVisibleService;
 
+  /** */
   private eContainer: HTMLElement;
+  /** */
   private eViewport: HTMLElement;
   /** 所有表头行对象构成的数组 */
   private headerRowComps: HeaderRowComp[] = [];
@@ -98,6 +100,7 @@ export class HeaderContainer extends BeanStub {
     this.setWidthOfPinnedContainer();
   }
 
+  /** 可见表头列变化时，更新grid表格的总宽度 */
   private onDisplayedColumnsChanged(): void {
     this.setWidthOfPinnedContainer();
   }
@@ -106,6 +109,7 @@ export class HeaderContainer extends BeanStub {
     this.setWidthOfPinnedContainer();
   }
 
+  /** 给grid表格宽度加上左右pinned表头及滚动条的宽度 */
   private setWidthOfPinnedContainer(): void {
     const pinningLeft = this.pinned === Constants.PINNED_LEFT;
     const pinningRight = this.pinned === Constants.PINNED_RIGHT;

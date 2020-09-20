@@ -8,8 +8,8 @@ import { Component } from '../widgets/component';
 import { _ } from '../utils';
 
 /**
- * bean的基类，没有父类且只实现了IEventEmitter一个接口，
- * 可以加减事件监听器、触发事件、触发bean的destroyed事件及PreDestroy钩子函数，
+ * bean的基类，无父类且只实现了IEventEmitter一个接口，
+ * 可以加减事件监听器、触发事件、触发bean的destroyed事件及PreDestroy钩子方法，
  * 通过依赖注入只初始化context、eventService、frameworkOverrides3个bean，
  * 每个bean对象都持有自己的localEventService，非共享。
  */
@@ -19,7 +19,7 @@ export class BeanStub implements IEventEmitter {
   @Autowired('frameworkOverrides')
   private frameworkOverrides: IFrameworkOverrides;
   @Autowired('context') protected context: Context;
-  /** ioc容器中全局单例的事件注册中心 */
+  /** ioc容器中全局单例的事件管理中心 */
   @Autowired('eventService') protected eventService: EventService;
 
   /** 每个Bean对象都有自己的localEventService，非共享，不通过依赖注入初始化 */

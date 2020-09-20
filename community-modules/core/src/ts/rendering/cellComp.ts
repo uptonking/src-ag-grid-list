@@ -37,7 +37,7 @@ import { DndSourceComp } from './dndSourceComp';
 import { TooltipFeature } from '../widgets/tooltipFeature';
 import { TooltipParentComp } from '../widgets/tooltipFeature';
 
-/** 代表单元格的Component类 */
+/** 代表数据行单元格的Component类 */
 export class CellComp extends Component implements TooltipParentComp {
   public static DOM_DATA_KEY_CELL_COMP = 'cellComp';
 
@@ -361,6 +361,7 @@ export class CellComp extends Component implements TooltipParentComp {
     return colsSpanning;
   }
 
+  /** 若this.colsSpanning变化了，则更新合并列单元格的width和left样式值 */
   private onDisplayColumnsChanged(): void {
     const colsSpanning: Column[] = this.getColSpanningList();
 
@@ -1926,6 +1927,7 @@ export class CellComp extends Component implements TooltipParentComp {
     super.destroy();
   }
 
+  /** 设置最新left属性值 */
   public onLeftChanged(): void {
     const left = this.modifyLeftForPrintLayout(this.getCellLeft());
     this.getGui().style.left = left + 'px';
@@ -1953,6 +1955,7 @@ export class CellComp extends Component implements TooltipParentComp {
     return leftWidth + leftPosition;
   }
 
+  /** 设置最新width属性值 */
   public onWidthChanged(): void {
     const width = this.getCellWidth();
     this.getGui().style.width = width + 'px';
