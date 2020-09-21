@@ -4,6 +4,10 @@ export interface SimpleHttpRequestParams {
   url: string;
 }
 
+/**
+ * 基于XMLHttpRequest实现的简单get请求
+ * @param params 传到xhr.open的url请求地址
+ */
 export function simpleHttpRequest(
   params: SimpleHttpRequestParams,
 ): Promise<any> {

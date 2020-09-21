@@ -415,12 +415,19 @@ export interface GetQuickFilterTextParams {
 }
 
 export interface BaseColDefParams {
+  /** the row node for this row */
   node: RowNode;
+  /** the data you provided for this row */
   data: any;
+  /** the column def for this column */
   colDef: ColDef;
+  /** the Column for this column */
   column: Column;
+  /** the grid API */
   api: GridApi | null | undefined;
+  /** the grid Column API */
   columnApi: ColumnApi | null | undefined;
+  /** the context */
   context: any;
 }
 
@@ -429,6 +436,7 @@ export interface BaseWithValueColDefParams extends BaseColDefParams {
 }
 
 export interface ValueGetterParams extends BaseColDefParams {
+  /** a utility method, for getting other column values */
   getValue: (field: string) => any;
 }
 

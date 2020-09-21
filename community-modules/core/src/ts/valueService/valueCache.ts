@@ -4,6 +4,8 @@ import { RowNode } from '../entities/rowNode';
 import { BeanStub } from '../context/beanStub';
 
 /**
+ * The value cache is used for the results of value getters.
+ * If you are not using value getters, then you do not need the value cache.
  * 可以间接存取rowNode.__cacheData的值，还支持其他操作，如设置缓存版本与过期。
  */
 @Bean('valueCache')
