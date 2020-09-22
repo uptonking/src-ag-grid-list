@@ -59,6 +59,7 @@ export class ColumnApi {
   public getColumn(key: any): Column {
     return this.columnController.getPrimaryColumn(key);
   }
+  /** @deprecated. use applyColumnState */
   public setColumnState(columnState: ColumnState[]): boolean {
     return this.columnController.setColumnState(columnState, false, 'api');
   }

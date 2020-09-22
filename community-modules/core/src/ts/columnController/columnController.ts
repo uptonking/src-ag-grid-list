@@ -63,14 +63,39 @@ export interface ColumnResizeSet {
   width: number;
 }
 
+interface ApplyColumnStateParams {
+  /** the state from getColumnState */
+  state?: ColumnState[];
+  /** whether column order should be applied */
+  applyOrder?: boolean;
+  /** state to apply to columns where state is missing for those columns */
+  defaultState?: ColumnState;
+}
+/** stateful attributes of Column Definitions */
 export interface ColumnState {
+  /** ID of the column */
   colId: string;
+  /** width of column in pixels */
   width?: number;
+  /** true if column is hidden */
   hide?: boolean;
+  /** sort applied to the columns */
+  sort?: boolean;
+  /** the order of the sort, if sorting by many columns*/
+  sortIndex?: number;
+  /** set if column is pinned */
   pinned?: boolean | string | 'left' | 'right';
+  /** the aggregation function applied */
   aggFunc?: string | IAggFunc | null;
+  /** true if pivot active */
+  pivot?: boolean;
+  /** the order of the pivot, if pivoting by many columns */
   pivotIndex?: number | null;
+  /** true if row group active */
+  rowGroup?: boolean;
+  /** the order of the row group, if row grouping by many columns */
   rowGroupIndex?: number | null;
+  /** column's flex if flex is set */
   flex?: number;
 }
 
@@ -1422,6 +1447,7 @@ export class ColumnController extends BeanStub {
     this.eventService.dispatchEvent(event);
   }
 
+  /** Move list of columns to specific index. */
   public moveColumns(
     columnsToMoveKeys: (string | Column)[],
     toIndex: number,
@@ -1546,6 +1572,7 @@ export class ColumnController extends BeanStub {
     return rulePassed;
   }
 
+  /** Move one column to specific index.内部会调用moveColumns */
   public moveColumn(
     key: string | Column,
     toIndex: number,
@@ -1554,6 +1581,7 @@ export class ColumnController extends BeanStub {
     this.moveColumns([key], toIndex, source);
   }
 
+  /** Move column from fromIndex to toIndex. */
   public moveColumnByIndex(
     fromIndex: number,
     toIndex: number,

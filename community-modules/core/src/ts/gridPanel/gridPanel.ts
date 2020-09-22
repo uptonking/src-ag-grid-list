@@ -1255,8 +1255,12 @@ export class GridPanel extends Component {
     this.overlayWrapper.hideOverlay();
   }
 
-  // method will call itself if no available width. this covers if the grid
-  // isn't visible, but is just about to be visible.
+  /**
+   * to make the currently visible columns fit the screen.
+   * The columns will scale (growing or shrinking) to fit the available width.
+   * method will call itself if no available width.
+   * this covers if the grid isn't visible, but is just about to be visible.
+   */
   public sizeColumnsToFit(nextTimeout?: number) {
     const availableWidth = this.eBodyViewport.clientWidth;
 

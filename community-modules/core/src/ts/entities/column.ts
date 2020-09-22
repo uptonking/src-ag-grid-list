@@ -37,6 +37,7 @@ import { ModuleRegistry } from '../modules/moduleRegistry';
  * However the relevant group classes for each type only implements one,
  * as each group can only appear in it's associated tree(eg OriginalColumnGroup
  * can only appear in OriginalColumn tree).
+ * All events fired by the column are synchronous
  */
 export class Column
   implements ColumnGroupChild, OriginalColumnGroupChild, IEventEmitter {

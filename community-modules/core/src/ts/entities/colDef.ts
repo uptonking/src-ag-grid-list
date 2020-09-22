@@ -80,6 +80,7 @@ export interface IAggFunc {
 /****************************************************************
  * Don't forget to update ComponentUtil if changing this class. PLEASE!*
  ****************************************************************/
+/** 一个表头列。Each column in the grid is defined using a ColDef(Column Definition). */
 export interface ColDef extends AbstractColDef {
   /** The unique ID to give the column. This is optional. If missing, the ID will default to the field.
    *  If both field and colId are missing, a unique ID will be generated.
@@ -108,7 +109,7 @@ export interface ColDef extends AbstractColDef {
    *  however we want all default values to be false and we want columns to be visible by default. */
   hide?: boolean;
 
-  /** Whether this column is pinned or not. */
+  /** Whether this column is pinned or not. pinned columns are always visible */
   pinned?: boolean | string;
 
   /** The field where we get the tooltip on the object */
@@ -265,10 +266,16 @@ export interface ColDef extends AbstractColDef {
   /** Set to true to not flash this column for value changes */
   suppressCellFlash?: boolean;
 
-  /** Set to true to make sure this column is always first. Other columns, if movable, cannot move before this column. */
+  /** Set to true to make sure this column is always first. Other columns, if movable, cannot move before this column.
+   * lockPosition locks columns to the first position in the grid.
+   * When lockPosition=true, the column will always appear first, cannot be dragged by the user, and cannot be moved out of position by dragging other columns.
+   */
   lockPosition?: boolean;
 
-  /** Set to true to block the user showing / hiding the column, the column can only be shown / hidden via definitions or API */
+  /** Set to true to block the user showing/hiding the column, the column can only be shown/hidden via definitions or API.
+   * lockVisible will stop individual columns from been made visible or hidden via the UI.
+   * When lockVisible=true, the column will not hide when it is dragged out of the grid, and columns dragged from the tool panel onto the grid will not become visible.
+   */
   lockVisible?: boolean;
 
   /** Set to true to block the user pinning the column, the column can only be pinned via definitions or API */
@@ -427,7 +434,7 @@ export interface BaseColDefParams {
   api: GridApi | null | undefined;
   /** the grid Column API */
   columnApi: ColumnApi | null | undefined;
-  /** the context */
+  /** the provided context */
   context: any;
 }
 

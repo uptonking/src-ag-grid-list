@@ -150,6 +150,7 @@ export interface GridOptions {
   suppressCellSelection?: boolean;
   suppressClearOnFillReduction?: boolean;
   suppressMaintainUnsortedOrder?: boolean;
+  /** 多次点击触发多次排序时, the default sorting order is  ascending -> descending -> none */
   sortingOrder?: (string | null)[];
   suppressMultiSort?: boolean;
   multiSortKey?: string;
@@ -311,7 +312,9 @@ export interface GridOptions {
   // cellRenderers?: {[key: string]: {new(): ICellRenderer} | ICellRendererFunc};
   /* a map of strings (cellEditor keys) to cellEditors */
   // cellEditors?: {[key: string]: {new(): ICellEditor}};
+  /** contains properties that all column groups will inherit */
   defaultColGroupDef?: ColGroupDef;
+  /** contains properties that all columns will inherit, a default column definition with properties that get applied to every column */
   defaultColDef?: ColDef;
   defaultExportParams?: CsvExportParams;
 
@@ -372,6 +375,7 @@ export interface GridOptions {
   showToolPanel?: boolean;
   sideBar?: SideBarDef | string | boolean;
   columnDefs?: (ColDef | ColGroupDef)[];
+  /** define column types, 自定义表头列的类型，会覆盖defaultColDef中的属性值 */
   columnTypes?: { [key: string]: ColDef };
   datasource?: IDatasource;
   viewportDatasource?: IViewportDatasource;
