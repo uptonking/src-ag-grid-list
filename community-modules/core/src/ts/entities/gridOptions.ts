@@ -154,6 +154,8 @@ export interface GridOptions {
   sortingOrder?: (string | null)[];
   suppressMultiSort?: boolean;
   multiSortKey?: string;
+  /** By default sorting doesn't take into consideration locale-specific characters.
+   * Set true if you need to make your sort locale-specific */
   accentedSort?: boolean;
   deltaSort?: boolean;
   suppressHorizontalScroll?: boolean;
@@ -483,7 +485,7 @@ export interface GridOptions {
   processSecondaryColDef?(colDef: ColDef): void;
 
   processSecondaryColGroupDef?(colGroupDef: ColGroupDef): void;
-
+  /** run this callback over the sorted rows */
   postSort?(nodes: RowNode[]): void;
 
   processChartOptions?(params: ProcessChartOptionsParams): ChartOptions<any>;
