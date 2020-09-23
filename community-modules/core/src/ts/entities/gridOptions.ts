@@ -114,7 +114,9 @@ export interface GridOptions {
    *******************************************************************************************************/
 
   // set once in init, can never change
+  /** 若为true，则行在被拖拽时，相邻两行不会交换，拖拽结束时首位行会交换 */
   suppressBrowserResizeObserver?: boolean;
+  /** 若为true，则行在被拖拽时，相邻两行会交换，动画更平滑 */
   rowDragManaged?: boolean;
   suppressRowDrag?: boolean;
   suppressMoveWhenRowDragging?: boolean;
@@ -205,6 +207,10 @@ export interface GridOptions {
   suppressAutoSize?: boolean;
   autoSizePadding?: number;
   skipHeaderOnAutoSize?: boolean;
+  /** Row animations occur after filtering, sorting, resizing height and expanding/collapsing a row group.
+   * Each of these animations is turned OFF by default.
+   * Column animations(moving cols) are on by default, row animations are off by default.
+   */
   animateRows?: boolean;
   suppressColumnMoveAnimation?: boolean;
   suppressMovableColumns?: boolean;
@@ -253,13 +259,21 @@ export interface GridOptions {
   maxBlocksInCache?: number;
   purgeClosedRowNodes?: boolean;
   gridAutoHeight?: boolean;
+  /**
+   * normal:default if not specified. The grid fits the width and height of the div you provide and scrolls in both directions.
+   * autoHeight: The grid's height is set to fit the number of rows so no vertical scrollbar is provided by the grid. The grid scrolls horizontally as normal.
+   * print: No scroll bars are used and the grid renders all rows and columns.
+   */
   domLayout?: string;
   suppressChangeDetection?: boolean;
   aggregateOnlyChangedColumns?: boolean;
   valueCache?: boolean;
   valueCacheNeverExpires?: boolean;
   batchUpdateWaitMillis?: number;
+  /** How many milliseconds to wait before executing a batch of async transactions. */
   asyncTransactionWaitMillis?: number;
+  /** Set true to to stop the grid positioning rows using CSS transform and instead the grid will use CSS top.
+   * Set true to allow row spanning, */
   suppressRowTransform?: boolean;
   suppressSetColumnStateEvents?: boolean;
   allowDragFromColumnsToolPanel?: boolean;
@@ -342,7 +356,9 @@ export interface GridOptions {
 
   // changeable, but no immediate impact
   context?: any;
+  /**  to set style for all rows.  */
   rowStyle?: any;
+  /** to set CSS class for all rows. */
   rowClass?: string | string[];
   groupDefaultExpanded?: number;
   /** @deprecated slaveGrids, replace with alignedGrids */
@@ -354,6 +370,7 @@ export interface GridOptions {
   isRowSelectable?: IsRowSelectable;
   overlayLoadingTemplate?: string;
   overlayNoRowsTemplate?: string;
+  /** Changing this property will set a new row height for all rows, including pinned rows top and bottom. */
   rowHeight?: number;
   detailRowHeight?: number;
   popupParent?: HTMLElement;
@@ -371,6 +388,7 @@ export interface GridOptions {
 
   // changeable with impact
   rowData?: any[];
+  /** Pinned rows are not part of the main row model. 不支持sort、filter、group、行选择、print */
   pinnedTopRowData?: any[];
   pinnedBottomRowData?: any[];
   /** @deprecated */
@@ -417,12 +435,15 @@ export interface GridOptions {
   isExternalFilterPresent?(): boolean;
 
   doesExternalFilterPass?(node: RowNode): boolean;
-
+  /** Callback to set style for each row individually. */
   getRowStyle?: Function;
+  /** Callback to set class for each row individually. */
   getRowClass?: (params: any) => string | string[];
+  /** keys are class names and the values are expressions that if evaluated to true, the class gets used. */
   rowClassRules?: {
     [cssClassName: string]: ((params: any) => boolean) | string;
   };
+  /** To change the row height so that each row can have a different height, implement the getRowHeight() callback.  */
   getRowHeight?: Function;
   sendToClipboard?: (params: any) => void;
   processDataFromClipboard?: (
@@ -452,6 +473,7 @@ export interface GridOptions {
   fullWidthCellRendererFramework?: any;
   fullWidthCellRendererParams?: any;
 
+  /** to tell the grid which row should be treated as fullWidth. */
   isFullWidthCell?(rowNode: RowNode): boolean;
 
   groupRowAggNodes?(nodes: RowNode[]): any;

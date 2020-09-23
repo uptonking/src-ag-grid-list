@@ -148,7 +148,10 @@ export interface ColDef extends AbstractColDef {
    */
   flex?: number;
 
-  /** True if this column should stretch rows height to fit contents */
+  /** Set to true to have the grid calculate the height of a row based on contents of this column.
+   * If multiple columns are marked with autoHeight=true, then the height of the largest column is used.
+   * Auto height works by the grid creating an off-screen (not visible to the user) temporary row with all the auto height columns rendered into it.
+   */
   autoHeight?: boolean;
 
   /** Class to use for the cell. Can be string, array of strings, or function. */
@@ -232,7 +235,9 @@ export interface ColDef extends AbstractColDef {
   /** If true, the header checkbox selection will work on filtered items*/
   headerCheckboxSelectionFilteredOnly?: boolean;
 
-  /** For grid row dragging, set to true to enable row dragging within the grid */
+  /** For grid row dragging, set to true to enable row dragging within the grid.
+   * 值为boolean时设置所有行都(不)可拖拽，值为函数时设置每一行是否可拖拽
+   */
   rowDrag?: boolean | ((params: any) => boolean);
 
   /** To configure the text to be displayed in the floating div while dragging a row when rowDrag is true */

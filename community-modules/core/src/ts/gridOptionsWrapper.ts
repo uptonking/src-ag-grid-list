@@ -58,6 +58,7 @@ import { ChartOptions } from './interfaces/iChartOptions';
 import { ModuleRegistry } from './modules/moduleRegistry';
 import { _ } from './utils';
 
+/** By default, the grid will display rows with a height of 25px.  */
 const DEFAULT_ROW_HEIGHT = 25;
 const DEFAULT_DETAIL_ROW_HEIGHT = 300;
 const DEFAULT_VIEWPORT_ROW_MODEL_PAGE_SIZE = 5;

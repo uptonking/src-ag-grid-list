@@ -331,6 +331,13 @@ export class GridApi {
     }
   }
 
+  /**
+   * The easiest way to update data inside the grid is to replace the data you
+   * gave it with a fresh set of data. This is done by either updating the
+   * `rowData` bound property (if using a framework) or calling `api.setRowData(newData)`.
+   * 用新的数据替换旧的数据，会清除已选中的行，清除分组过的行的开关状态，所有ui会刷新、单元
+   * 格重新创建，rowModel的计算流程会重新计算一遍。
+   * */
   public setRowData(rowData: any[]) {
     if (this.gridOptionsWrapper.isRowModelDefault()) {
       if (this.gridOptionsWrapper.isImmutableData()) {
@@ -602,6 +609,7 @@ export class GridApi {
     return this.filterManager.isQuickFilterPresent();
   }
 
+  /** return this.rowModel */
   public getModel(): IRowModel {
     return this.rowModel;
   }
@@ -637,6 +645,9 @@ export class GridApi {
     this.refreshClientSideRowModel(step);
   }
 
+  /** execute the step stage and all the stages after it.
+   * group > filter > pivot > aggregate > sort > map.
+   */
   public refreshClientSideRowModel(step?: string): any {
     if (_.missing(this.clientSideRowModel)) {
       console.warn(
@@ -680,6 +691,7 @@ export class GridApi {
     return this.animationFrameService.isQueueEmpty();
   }
 
+  /** Returns the rowNode with the given ID.  */
   public getRowNode(id: string): RowNode {
     return this.rowModel.getRowNode(id);
   }
@@ -890,6 +902,11 @@ export class GridApi {
     this.gridCore.ensureNodeVisible(comparator, position);
   }
 
+  /** Similar to forEachNode, except lists all the leaf nodes.
+   * This effectively goes through all the data that you provided to the grid before the grid performed any grouping.
+   * If using tree data, goes through all the nodes for the data you provided, including nodes that have children,
+   * but excluding groups the grid created where gaps were missing in the hierarchy.
+   */
   public forEachLeafNode(callback: (rowNode: RowNode) => void) {
     if (_.missing(this.clientSideRowModel)) {
       console.warn('cannot call forEachNode unless using normal row model');
@@ -897,10 +914,22 @@ export class GridApi {
     this.clientSideRowModel.forEachLeafNode(callback);
   }
 
+  /**
+   * Row Model State 3 after rowData(State 1) and allRows(State 2).
+   * rowsAfterGroup takes allRows, and if grouping, groups the data.
+   * If no grouping is done, then rowsAfterGroup will be identical to allRows.
+   * Use api.forEachNode() to access this structure.
+   * Iterates through each node (row) in the grid and calls the callback for each node.
+   */
   public forEachNode(callback: (rowNode: RowNode, index: number) => void) {
     this.rowModel.forEachNode(callback);
   }
 
+  /**
+   * Row Model State 4.
+   * rowsAfterFilter goes through rowsAfterGroup and filters the data.
+   * Use api.forEachNodeAfterFilter() to access this structure.
+   */
   public forEachNodeAfterFilter(
     callback: (rowNode: RowNode, index: number) => void,
   ) {
@@ -912,6 +941,11 @@ export class GridApi {
     this.clientSideRowModel.forEachNodeAfterFilter(callback);
   }
 
+  /**
+   * Row Model State 5.
+   * rowsAfterSort goes through rowsAfterFilter and sorts the data.
+   * Use api.forEachNodeAfterFilterAndSort() to access this structure.
+   */
   public forEachNodeAfterFilterAndSort(
     callback: (rowNode: RowNode, index: number) => void,
   ) {
@@ -1172,6 +1206,12 @@ export class GridApi {
     this.gridPanel.checkViewportAndScrolls();
   }
 
+  /**
+   * Call this API to have the grid clear all the row heights and work them all
+   * out again from scratch - if you provide a getRowHeight() callback, it will be called again for each row.
+   * The height is calculated once when the data is first given to the grid.
+   * If the data changes, or the width of a column changes, then you may require
+   * the grid to calculate the height again by calling api.resetRowHeights(). */
   public resetRowHeights() {
     if (_.exists(this.clientSideRowModel)) {
       this.clientSideRowModel.resetRowHeights();
@@ -1192,6 +1232,10 @@ export class GridApi {
     );
   }
 
+  /** When you have set the row height (potentially on many rows), you need to
+   * call api.onRowHeightChanged() to tell the grid to reposition the rows.
+   * 可以先多次调用rowNode.setRowHeight(height) 修改行高，最后调用本方法一次。
+   */
   public onRowHeightChanged() {
     if (this.clientSideRowModel) {
       this.clientSideRowModel.onRowHeightChanged();
@@ -1501,6 +1545,35 @@ export class GridApi {
     }
   }
 
+  /** @deprecated */
+  public updateRowData(
+    rowDataTransaction: RowDataTransaction,
+  ): RowNodeTransaction {
+    const message = `ag-Grid: as of v23.1, grid API
+      updateRowData(transaction) is now called applyTransaction(transaction).
+      updateRowData is deprecated and will be removed in a future major release.`;
+    _.doOnce(() => console.warn(message), 'updateRowData deprecated');
+
+    return this.applyTransaction(rowDataTransaction);
+  }
+
+  /** @deprecated */
+  public batchUpdateRowData(
+    rowDataTransaction: RowDataTransaction,
+    callback?: (res: RowNodeTransaction) => void,
+  ): void {
+    const message =
+      'ag-Grid: as of v23.1, grid API batchUpdateRowData(transaction, callback) is now called applyTransactionAsync(transaction, callback). batchUpdateRowData is deprecated and will be removed in a future major release.';
+    _.doOnce(() => console.warn(message), 'batchUpdateRowData deprecated');
+
+    this.applyTransactionAsync(rowDataTransaction, callback);
+  }
+
+  /** A transaction object contains the details of what rows should be added,
+   * removed and updated. applyTransaction(transaction) takes this transaction
+   * object and applies it to the grid's data.
+   * Use transactions for doing add, remove or update operations on a large number of rows that are infrequent.
+   */
   public applyTransaction(
     rowDataTransaction: RowDataTransaction,
   ): RowNodeTransaction {
@@ -1541,18 +1614,10 @@ export class GridApi {
     return res;
   }
 
-  /** @deprecated */
-  public updateRowData(
-    rowDataTransaction: RowDataTransaction,
-  ): RowNodeTransaction {
-    const message = `ag-Grid: as of v23.1, grid API
-      updateRowData(transaction) is now called applyTransaction(transaction).
-      updateRowData is deprecated and will be removed in a future major release.`;
-    _.doOnce(() => console.warn(message), 'updateRowData deprecated');
-
-    return this.applyTransaction(rowDataTransaction);
-  }
-
+  /** When you call applyTransactionAsync(), the grid will execute the update,
+   * along with any other updates you subsequently provide using applyTransactionAsync(), after 50ms.
+   * This allows grid to execute all the transactions in one batch which is more efficient.
+   */
   public applyTransactionAsync(
     rowDataTransaction: RowDataTransaction,
     callback?: (res: RowNodeTransaction) => void,
@@ -1564,18 +1629,6 @@ export class GridApi {
       return;
     }
     this.clientSideRowModel.batchUpdateRowData(rowDataTransaction, callback);
-  }
-
-  /** @deprecated */
-  public batchUpdateRowData(
-    rowDataTransaction: RowDataTransaction,
-    callback?: (res: RowNodeTransaction) => void,
-  ): void {
-    const message =
-      'ag-Grid: as of v23.1, grid API batchUpdateRowData(transaction, callback) is now called applyTransactionAsync(transaction, callback). batchUpdateRowData is deprecated and will be removed in a future major release.';
-    _.doOnce(() => console.warn(message), 'batchUpdateRowData deprecated');
-
-    this.applyTransactionAsync(rowDataTransaction, callback);
   }
 
   public insertItemsAtIndex(
@@ -1832,4 +1885,5 @@ export class GridApi {
   public paginationGoToPage(page: number): void {
     this.paginationProxy.goToPage(page);
   }
+}
 }

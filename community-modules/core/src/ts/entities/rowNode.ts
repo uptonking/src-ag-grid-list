@@ -229,7 +229,11 @@ export class RowNode implements IEventEmitter {
   private selected = false;
   private eventService: EventService;
 
-  /** 设置本rowNode对象的this.data属性，并触发dataChanged事件 */
+  /** 设置本rowNode对象的this.data属性，并触发dataChanged事件。
+   * Replaces the data on the rowNode. When complete, the grid will refresh
+   * the the entire rendered row if it is showing.
+   * 会自动触发视图更新，若要计算新数据的sort/filter/group，则需手动调用refreshClientSideRowModel。
+   * */
   public setData(data: any): void {
     const oldData = this.data;
 
@@ -247,7 +251,11 @@ export class RowNode implements IEventEmitter {
     this.dispatchLocalEvent(event);
   }
 
-  /** 设置本rowNode对象的this.data和this.id属性，并触发dataChanged事件 */
+  /** 设置本rowNode对象的this.data和this.id属性，并触发dataChanged事件。
+   * Replaces the data on the rowNode for the specified column.  When complete,
+   * the grid will refresh the rendered cell on the required row only.
+   * 会自动触发视图更新，若要计算新数据的sort/filter/group，则需手动调用refreshClientSideRowModel。
+   */
   public setDataAndId(data: any, id: string | undefined): void {
     const oldNode = _.exists(this.id) ? this.createDaemonNode() : null;
     const oldData = this.data;
@@ -265,6 +273,20 @@ export class RowNode implements IEventEmitter {
     );
 
     this.dispatchLocalEvent(event);
+  }
+
+  /** we also allow editing the value via the editors. when it is done via
+   * the editors, no 'cell changed' event gets fired, as it's assumed that
+   * the cell knows about the change given it's in charge of the editing.
+   * this method is for the client to call, so the cell listens for the change
+   * event, and also flashes the cell when the change occurs.
+   */
+  public setDataValue(colKey: string | Column, newValue: any): void {
+    const column = this.columnController.getPrimaryColumn(colKey);
+    const oldValue = this.valueService.getValue(column, this);
+
+    this.valueService.setValue(this, column, newValue);
+    this.dispatchCellChangedEvent(column, newValue, oldValue);
   }
 
   // when we are doing master / detail, the detail node is lazy created, but then kept around.
@@ -525,6 +547,9 @@ export class RowNode implements IEventEmitter {
     }
   }
 
+  /** 设置这一行的高度。The grid will resize the row but will NOT reposition the rows
+   * (i.e. if you make a row shorter, a space will appear between it and the next
+   * row - the next row will not be moved up).  */
   public setRowHeight(
     rowHeight: number | undefined | null,
     estimated = false,
@@ -608,19 +633,6 @@ export class RowNode implements IEventEmitter {
     if (this.eventService) {
       this.eventService.dispatchEvent(event);
     }
-  }
-
-  // we also allow editing the value via the editors. when it is done via
-  // the editors, no 'cell changed' event gets fired, as it's assumed that
-  // the cell knows about the change given it's in charge of the editing.
-  // this method is for the client to call, so the cell listens for the change
-  // event, and also flashes the cell when the change occurs.
-  public setDataValue(colKey: string | Column, newValue: any): void {
-    const column = this.columnController.getPrimaryColumn(colKey);
-    const oldValue = this.valueService.getValue(column, this);
-
-    this.valueService.setValue(this, column, newValue);
-    this.dispatchCellChangedEvent(column, newValue, oldValue);
   }
 
   public setGroupValue(colKey: string | Column, newValue: any): void {
