@@ -6,6 +6,9 @@ export interface RowBounds {
   rowIndex?: number;
 }
 
+/** The RowModel contains a list of RowNodes.
+ * The RowModel may have a list of all the RowNodes (ClientSideRowModel)
+ * or have a datasource where it can lazy-load RowNodes. */
 export interface IRowModel {
   /** Returns the rowNode at the given index. */
   getRow(index: number): RowNode | null;

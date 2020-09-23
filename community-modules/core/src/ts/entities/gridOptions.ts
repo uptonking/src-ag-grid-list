@@ -151,6 +151,7 @@ export interface GridOptions {
   suppressRowHoverHighlight?: boolean;
   suppressCellSelection?: boolean;
   suppressClearOnFillReduction?: boolean;
+  /** In Immutable Data Mode, Set to true to suppress sorting of un-sorted data to match original row data. */
   suppressMaintainUnsortedOrder?: boolean;
   /** 多次点击触发多次排序时, the default sorting order is  ascending -> descending -> none */
   sortingOrder?: (string | null)[];

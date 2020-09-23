@@ -63,7 +63,7 @@
 		"path": "$ROOTPATH$/community-modules/core/src/ts/entities/rowNode.ts",
 		"bookmarks": [
 			{
-				"line": 63,
+				"line": 65,
 				"column": 0,
 				"label": ""
 			}
@@ -103,7 +103,7 @@
 		"path": "$ROOTPATH$/community-modules/core/src/ts/rendering/rowRenderer.ts",
 		"bookmarks": [
 			{
-				"line": 493,
+				"line": 495,
 				"column": 10,
 				"label": ""
 			}

@@ -54,6 +54,8 @@ export interface RefreshViewParams {
 }
 
 /**
+ * The grid has exactly one RowRenderer instance. The RowRenderer contains a
+ * reference to the PaginationProxy where it asks for the rows one at a time for rendering.
  * 渲染所有行ui的BeanStub子类，注册各种事件监听器，监听rowModel的渲染与更新，
  * 提供了很多方法如redrawRows、onModelUpdated
  */

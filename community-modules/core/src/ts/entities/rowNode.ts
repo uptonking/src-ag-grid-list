@@ -60,6 +60,8 @@ export interface CellChangedEvent extends RowNodeEvent {
  * RowNode未标注为@Bean。
  * each row in the grid is represented by a RowNode object.
  * All events fired by the rowNode are synchronous.
+ * A RowNode has a reference to exactly one row data item (the client application provides the row data items).
+ * The RowNode has state information about the row item, such as whether it is selected and the height of it.
  */
 export class RowNode implements IEventEmitter {
   public static ID_PREFIX_ROW_GROUP = 'row-group-';
