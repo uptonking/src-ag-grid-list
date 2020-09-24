@@ -859,6 +859,7 @@ export class GridApi {
     this.gridPanel.showNoRowsOverlay();
   }
 
+  /** clear all overlays */
   public hideOverlay(): void {
     this.gridPanel.hideOverlay();
   }
