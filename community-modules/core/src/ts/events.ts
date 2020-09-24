@@ -63,11 +63,14 @@ export interface PinnedRowDataChangedEvent extends AgGridEvent {}
 
 export interface SelectionChangedEvent extends AgGridEvent {}
 
+/** Filter has changed and been applied by the grid. */
 export interface FilterChangedEvent extends AgGridEvent {
   afterDataChange?: boolean;
   afterFloatingFilter?: boolean;
 }
 
+/** Filter UI has changed but not necessarily applied. This is useful when
+ * using an apply button if you want to know if the filter changed but was not applied.*/
 export interface FilterModifiedEvent extends AgGridEvent {
   filterInstance: IFilterComp;
   column: Column;

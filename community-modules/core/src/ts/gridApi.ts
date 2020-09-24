@@ -82,12 +82,16 @@ export interface StartEditingCellParams {
 }
 
 export interface GetCellsParams {
+  /** specify rows, or all rows by default */
   rowNodes?: RowNode[];
+  /** specify columns, or all columns by default */
   columns?: (string | Column)[];
 }
 
 export interface RefreshCellsParams extends GetCellsParams {
+  /** skips change detection, force refresh everything */
   force?: boolean;
+  /** skips cell flashing, if cell flashing is enabled */
   suppressFlash?: boolean;
 }
 
@@ -465,6 +469,7 @@ export class GridApi {
     this.gridCore.refreshSideBar();
   }
 
+  /** Change detection will be used to refresh only cells whose display cell values are out of sync with the actual value */
   public refreshCells(params: RefreshCellsParams = {}): void {
     if (Array.isArray(params)) {
       // the old version of refreshCells() took an array of rowNodes for the first argument
@@ -476,10 +481,16 @@ export class GridApi {
     this.rowRenderer.refreshCells(params);
   }
 
+  /** explicitly flash cells to highlight data changes */
   public flashCells(params: FlashCellsParams = {}): void {
     this.rowRenderer.flashCells(params);
   }
 
+  /** Removes the rows from the DOM and draws them again from scratch.
+   * The cells are created again from scratch.
+   * No change detection is done. No refreshing of cells is done.
+   * redraws操作代价更高，应该尽可能使用refreshCells而不用redrawRows。
+   */
   public redrawRows(params: RedrawRowsParams = {}): void {
     if (params && params.rowNodes) {
       this.rowRenderer.redrawRows(params.rowNodes);
@@ -866,10 +877,12 @@ export class GridApi {
     return null;
   }
 
+  /** Returns an array of the selected rowNodes. */
   public getSelectedNodes(): RowNode[] {
     return this.selectionController.getSelectedNodes();
   }
 
+  /** Returns an array of data from the selected rows */
   public getSelectedRows(): any[] {
     return this.selectionController.getSelectedRows();
   }
@@ -1037,6 +1050,7 @@ export class GridApi {
     this.filterManager.setFilterModel(model);
   }
 
+  /** get the state of all filters */
   public getFilterModel() {
     return this.filterManager.getFilterModel();
   }
@@ -1505,6 +1519,8 @@ export class GridApi {
     this.rowRenderer.stopEditing(cancel);
   }
 
+  /** Starts editing the params cell.
+   * If another cell is editing, the editing will be stopped in that other cell. */
   public startEditingCell(params: StartEditingCellParams): void {
     const column = this.columnController.getGridColumn(params.colKey);
     if (!column) {
@@ -1573,6 +1589,7 @@ export class GridApi {
    * removed and updated. applyTransaction(transaction) takes this transaction
    * object and applies it to the grid's data.
    * Use transactions for doing add, remove or update operations on a large number of rows that are infrequent.
+   * 会触发change detection on all visible cells。
    */
   public applyTransaction(
     rowDataTransaction: RowDataTransaction,
@@ -1819,6 +1836,7 @@ export class GridApi {
     return this.getFirstDisplayedRow();
   }
 
+  /** Get the index of the first displayed row due to scrolling (includes invisible rendered rows in the buffer). */
   public getFirstDisplayedRow(): number {
     return this.rowRenderer.getFirstVirtualRenderedRow();
   }
@@ -1830,14 +1848,17 @@ export class GridApi {
     return this.getLastDisplayedRow();
   }
 
+  /** Get the index of the last displayed row due to scrolling (includes invisible rendered rows in the buffer). */
   public getLastDisplayedRow(): number {
     return this.rowRenderer.getLastVirtualRenderedRow();
   }
 
+  /** Returns the displayed rowNode at the given index */
   public getDisplayedRowAtIndex(index: number): RowNode {
     return this.rowModel.getRow(index);
   }
 
+  /** Returns the total number of displayed rows. */
   public getDisplayedRowCount(): number {
     return this.rowModel.getRowCount();
   }
@@ -1885,5 +1906,4 @@ export class GridApi {
   public paginationGoToPage(page: number): void {
     this.paginationProxy.goToPage(page);
   }
-}
 }

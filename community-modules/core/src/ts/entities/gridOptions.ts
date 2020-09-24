@@ -147,6 +147,7 @@ export interface GridOptions {
   toolPanelSuppressColumnExpandAll?: boolean;
   /** @deprecated */
   contractColumnSelection?: boolean;
+  /**  If true, rows won't be selected when clicked */
   suppressRowClickSelection?: boolean;
   suppressRowHoverHighlight?: boolean;
   suppressCellSelection?: boolean;
@@ -184,19 +185,26 @@ export interface GridOptions {
   /** @deprecated in v20, use colDef.filter = true instead */
   enableServerSideFilter?: boolean;
   enableGroupEdit?: boolean;
-  enterMovesDownAfterEdit?: boolean;
+  /** Set to true to have Enter key move focus to the cell below if not editing.
+   * The default is Enter key starts editing the currently focused cell. */
   enterMovesDown?: boolean;
+  /**  Set to true to have Enter key move focus to the cell below after Enter is pressed while editing.
+   * The default is editing will stop and focus will remain on the editing cell. */
+  enterMovesDownAfterEdit?: boolean;
   suppressMiddleClickScrolls?: boolean;
   preventDefaultOnContextMenu?: boolean;
   suppressPreventDefaultOnMouseWheel?: boolean;
   suppressScrollOnNewData?: boolean;
   suppressMenuHide?: boolean;
   singleClickEdit?: boolean;
+  /** set true to change the default so that neither single- nor double-click starts editing,
+   *  such as including a button in your cell renderer.
+   */
   suppressClickEdit?: boolean;
 
   /** Allows user to suppress certain keyboard events */
   suppressKeyboardEvent?: (params: SuppressKeyboardEventParams) => boolean;
-
+  /** set true if you want the grid to stop editing when focus leaves */
   stopEditingWhenGridLosesFocus?: boolean;
   debug?: boolean;
   icons?: any; // should be typed
@@ -215,7 +223,9 @@ export interface GridOptions {
   animateRows?: boolean;
   suppressColumnMoveAnimation?: boolean;
   suppressMovableColumns?: boolean;
+  /** When dragging a column out of the grid, eg when dragging a column from the grid to the group drop zone, the column will remain visible. */
   suppressDragLeaveHidesColumns?: boolean;
+  /**  When un-grouping, eg when clicking the 'x' on a column in the drop zone, the column will not be made visible. */
   suppressMakeColumnVisibleAfterUnGroup?: boolean;
   suppressParentsInRowNodes?: boolean;
   suppressFieldDotNotation?: boolean;
@@ -246,11 +256,15 @@ export interface GridOptions {
   rememberGroupStateWhenNewData?: boolean;
   viewportRowModelPageSize?: number;
   viewportRowModelBufferSize?: number;
+  /** set true to enable cell flashing on data changes for all columns */
   enableCellChangeFlash?: boolean;
   cellFlashDelay?: number;
   cellFadeDelay?: number;
+  /** to flash changes even when it's the result of a filter change */
   allowShowChangeAfterFilter?: boolean;
   quickFilterText?: string;
+  /** By default, the quick filter checks each column's value, including running value getters if present, every time the quick filter is executed.
+   * If your data set is large, set this true to enable the quick filter cache. */
   cacheQuickFilter?: boolean;
   aggFuncs?: { [key: string]: IAggFunc };
   suppressColumnVirtualisation?: boolean;
@@ -266,6 +280,7 @@ export interface GridOptions {
    * print: No scroll bars are used and the grid renders all rows and columns.
    */
   domLayout?: string;
+  /** set true to stop the change detection process firing when calling rowNode.setDataValue, api.applyTransaction */
   suppressChangeDetection?: boolean;
   aggregateOnlyChangedColumns?: boolean;
   valueCache?: boolean;
@@ -280,7 +295,10 @@ export interface GridOptions {
   allowDragFromColumnsToolPanel?: boolean;
   suppressMaxRenderedRowRestriction?: boolean;
   excludeChildrenWhenTreeDataFiltering?: boolean;
+  /** Undo/Redo feature is designed to be a recovery mechanism for user editing mistakes.
+   * Performing grid operations that change the row/column order, e.g. sorting, filtering and grouping, will clear the undo / redo stacks. */
   undoRedoCellEditing?: boolean;
+  /** default is 10. */
   undoRedoCellEditingLimit?: number;
 
   cacheOverflowSize?: number;
@@ -294,6 +312,7 @@ export interface GridOptions {
 
   pagination?: boolean;
   paginateChildRows?: boolean;
+  /** fullRow editing is for when you want all cells in the row to become editable at the same time.  */
   editType?: string;
   suppressTouch?: boolean;
   suppressAsyncEvents?: boolean;
@@ -365,8 +384,13 @@ export interface GridOptions {
   /** @deprecated slaveGrids, replace with alignedGrids */
   slaveGrids?: GridOptions[];
   alignedGrids?: GridOptions[];
+
+  /** 'single' will use single row selection, 'multiple' allows multiple rows to be selected. */
   rowSelection?: string;
+  /** @deprecated - rowDeselection is now true by default and should be suppressed by using suppressRowDeselection */
   rowDeselection?: boolean;
+  suppressRowDeselection?: boolean;
+  /** useful for touch devices where Ctrl and Shift clicking is not an option. */
   rowMultiSelectWithClick?: boolean;
   isRowSelectable?: IsRowSelectable;
   overlayLoadingTemplate?: string;
@@ -433,8 +457,11 @@ export interface GridOptions {
   createChartContainer?: (params: ChartRef) => void;
   fillOperation?: (params: FillOperationParams) => any;
 
+  /** External filtering allows you to mix your own 'outside of the grid' filtering with the grid's filtering.
+   * called exactly once every time the grid senses a filter change.
+   */
   isExternalFilterPresent?(): boolean;
-
+  /** called once for each row node in the grid. If you return false, the node will be excluded from the final set. */
   doesExternalFilterPass?(node: RowNode): boolean;
   /** Callback to set style for each row individually. */
   getRowStyle?: Function;

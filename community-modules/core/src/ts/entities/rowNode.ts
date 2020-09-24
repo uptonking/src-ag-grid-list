@@ -282,6 +282,7 @@ export class RowNode implements IEventEmitter {
    * the cell knows about the change given it's in charge of the editing.
    * this method is for the client to call, so the cell listens for the change
    * event, and also flashes the cell when the change occurs.
+   * 会触发change detection on all visible cells。
    */
   public setDataValue(colKey: string | Column, newValue: any): void {
     const column = this.columnController.getPrimaryColumn(colKey);

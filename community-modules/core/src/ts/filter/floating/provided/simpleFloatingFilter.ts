@@ -10,6 +10,10 @@ import { OptionsFactory } from '../../provided/optionsFactory';
 import { IScalarFilterParams } from '../../provided/scalarFilter';
 import { FilterChangedEvent } from '../../../events';
 
+/**
+ * Floating Filters are an additional row under the column headers where user
+ * will be able to see and optionally edit the filters associated with each column.
+ */
 export abstract class SimpleFloatingFilter
   extends Component
   implements IFloatingFilterComp {

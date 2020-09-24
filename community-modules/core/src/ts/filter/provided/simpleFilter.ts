@@ -75,7 +75,9 @@ const DEFAULT_TRANSLATIONS: ISimpleFilterTranslations = {
 };
 
 /**
- * Every filter with a dropdown where the user can specify a comparing type against the filter values
+ * Every filter with a dropdown where the user can specify a comparing type against the filter values.
+ * 常用filter的层次结构：
+ * 1 SimpleFilter, 1.1 TextFilter, 1.2 ScalarFilter, 1.2.1 NumberFilter, 1.2.2 DateFilter
  */
 export abstract class SimpleFilter<
   M extends ISimpleFilterModel

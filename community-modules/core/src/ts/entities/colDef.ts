@@ -34,7 +34,9 @@ export interface AbstractColDef {
   headerClass?: string | string[] | ((params: any) => string | string[]);
   /** CSS class for the header */
   toolPanelClass?: string | string[] | ((params: any) => string | string[]);
-  /** Expression or function to get the cells value. */
+  /** Expression or function to get the cells value.
+   * Use headerValueGetter instead of colDef.headerName to allow dynamic header names.
+   */
   headerValueGetter?: string | Function;
   /** Never set this, it is used internally by grid when doing in-grid pivoting */
   pivotKeys?: string[];
@@ -121,7 +123,9 @@ export interface ColDef extends AbstractColDef {
   /** The function used to calculate the tooltip of the object, tooltipField takes precedence*/
   tooltipValueGetter?: (params: ITooltipParams) => string;
 
-  /** Expression or function to get the cells value. */
+  /** Expression or function to get the cells value. All valueGetters must be pure functions.
+   * Instead of specifying colDef.field, you can use colDef.valueGetter to provide a function for getting cell values.
+   */
   valueGetter?: ((params: ValueGetterParams) => any) | string;
 
   /** Expression or function to get the cells value for filtering. */
@@ -163,10 +167,16 @@ export interface ColDef extends AbstractColDef {
   /** An object of css values. Or a function returning an object of css values. */
   cellStyle?: {} | ((params: any) => {});
 
-  /** A function for rendering a cell. */
+  /** A function for rendering a cell.
+   * undefined/null: Grid renders the value as a string.
+   * String: The name of a cell renderer component registered with the grid.
+   * Class: Provide your own cell renderer component directly without registering.
+   * Function: A function that returns either an HTML string or DOM element for display.
+   */
   cellRenderer?: { new (): ICellRendererComp } | ICellRendererFunc | string;
   cellRendererFramework?: any;
   cellRendererParams?: any;
+  /** to use different renderers for different rows in the same column */
   cellRendererSelector?: (
     params: ICellRendererParams,
   ) => ComponentSelectorResult;
@@ -175,6 +185,7 @@ export interface ColDef extends AbstractColDef {
   cellEditor?: { new (): ICellEditorComp } | string;
   cellEditorFramework?: any;
   cellEditorParams?: any;
+  /** to use different editors for different rows in the same column.  */
   cellEditorSelector?: (params: ICellEditorParams) => ComponentSelectorResult;
 
   /** A function for rendering a pinned row cell. */
@@ -185,12 +196,16 @@ export interface ColDef extends AbstractColDef {
   pinnedRowCellRendererFramework?: any;
   pinnedRowCellRendererParams?: any;
 
-  /** A function to format a value, should return a string. Not used for CSV export or copy to clipboard, only for UI cell rendering. */
+  /** A function to format a value, should return a string. Not used for CSV export or copy to clipboard, only for UI cell rendering.
+   *  value formatters are for text formatting and cell renderers are for more complex logic.
+   */
   valueFormatter?: ((params: ValueFormatterParams) => string) | string;
   /** A function to format a pinned row value, should return a string. Not used for CSV export or copy to clipboard, only for UI cell rendering. */
   pinnedRowValueFormatter?: ((params: ValueFormatterParams) => string) | string;
 
-  /** Gets called after editing, converts the value in the cell. */
+  /** Gets called after editing, converts the value in the cell.
+   * After editing cells in the grid, you can use this to parse the value before inserting it into your data.
+   */
   valueParser?: ((params: ValueParserParams) => any) | string;
 
   /** Name of function to use for aggregation. One of [sum,min,max,first,last] or a function. */
@@ -200,7 +215,9 @@ export interface ColDef extends AbstractColDef {
    * Can be eg ['sum','avg']. This will restrict what the GUI allows to select only.*/
   allowedAggFuncs?: string[];
 
-  /** To group by this column by default, either provide an index (eg rowGroupIndex=1), or set rowGroup=true. */
+  /** To group by this column by default, either provide an index (eg rowGroupIndex=1), or set rowGroup=true.
+   * To explicitly set the order of the grouping and not depend on the column order, use rowGroupIndex instead of rowGroup
+   */
   rowGroupIndex?: number;
   rowGroup?: boolean;
 
@@ -220,7 +237,8 @@ export interface ColDef extends AbstractColDef {
     isInverted: boolean,
   ) => number;
 
-  /** Comparator for values, used by renderer to know if values have changed. Cells who's values have not changed don't get refreshed. */
+  /** Comparator for values, used by renderer to know if values have changed.
+   * Cells who's values have not changed don't get refreshed. 默认使用===判断相等。*/
   equals?: (valueA: any, valueB: any) => boolean;
 
   /** Comparator for ordering the pivot columns */
@@ -396,7 +414,7 @@ export interface ColDef extends AbstractColDef {
   floatingFilterComponent?: string | { new (): IFloatingFilterComp };
   floatingFilterComponentParams?: any;
   floatingFilterComponentFramework?: any;
-
+  /** supporting reference data，另一种实现方式是使用valueFormatter(将key转换成显示值)和valueParser(将显示值转换成key) */
   refData?: { [key: string]: string };
 
   /** Defines the column data type used when charting, i.e. 'category' | 'series' | 'excluded' | undefined **/
