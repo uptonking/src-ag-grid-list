@@ -5,8 +5,8 @@
 ## quickstart
 
 ``` shell
-yarn 
-yarn run demo
+npm i 
+npm run demo
 ```
 
 - open http://localhost:8999/

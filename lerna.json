@@ -13,7 +13,5 @@
       "npmClientArgs": ["--no-package-lock"]
     }
   },
-  "version": "23.2.1",
-  "npmClient": "yarn",
-  "useWorkspaces": true
+  "version": "23.2.1"
 }

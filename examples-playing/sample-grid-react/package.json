@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "build-1": "npm run build:types && npm run build:js",
-    "build-es": "yarn run clean && webpack --config ./config/webpack.config.demo.js",
+    "build-es": "npm run clean && webpack --config ./config/webpack.config.demo.js",
     "build-ts": "babel src --out-dir lib --watch",
     "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
     "build:types": "tsc --emitDeclarationOnly",
@@ -24,7 +24,7 @@
     "demo-vanilla": "webpack-cli serve --hot --config ./config/webpack.config.vanilla.js",
     "lint": "eslint src --ext .ts,.tsx --fix -o eslint-log.log",
     "formatter": "prettier --config ./.prettierrc.js --loglevel log --write '**/*.{ts,tsx,js,jsx,json,css}'",
-    "start": "yarn run demo",
+    "start": "npm run demo",
     "storybook": "start-storybook -p 8999 -c .storybook",
     "test": "jest",
     "type-check": "tsc --noEmit",

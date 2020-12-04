@@ -22,7 +22,7 @@
   "main": "./lib/main.js",
   "typings": "./main.d.ts",
   "scripts": {
-    "build-es-1": "yarn run clean && gulp tsc",
+    "build-es-1": "npm run clean && gulp tsc",
     "build-1": "gulp && npm run hash",
     "clean": "rimraf -rf lib bundles",
     "cypress": "cypress run --spec 'cypress/integration/**/*spec.js'",

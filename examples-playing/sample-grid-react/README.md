@@ -6,7 +6,7 @@
 
 ``` shell
 yarn 
-yarn run demo
+npm run demo
 ```
 
 - open http://localhost:8999/
