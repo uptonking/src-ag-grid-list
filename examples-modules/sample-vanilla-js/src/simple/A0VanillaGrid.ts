@@ -16,7 +16,7 @@ export class SimpleGrid {
       debug: true,
     };
 
-    let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#app');
+    const eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#root');
     // console.log('==constructor in SimpleGrid');
 
     new Grid(eGridDiv, this.gridOptions);

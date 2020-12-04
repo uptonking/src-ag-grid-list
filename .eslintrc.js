@@ -24,7 +24,7 @@ module.exports = {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
   },
-  plugins: ['react', 'react-hooks', '@typescript-eslint', 'prettier'],
+  plugins: ['react', 'react-hooks', '@typescript-eslint'],
   // ESLint extends configurations recursively
   extends: [
     'alloy',
@@ -33,10 +33,6 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier',
-    'prettier/@typescript-eslint',
-    'prettier/babel',
-    'prettier/react',
   ],
   // 自定义规则，可以覆盖掉extends的配置,0-off,1-warn,2-error
   rules: {
@@ -58,12 +54,16 @@ module.exports = {
     '@typescript-eslint/no-empty-function': 1,
     '@typescript-eslint/no-non-null-assertion': 1,
     '@typescript-eslint/no-invalid-this': 1,
-    '@typescript-eslint/interface-name-prefix': 1,
+    '@typescript-eslint/no-var-requires': 1,
+    '@typescript-eslint/no-require-imports': 1,
+    '@typescript-eslint/no-duplicate-imports': 1,
+    // '@typescript-eslint/interface-name-prefix': 1,
     '@typescript-eslint/explicit-function-return-type': 1,
     '@typescript-eslint/explicit-member-accessibility': 1,
     '@typescript-eslint/member-ordering': 0,
     '@typescript-eslint/consistent-type-definitions': 1,
     '@typescript-eslint/prefer-for-of': 0,
-    'prettier/prettier': 1,
+    '@typescript-eslint/consistent-type-assertions': 1,
+    '@typescript-eslint/ban-types': 1,
   },
 };

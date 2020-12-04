@@ -1,5 +1,3 @@
-
-
 ![alt text](./github-banner.png "Logo Title Text 1")
 
 [![CDNJS](https://img.shields.io/cdnjs/v/ag-grid.svg)](https://cdnjs.com/libraries/ag-grid)
@@ -9,11 +7,12 @@
 ag-Grid
 ------
 
+- `@ag-grid-community/core`: minimal plugins, include ClientSideRowModel
+
 ag-Grid is a fully-featured and highly customizable JavaScript data grid.
 It delivers [outstanding performance](https://www.ag-grid.com/example.php?utm_source=ag-grid-readme&utm_medium=repository&utm_campaign=github#/performance/1), has no 3rd party dependencies and [integrates smoothly with all major JavaScript frameworks](https://www.ag-grid.com/javascript-grid-getting-started?utm_source=ag-grid-readme&utm_medium=repository&utm_campaign=github). Here's how our grid looks like with multiple filters and grouping enabled:
 
 ![alt text](./github-grid-demo.jpg "Logo Title Text 1")
-
 
 Features
 --------------
@@ -53,6 +52,7 @@ Check out [developers documentation](https://www.ag-grid.com/documentation-main/
 
 Looking for a framework specific solution?
 --------------
+
 * [Get Started with AngularJS](https://www.ag-grid.com/angular-grid?utm_source=ag-grid-readme&utm_medium=repository&utm_campaign=github)
 * [Get Started with Angular](https://www.ag-grid.com/angular-grid?utm_source=ag-grid-readme&utm_medium=repository&utm_campaign=github)
 * [Get Started with React](https://www.ag-grid.com/react-grid?utm_source=ag-grid-readme&utm_medium=repository&utm_campaign=github)
@@ -69,7 +69,6 @@ Usage Overview
 ### Add a placeholder to HTML
 
     <div id="myGrid" style="height: 150px;width: 600px" class="ag-theme-balham"></div>
-
 
 #### Import the grid and styles
 
@@ -103,7 +102,6 @@ For more information on how to integrate the grid into your project see [TypeScr
 Issue Reporting
 ----------
 If you have found a bug, please report them at this repository `issues` section. If you're using Enterprise version please use the private ticketing system to do that. For more information on support check out our [dedicated page](https://www.ag-grid.com/support.php?utm_source=ag-grid-readme&utm_medium=repository&utm_campaign=github).
-
 
 Asking Questions
 -------------

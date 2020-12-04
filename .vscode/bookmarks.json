@@ -128,5 +128,15 @@
 				"label": ""
 			}
 		]
+	},
+	{
+		"path": "$ROOTPATH$/community-modules/core/src/ts/gridCore.ts",
+		"bookmarks": [
+			{
+				"line": 183,
+				"column": 19,
+				"label": ""
+			}
+		]
 	}
 ]

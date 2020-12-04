@@ -81,7 +81,7 @@ export interface ColumnState {
   hide?: boolean;
   /** sort applied to the columns */
   sort?: boolean;
-  /** the order of the sort, if sorting by many columns*/
+  /** the order of the sort, if sorting by many columns */
   sortIndex?: number;
   /** set if column is pinned */
   pinned?: boolean | string | 'left' | 'right';

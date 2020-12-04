@@ -4,11 +4,11 @@
 
 -[ ] 闪烁感
 
-## to-do
+## doing
 
--[ ] add unit tests with jest
+## later
 
-## to-later
+- add unit tests with jest
 
 - migrate to hooks
 

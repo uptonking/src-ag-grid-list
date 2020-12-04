@@ -181,7 +181,7 @@ export class GridCore extends ManagedFocusComponent {
       : '';
 
     // ag-grid-comp标签之后会被创建成组件对象
-    const template = `<div ref="eRootWrapper" class="ag-root-wrapper">
+    const template = `<div idx='aaaaa' ref="eRootWrapper" class="ag-root-wrapper">
                 ${dropZones}
                 <div ref="rootWrapperBody" class="ag-root-wrapper-body" >
                     <ag-grid-comp ref="gridPanel"></ag-grid-comp>

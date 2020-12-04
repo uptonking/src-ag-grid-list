@@ -12,7 +12,7 @@ let isIOS: boolean;
 
 export function isBrowserIE(): boolean {
   if (isIE === undefined) {
-    isIE = /*@cc_on!@*/ false || !!(document as any).documentMode; // At least IE6
+    isIE = /* @cc_on!@ */ false || !!(document as any).documentMode; // At least IE6
   }
 
   return isIE;
@@ -154,7 +154,7 @@ export function getScrollbarWidth() {
   div.style.width = div.style.height = '100px';
   div.style.opacity = '0';
   div.style.overflow = 'scroll';
-  div.style.msOverflowStyle = 'scrollbar'; // needed for WinJS apps
+  // div.style.msOverflowStyle = 'scrollbar'; // needed for WinJS apps
   div.style.position = 'absolute';
 
   body.appendChild(div);
@@ -174,7 +174,7 @@ export function hasOverflowScrolling(): boolean {
   const prefixes: string[] = ['webkit', 'moz', 'o', 'ms'];
   const div: HTMLElement = document.createElement('div');
   const body: HTMLBodyElement = document.getElementsByTagName('body')[0];
-  let found: boolean = false;
+  let found = false;
   let p: string;
 
   body.appendChild(div);

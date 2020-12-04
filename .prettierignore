@@ -1,7 +1,10 @@
 # ignore files for prettier
 
-*.md
 
 dist/
 lib/
 bundles/
+
+LICENSE.txt
+*.md
+*.mdx
