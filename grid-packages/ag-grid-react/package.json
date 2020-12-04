@@ -87,7 +87,7 @@
     ]
   },
   "dependencies": {
-    "prop-types": "^15.6.2"
+    "prop-types": "15.7.2"
   },
   "devDependencies": {
     "@ag-grid-community/react": "23.2.1",

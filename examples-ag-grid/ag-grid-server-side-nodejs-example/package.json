@@ -1,0 +1,44 @@
+{
+  "name": "ag-grid-server-side-demo",
+  "version": "1.0.0",
+  "description": "A simple demo app showing how to perform server-side operations using ag-Grid with node.js and MySQL.",
+  "main": "index.js",
+  "scripts": {
+    "start": "babel-node ./server/server.js",
+    "dev": "nodemon --exec babel-node ./server/server.js"
+  },
+  "keywords": [],
+  "author": "Robert Clarke",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^8.2.2",
+    "babel-preset-env": "^1.6.1",
+    "webpack": "^5.9.0",
+    "webpack-cli": "^4.2.0",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.6.3",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-register": "^6.26.0",
+    "css-loader": "^5.0.1",
+    "html-webpack-plugin": "^4.5.0",
+    "node-sass": "^4.14.1",
+    "nodemon": "^2.0.4",
+    "sass-loader": "^10.1.0",
+    "style-loader": "^2.0.0",
+    "webpack-dev-middleware": "^3.7.2",
+    "webpack-livereload-plugin": "^2.3.0"
+  },
+  "dependencies": {
+    "ag-grid-community": "23.2.1",
+    "ag-grid-enterprise": "23.2.1",
+    "express": "^4.17.1",
+    "body-parser": "^1.19.0",
+    "mysql": "2.18.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ag-grid-server-side-demo"
+  }
+}

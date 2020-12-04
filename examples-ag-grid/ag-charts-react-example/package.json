@@ -1,0 +1,40 @@
+{
+  "name": "ag-charts-react-example",
+  "version": "1.2.0",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build && npm run hash",
+    "hash": "sh ./hashDirectory.sh > .hash",
+    "test": "CI=true react-scripts test --passWithNoTests",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "ag-charts-community": "~1.2.0",
+    "ag-charts-react": "1.2.0",
+    "@testing-library/jest-dom": "^5.11.6",
+    "@testing-library/react": "^11.2.2",
+    "@testing-library/user-event": "^7.1.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-scripts": "^3.4.0"
+  },
+  "resolutions": {
+    "react-dev-utils": "10.1.0"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

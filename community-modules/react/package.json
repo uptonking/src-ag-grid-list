@@ -88,7 +88,7 @@
     ]
   },
   "dependencies": {
-    "prop-types": "^15.6.2"
+    "prop-types": "15.7.2"
   },
   "devDependencies": {
     "@ag-grid-community/client-side-row-model": "23.2.1",

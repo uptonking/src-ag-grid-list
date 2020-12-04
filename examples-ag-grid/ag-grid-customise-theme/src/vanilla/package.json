@@ -1,0 +1,27 @@
+{
+    "name": "custom-ag",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "webpack-dev-server --host=0.0.0.0"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "ag-grid-community": "latest",
+        "ag-grid-enterprise": "latest",
+        "@fortawesome/fontawesome-free": "^5.13.0",
+        "node-sass": "^4.14.1",
+        "sass-loader": "^8.0.2",
+        "webpack-cli": "^3.3.11",
+        "css-loader": "^3.5.3",
+        "html-loader": "^1.1.0",
+        "html-webpack-plugin": "^4.3.0",
+        "resolve-url-loader": "^3.1.1",
+        "style-loader": "^1.2.1",
+        "url-loader": "^4.1.0",
+        "webpack": "4.43.0",
+        "webpack-dev-server": "^3.11.0"
+    }
+}
