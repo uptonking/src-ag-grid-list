@@ -1,4 +1,4 @@
-# sample-grid-vanilla-js
+# sample-grid-vanilla
 
 > quickstart boilerplate for ag-grid using es6
 

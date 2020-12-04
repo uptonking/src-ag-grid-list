@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { covidTill0721 } from 'sample-grid-vanilla-js';
+import { covidTill0721 } from 'sample-grid-vanilla';
 
 export const App: FC = () => {
   return (
