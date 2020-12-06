@@ -15,7 +15,7 @@
     "grid-packages/*",
     "examples-charts/*",
     "examples-grid/*",
-    "examples-playing/*",
+    "examples-playground/*",
     "examples-ag-grid/*"
   ],
   "scripts": {
