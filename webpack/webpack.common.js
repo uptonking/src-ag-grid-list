@@ -43,7 +43,7 @@ module.exports = {
               // when node-sass and sass were installed，by default sass-loader prefers sass.
               implementation: require('sass'),
               sassOptions: {
-                fiber: require('fibers'),
+                // fiber: require('fibers'),
               },
             },
           },

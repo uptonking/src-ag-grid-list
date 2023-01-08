@@ -23,9 +23,9 @@
     "babel-register": "^6.26.0",
     "css-loader": "^5.0.1",
     "html-webpack-plugin": "^4.5.0",
-    "node-sass": "^4.14.1",
+    "sass": "^1.57.1",
     "nodemon": "^2.0.4",
-    "sass-loader": "^10.1.0",
+    "sass-loader": "^13.2.0",
     "style-loader": "^2.0.0",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-livereload-plugin": "^2.3.0"

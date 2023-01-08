@@ -54,7 +54,6 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.16",
-    "canvas": "2.6.1",
     "eslint": "7.14.0",
     "eslint-plugin-compat": "^3.5.1",
     "eslint-plugin-ie11": "^1.0.0",

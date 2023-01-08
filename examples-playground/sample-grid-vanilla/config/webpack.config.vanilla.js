@@ -27,7 +27,7 @@ module.exports = {
               // Prefer `dart-sass`
               implementation: require('sass'),
               sassOptions: {
-                fiber: require('fibers'),
+                // fiber: require('fibers'),
               },
             },
           },
