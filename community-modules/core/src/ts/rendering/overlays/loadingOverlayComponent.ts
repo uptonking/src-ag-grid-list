@@ -10,7 +10,8 @@ export interface ILoadingOverlayComp
 
 export class LoadingOverlayComponent
   extends Component
-  implements ILoadingOverlayComp {
+  implements ILoadingOverlayComp
+{
   private static DEFAULT_LOADING_OVERLAY_TEMPLATE =
     '<span class="ag-overlay-loading-center">[LOADING...]</span>';
 

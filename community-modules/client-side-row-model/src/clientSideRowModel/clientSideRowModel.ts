@@ -53,8 +53,10 @@ export interface RowNodeMap {
  * 最常用的rowModel，仅在浏览器客户端进行计算，不涉及服务端数据通信。
  */
 @Bean('rowModel')
-export class ClientSideRowModel extends BeanStub
-  implements IClientSideRowModel {
+export class ClientSideRowModel
+  extends BeanStub
+  implements IClientSideRowModel
+{
   @Autowired('gridOptionsWrapper')
   private gridOptionsWrapper: GridOptionsWrapper;
 
@@ -210,9 +212,8 @@ export class ClientSideRowModel extends BeanStub
       for (let rowIndex = firstRow; rowIndex <= lastRow; rowIndex++) {
         const rowNode = this.getRow(rowIndex);
         if (rowNode.rowHeightEstimated) {
-          const rowHeight = this.gridOptionsWrapper.getRowHeightForNode(
-            rowNode,
-          );
+          const rowHeight =
+            this.gridOptionsWrapper.getRowHeightForNode(rowNode);
           rowNode.setRowHeight(rowHeight.height);
           atLeastOneChange = true;
           res = true;
@@ -498,9 +499,9 @@ export class ClientSideRowModel extends BeanStub
 
   /**
    * 重新计算数据，依次进行 group > filter > pivot > aggregate > sort,
-   * 然后触发 modelUpdated 事件，从而触发数据行重渲染。
-   * 处理数据是基于无break的switch分支，实现从某一步开始一直执行到结束的流程。
-   * 本方法是columnEverythingChanged事件对应的事件处理函数之一
+   * - 然后触发 modelUpdated 事件，从而触发数据行重渲染。
+   * - 处理数据是基于无break的switch分支，实现从某一步开始一直执行到结束的流程。
+   * - 本方法是columnEverythingChanged事件对应的事件处理函数之一
    * @param params 更新参数
    */
   public refreshModel(params: RefreshModelParams): void {
@@ -546,6 +547,7 @@ export class ClientSideRowModel extends BeanStub
       // console.log('sort = ' + (new Date().getTime() - start));
       case constants.STEP_MAP:
         // start = new Date().getTime();
+        // 计算要显示的行对应的rowNode的集合
         this.doRowsToDisplay();
       // console.log('rowsToDisplay = ' + (new Date().getTime() - start));
     }
@@ -614,7 +616,8 @@ export class ClientSideRowModel extends BeanStub
 
     const result: RowNode[] = [];
 
-    const groupsSelectChildren = this.gridOptionsWrapper.isGroupSelectsChildren();
+    const groupsSelectChildren =
+      this.gridOptionsWrapper.isGroupSelectsChildren();
 
     this.forEachNodeAfterFilterAndSort((rowNode) => {
       const lookingForLastRow = firstRowHit && !lastRowHit;
@@ -1030,7 +1033,8 @@ export class ClientSideRowModel extends BeanStub
   ): void {
     if (!this.rowDataTransactionBatch) {
       this.rowDataTransactionBatch = [];
-      const waitMillis = this.gridOptionsWrapper.getAsyncTransactionWaitMillis();
+      const waitMillis =
+        this.gridOptionsWrapper.getAsyncTransactionWaitMillis();
       window.setTimeout(() => {
         this.executeBatchUpdateRowData();
         this.rowDataTransactionBatch = null;

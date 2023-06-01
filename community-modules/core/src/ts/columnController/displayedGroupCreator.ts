@@ -120,9 +120,9 @@ export class DisplayedGroupCreator extends BeanStub {
   }
 
   // returns back a 2d map of ColumnGroup as follows: groupId -> instanceId -> ColumnGroup
-  private mapOldGroupsById(
-    displayedGroups: ColumnGroupChild[],
-  ): { [uniqueId: string]: ColumnGroup } {
+  private mapOldGroupsById(displayedGroups: ColumnGroupChild[]): {
+    [uniqueId: string]: ColumnGroup;
+  } {
     const result: { [uniqueId: string]: ColumnGroup } = {};
 
     const recursive = (columnsOrGroups: ColumnGroupChild[]) => {

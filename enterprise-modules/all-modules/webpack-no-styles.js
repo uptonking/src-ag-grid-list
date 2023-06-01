@@ -27,22 +27,26 @@ require('./dist/es6/main');
 
 // add in exports for ag-Grid-Enterprise
 var agGridEnterprise = require('./dist/es6/main');
-Object.keys(agGridEnterprise).forEach(function(key) {
-    exports[key] = agGridEnterprise[key];
+Object.keys(agGridEnterprise).forEach(function (key) {
+  exports[key] = agGridEnterprise[key];
 });
 
 // also add in in exports for ag-Grid-Standard, as it's webpack, we want both packed up
 var agGrid = require('@ag-grid-community/all-modules');
-Object.keys(agGrid).forEach(function(key) {
-    exports[key] = agGrid[key];
+Object.keys(agGrid).forEach(function (key) {
+  exports[key] = agGrid[key];
 });
-agGrid.ModuleRegistry.register(ClientSideRowModelModule.ClientSideRowModelModule);
+agGrid.ModuleRegistry.register(
+  ClientSideRowModelModule.ClientSideRowModelModule,
+);
 agGrid.ModuleRegistry.register(CsvExportModule.CsvExportModule);
 agGrid.ModuleRegistry.register(InfiniteRowModelModule.InfiniteRowModelModule);
 agGrid.ModuleRegistry.register(GridChartsModule.GridChartsModule);
 agGrid.ModuleRegistry.register(ClipboardModule.ClipboardModule);
 agGrid.ModuleRegistry.register(ColumnsToolPanelModule.ColumnsToolPanelModule);
-agGrid.ModuleRegistry.register(DateTimeCellEditorModule.DateTimeCellEditorModule);
+agGrid.ModuleRegistry.register(
+  DateTimeCellEditorModule.DateTimeCellEditorModule,
+);
 agGrid.ModuleRegistry.register(ExcelExportModule.ExcelExportModule);
 agGrid.ModuleRegistry.register(FiltersToolPanelModule.FiltersToolPanelModule);
 agGrid.ModuleRegistry.register(MasterDetailModule.MasterDetailModule);
@@ -50,7 +54,9 @@ agGrid.ModuleRegistry.register(MenuModule.MenuModule);
 agGrid.ModuleRegistry.register(RangeSelectionModule.RangeSelectionModule);
 agGrid.ModuleRegistry.register(RichSelectModule.RichSelectModule);
 agGrid.ModuleRegistry.register(RowGroupingModule.RowGroupingModule);
-agGrid.ModuleRegistry.register(ServerSideRowModelModule.ServerSideRowModelModule);
+agGrid.ModuleRegistry.register(
+  ServerSideRowModelModule.ServerSideRowModelModule,
+);
 agGrid.ModuleRegistry.register(SetFilterModule.SetFilterModule);
 agGrid.ModuleRegistry.register(SideBarModule.SideBarModule);
 agGrid.ModuleRegistry.register(StatusBarModule.StatusBarModule);

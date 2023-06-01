@@ -301,9 +301,8 @@ export class SortService extends BeanStub {
         }
         const displayingGroupKey: string = showRowGroup as string;
 
-        const rowGroupColumn = this.columnController.getPrimaryColumn(
-          displayingGroupKey,
-        );
+        const rowGroupColumn =
+          this.columnController.getPrimaryColumn(displayingGroupKey);
 
         const thisRowNodeMatches =
           rowGroupColumn === childRowNode.rowGroupColumn;
@@ -316,9 +315,8 @@ export class SortService extends BeanStub {
           childRowNode.setGroupValue(groupDisplayCol.getId(), null);
         } else {
           // if doing a set operation, we set only where the pull down is to occur
-          const parentToStealFrom = childRowNode.getFirstChildOfFirstChild(
-            rowGroupColumn,
-          );
+          const parentToStealFrom =
+            childRowNode.getFirstChildOfFirstChild(rowGroupColumn);
           if (parentToStealFrom) {
             childRowNode.setGroupValue(
               groupDisplayCol.getId(),

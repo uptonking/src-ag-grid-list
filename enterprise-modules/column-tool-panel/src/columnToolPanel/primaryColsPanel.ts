@@ -1,124 +1,157 @@
 import {
-    ColDef,
-    ColGroupDef,
-    ToolPanelColumnCompParams,
-    RefSelector,
-    IPrimaryColsPanel,
-    ManagedFocusComponent,
-    _
-} from "@ag-grid-community/core";
-import { PrimaryColsListPanel } from "./primaryColsListPanel";
-import { PrimaryColsHeaderPanel } from "./primaryColsHeaderPanel";
+  ColDef,
+  ColGroupDef,
+  ToolPanelColumnCompParams,
+  RefSelector,
+  IPrimaryColsPanel,
+  ManagedFocusComponent,
+  _,
+} from '@ag-grid-community/core';
+import { PrimaryColsListPanel } from './primaryColsListPanel';
+import { PrimaryColsHeaderPanel } from './primaryColsHeaderPanel';
 
 export interface BaseColumnItem {
-    getDisplayName(): string | null;
-    onSelectAllChanged(value: boolean): void;
-    isSelected(): boolean;
-    isSelectable(): boolean;
-    isExpandable(): boolean;
-    setExpanded(value: boolean): void;
+  getDisplayName(): string | null;
+  onSelectAllChanged(value: boolean): void;
+  isSelected(): boolean;
+  isSelectable(): boolean;
+  isExpandable(): boolean;
+  setExpanded(value: boolean): void;
 }
 
-export class PrimaryColsPanel extends ManagedFocusComponent implements IPrimaryColsPanel {
-
-    private static TEMPLATE = /* html */
-        `<div class="ag-column-select">
+export class PrimaryColsPanel
+  extends ManagedFocusComponent
+  implements IPrimaryColsPanel
+{
+  private static TEMPLATE /* html */ = `<div class="ag-column-select">
             <ag-primary-cols-header ref="primaryColsHeaderPanel"></ag-primary-cols-header>
             <ag-primary-cols-list ref="primaryColsListPanel"></ag-primary-cols-list>
         </div>`;
 
-    @RefSelector('primaryColsHeaderPanel')
-    private primaryColsHeaderPanel: PrimaryColsHeaderPanel;
+  @RefSelector('primaryColsHeaderPanel')
+  private primaryColsHeaderPanel: PrimaryColsHeaderPanel;
 
-    @RefSelector('primaryColsListPanel')
-    private primaryColsListPanel: PrimaryColsListPanel;
+  @RefSelector('primaryColsListPanel')
+  private primaryColsListPanel: PrimaryColsListPanel;
 
-    private allowDragging: boolean;
-    private params: ToolPanelColumnCompParams;
+  private allowDragging: boolean;
+  private params: ToolPanelColumnCompParams;
 
-    // we allow dragging in the toolPanel, but not when this component appears in the column menu
-    public init(allowDragging: boolean, params: ToolPanelColumnCompParams): void {
-        this.setTemplate(PrimaryColsPanel.TEMPLATE);
-        this.allowDragging = allowDragging;
-        this.params = params;
+  // we allow dragging in the toolPanel, but not when this component appears in the column menu
+  public init(allowDragging: boolean, params: ToolPanelColumnCompParams): void {
+    this.setTemplate(PrimaryColsPanel.TEMPLATE);
+    this.allowDragging = allowDragging;
+    this.params = params;
 
-        this.primaryColsHeaderPanel.init(this.params);
+    this.primaryColsHeaderPanel.init(this.params);
 
-        const hideFilter = this.params.suppressColumnFilter;
-        const hideSelect = this.params.suppressColumnSelectAll;
-        const hideExpand = this.params.suppressColumnExpandAll;
+    const hideFilter = this.params.suppressColumnFilter;
+    const hideSelect = this.params.suppressColumnSelectAll;
+    const hideExpand = this.params.suppressColumnExpandAll;
 
-        if (hideExpand && hideFilter && hideSelect) {
-            this.primaryColsHeaderPanel.setDisplayed(false);
-        }
-
-        this.addManagedListener(this.primaryColsListPanel, 'groupExpanded', this.onGroupExpanded.bind(this));
-        this.addManagedListener(this.primaryColsListPanel, 'selectionChanged', this.onSelectionChange.bind(this));
-
-        this.primaryColsListPanel.init(this.params, this.allowDragging);
-
-        this.addManagedListener(this.primaryColsHeaderPanel, 'expandAll', this.onExpandAll.bind(this));
-        this.addManagedListener(this.primaryColsHeaderPanel, 'collapseAll', this.onCollapseAll.bind(this));
-        this.addManagedListener(this.primaryColsHeaderPanel, 'selectAll', this.onSelectAll.bind(this));
-        this.addManagedListener(this.primaryColsHeaderPanel, 'unselectAll', this.onUnselectAll.bind(this));
-        this.addManagedListener(this.primaryColsHeaderPanel, 'filterChanged', this.onFilterChanged.bind(this));
-        this.wireFocusManagement();
+    if (hideExpand && hideFilter && hideSelect) {
+      this.primaryColsHeaderPanel.setDisplayed(false);
     }
 
-    protected isFocusableContainer(): boolean {
-        return true;
-    }
+    this.addManagedListener(
+      this.primaryColsListPanel,
+      'groupExpanded',
+      this.onGroupExpanded.bind(this),
+    );
+    this.addManagedListener(
+      this.primaryColsListPanel,
+      'selectionChanged',
+      this.onSelectionChange.bind(this),
+    );
 
-    protected onTabKeyDown(e: KeyboardEvent): void {
-        const nextEl = this.focusController.findNextFocusableElement(this.getFocusableElement(), false, e.shiftKey);
+    this.primaryColsListPanel.init(this.params, this.allowDragging);
 
-        if (nextEl) {
-            e.preventDefault();
-            nextEl.focus();
-        }
-    }
+    this.addManagedListener(
+      this.primaryColsHeaderPanel,
+      'expandAll',
+      this.onExpandAll.bind(this),
+    );
+    this.addManagedListener(
+      this.primaryColsHeaderPanel,
+      'collapseAll',
+      this.onCollapseAll.bind(this),
+    );
+    this.addManagedListener(
+      this.primaryColsHeaderPanel,
+      'selectAll',
+      this.onSelectAll.bind(this),
+    );
+    this.addManagedListener(
+      this.primaryColsHeaderPanel,
+      'unselectAll',
+      this.onUnselectAll.bind(this),
+    );
+    this.addManagedListener(
+      this.primaryColsHeaderPanel,
+      'filterChanged',
+      this.onFilterChanged.bind(this),
+    );
+    this.wireFocusManagement();
+  }
 
-    public onExpandAll(): void {
-        this.primaryColsListPanel.doSetExpandedAll(true);
-    }
+  protected isFocusableContainer(): boolean {
+    return true;
+  }
 
-    public onCollapseAll(): void {
-        this.primaryColsListPanel.doSetExpandedAll(false);
-    }
+  protected onTabKeyDown(e: KeyboardEvent): void {
+    const nextEl = this.focusController.findNextFocusableElement(
+      this.getFocusableElement(),
+      false,
+      e.shiftKey,
+    );
 
-    public expandGroups(groupIds?: string[]): void {
-        this.primaryColsListPanel.setGroupsExpanded(true, groupIds);
+    if (nextEl) {
+      e.preventDefault();
+      nextEl.focus();
     }
+  }
 
-    public collapseGroups(groupIds?: string[]): void {
-        this.primaryColsListPanel.setGroupsExpanded(false, groupIds);
-    }
+  public onExpandAll(): void {
+    this.primaryColsListPanel.doSetExpandedAll(true);
+  }
 
-    public setColumnLayout(colDefs: (ColDef | ColGroupDef)[]): void {
-        this.primaryColsListPanel.setColumnLayout(colDefs);
-    }
+  public onCollapseAll(): void {
+    this.primaryColsListPanel.doSetExpandedAll(false);
+  }
 
-    private onFilterChanged(event: any): void {
-        this.primaryColsListPanel.setFilterText(event.filterText);
-    }
+  public expandGroups(groupIds?: string[]): void {
+    this.primaryColsListPanel.setGroupsExpanded(true, groupIds);
+  }
 
-    public syncLayoutWithGrid(): void {
-        this.primaryColsListPanel.syncColumnLayout();
-    }
+  public collapseGroups(groupIds?: string[]): void {
+    this.primaryColsListPanel.setGroupsExpanded(false, groupIds);
+  }
 
-    private onSelectAll(): void {
-        this.primaryColsListPanel.doSetSelectedAll(true);
-    }
+  public setColumnLayout(colDefs: (ColDef | ColGroupDef)[]): void {
+    this.primaryColsListPanel.setColumnLayout(colDefs);
+  }
 
-    private onUnselectAll(): void {
-        this.primaryColsListPanel.doSetSelectedAll(false);
-    }
+  private onFilterChanged(event: any): void {
+    this.primaryColsListPanel.setFilterText(event.filterText);
+  }
 
-    private onGroupExpanded(event: any): void {
-        this.primaryColsHeaderPanel.setExpandState(event.state);
-    }
+  public syncLayoutWithGrid(): void {
+    this.primaryColsListPanel.syncColumnLayout();
+  }
 
-    private onSelectionChange(event: any): void {
-        this.primaryColsHeaderPanel.setSelectionState(event.state);
-    }
+  private onSelectAll(): void {
+    this.primaryColsListPanel.doSetSelectedAll(true);
+  }
+
+  private onUnselectAll(): void {
+    this.primaryColsListPanel.doSetSelectedAll(false);
+  }
+
+  private onGroupExpanded(event: any): void {
+    this.primaryColsHeaderPanel.setExpandState(event.state);
+  }
+
+  private onSelectionChange(event: any): void {
+    this.primaryColsHeaderPanel.setSelectionState(event.state);
+  }
 }

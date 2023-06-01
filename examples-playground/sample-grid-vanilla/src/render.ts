@@ -7,10 +7,9 @@ import './demo';
 // };
 // render(App);
 
-if ((module as any).hot) {
-  (module as any).hot.accept('./demo.ts', () => {
-    // render(App);
-
-    import('./demo');
-  });
-}
+// if ((module as any).hot) {
+//   (module as any).hot.accept('./demo.ts', () => {
+//     // render(App);
+//     import('./demo');
+//   });
+// }

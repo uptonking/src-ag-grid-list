@@ -363,6 +363,69 @@ export class GridApi {
     }
   }
 
+  /** A transaction object contains the details of what rows should be added,
+   * removed and updated.
+   * applyTransaction(tr) takes this transaction object and applies it to the grid's data.
+   * Use transactions for doing add, remove or update operations on a large number of rows that are infrequent.
+   * 会触发change detection on all visible cells。
+   */
+  public applyTransaction(
+    rowDataTransaction: RowDataTransaction,
+  ): RowNodeTransaction {
+    let res: RowNodeTransaction = null;
+    if (this.clientSideRowModel) {
+      if (rowDataTransaction && rowDataTransaction.addIndex != null) {
+        const message =
+          'ag-Grid: as of v23.1, transaction.addIndex is deprecated. If you want precision control of adding data, use immutableData instead';
+        _.doOnce(
+          () => console.warn(message),
+          'transaction.addIndex deprecated',
+        );
+      }
+      res = this.clientSideRowModel.updateRowData(rowDataTransaction);
+    } else if (this.infiniteRowModel) {
+      const message =
+        'ag-Grid: as of v23.1, transactions for Infinite Row Model are deprecated. If you want to make updates to data in Infinite Row Models, then refresh the data.';
+      _.doOnce(
+        () => console.warn(message),
+        'applyTransaction infiniteRowModel deprecated',
+      );
+
+      this.infiniteRowModel.updateRowData(rowDataTransaction);
+    } else {
+      console.error(
+        'ag-Grid: updateRowData() only works with ClientSideRowModel and InfiniteRowModel.',
+      );
+    }
+
+    // refresh all the full width rows
+    this.rowRenderer.refreshFullWidthRows();
+
+    // do change detection for all present cells
+    if (!this.gridOptionsWrapper.isSuppressChangeDetection()) {
+      this.rowRenderer.refreshCells();
+    }
+
+    return res;
+  }
+
+  /** When you call applyTransactionAsync(), the grid will execute the update,
+   * along with any other updates you subsequently provide using applyTransactionAsync(), after 50ms.
+   * This allows grid to execute all the transactions in one batch which is more efficient.
+   */
+  public applyTransactionAsync(
+    rowDataTransaction: RowDataTransaction,
+    callback?: (res: RowNodeTransaction) => void,
+  ): void {
+    if (!this.clientSideRowModel) {
+      console.error(
+        'ag-Grid: api.applyTransactionAsync() only works with ClientSideRowModel.',
+      );
+      return;
+    }
+    this.clientSideRowModel.batchUpdateRowData(rowDataTransaction, callback);
+  }
+
   /** @deprecated */
   public setFloatingTopRowData(rows: any[]): void {
     console.warn(
@@ -1584,69 +1647,6 @@ export class GridApi {
     _.doOnce(() => console.warn(message), 'batchUpdateRowData deprecated');
 
     this.applyTransactionAsync(rowDataTransaction, callback);
-  }
-
-  /** A transaction object contains the details of what rows should be added,
-   * removed and updated. applyTransaction(transaction) takes this transaction
-   * object and applies it to the grid's data.
-   * Use transactions for doing add, remove or update operations on a large number of rows that are infrequent.
-   * 会触发change detection on all visible cells。
-   */
-  public applyTransaction(
-    rowDataTransaction: RowDataTransaction,
-  ): RowNodeTransaction {
-    let res: RowNodeTransaction = null;
-    if (this.clientSideRowModel) {
-      if (rowDataTransaction && rowDataTransaction.addIndex != null) {
-        const message =
-          'ag-Grid: as of v23.1, transaction.addIndex is deprecated. If you want precision control of adding data, use immutableData instead';
-        _.doOnce(
-          () => console.warn(message),
-          'transaction.addIndex deprecated',
-        );
-      }
-      res = this.clientSideRowModel.updateRowData(rowDataTransaction);
-    } else if (this.infiniteRowModel) {
-      const message =
-        'ag-Grid: as of v23.1, transactions for Infinite Row Model are deprecated. If you want to make updates to data in Infinite Row Models, then refresh the data.';
-      _.doOnce(
-        () => console.warn(message),
-        'applyTransaction infiniteRowModel deprecated',
-      );
-
-      this.infiniteRowModel.updateRowData(rowDataTransaction);
-    } else {
-      console.error(
-        'ag-Grid: updateRowData() only works with ClientSideRowModel and InfiniteRowModel.',
-      );
-    }
-
-    // refresh all the full width rows
-    this.rowRenderer.refreshFullWidthRows();
-
-    // do change detection for all present cells
-    if (!this.gridOptionsWrapper.isSuppressChangeDetection()) {
-      this.rowRenderer.refreshCells();
-    }
-
-    return res;
-  }
-
-  /** When you call applyTransactionAsync(), the grid will execute the update,
-   * along with any other updates you subsequently provide using applyTransactionAsync(), after 50ms.
-   * This allows grid to execute all the transactions in one batch which is more efficient.
-   */
-  public applyTransactionAsync(
-    rowDataTransaction: RowDataTransaction,
-    callback?: (res: RowNodeTransaction) => void,
-  ): void {
-    if (!this.clientSideRowModel) {
-      console.error(
-        'ag-Grid: api.applyTransactionAsync() only works with ClientSideRowModel.',
-      );
-      return;
-    }
-    this.clientSideRowModel.batchUpdateRowData(rowDataTransaction, callback);
   }
 
   public insertItemsAtIndex(

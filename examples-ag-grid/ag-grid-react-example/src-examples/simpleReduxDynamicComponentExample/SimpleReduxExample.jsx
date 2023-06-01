@@ -1,13 +1,13 @@
-import React, {Component} from "react";
-import {Provider} from "react-redux";
-import {createStore} from "redux";
+import React, { Component } from 'react';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 
-import HeaderComponent from "./HeaderComponent";
-import GridComponent from "./GridComponent";
+import HeaderComponent from './HeaderComponent';
+import GridComponent from './GridComponent';
 
-import gridData from "./gridDataReducer";
+import gridData from './gridDataReducer';
 
-import FontContext from './fontContext'
+import FontContext from './fontContext';
 
 let store = createStore(gridData);
 
@@ -16,21 +16,21 @@ let store = createStore(gridData);
  * for the redux Provider
  */
 export default class SimpleReduxExample extends Component {
-    constructor(props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
 
-    render() {
-        return (
-            <Provider store={store}>
-                <div>
-                    <h1>Simple Redux Example using Connected React Components</h1>
-                    <HeaderComponent/>
-                    <FontContext.Provider value="bold">
-                        <GridComponent/>
-                    </FontContext.Provider>
-                </div>
-            </Provider>
-        )
-    }
-};
+  render() {
+    return (
+      <Provider store={store}>
+        <div>
+          <h1>Simple Redux Example using Connected React Components</h1>
+          <HeaderComponent />
+          <FontContext.Provider value='bold'>
+            <GridComponent />
+          </FontContext.Provider>
+        </div>
+      </Provider>
+    );
+  }
+}

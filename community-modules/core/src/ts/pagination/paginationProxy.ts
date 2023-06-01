@@ -318,9 +318,8 @@ export class PaginationProxy extends BeanStub {
       masterPageEndIndex = masterLastRowIndex;
     }
 
-    this.topDisplayedRowIndex = this.rowModel.getTopLevelRowDisplayedIndex(
-      masterPageStartIndex,
-    );
+    this.topDisplayedRowIndex =
+      this.rowModel.getTopLevelRowDisplayedIndex(masterPageStartIndex);
     // masterRows[masterPageStartIndex].rowIndex;
 
     if (masterPageEndIndex === masterLastRowIndex) {

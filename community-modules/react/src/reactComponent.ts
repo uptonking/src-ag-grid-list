@@ -133,7 +133,8 @@ export class ReactComponent extends BaseReactComponent {
       this.componentInstance.getReactContainerClasses &&
       this.componentInstance.getReactContainerClasses()
     ) {
-      const parentContainerClasses: string[] = this.componentInstance.getReactContainerClasses();
+      const parentContainerClasses: string[] =
+        this.componentInstance.getReactContainerClasses();
       parentContainerClasses.forEach((className) =>
         _.addCssClass(this.eParentElement as HTMLElement, className),
       );

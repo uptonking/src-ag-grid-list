@@ -1,4 +1,4 @@
-import { Comparator, ascending } from "./compare";
+import { Comparator, ascending } from './compare';
 
 /**
  * Returns the insertion point for `x` in array to maintain sorted order.
@@ -14,28 +14,42 @@ import { Comparator, ascending } from "./compare";
  * @param lo
  * @param hi
  */
-export function bisectLeft<T>(list: T[], x: T, comparator: Comparator<T>, lo: number = 0, hi: number = list.length): number {
-    while (lo < hi) {
-        const mid = (lo + hi) >>> 1;
-        if (comparator(list[mid], x) < 0) { // list[mid] < x
-            lo = mid + 1;
-        } else {
-            hi = mid;
-        }
+export function bisectLeft<T>(
+  list: T[],
+  x: T,
+  comparator: Comparator<T>,
+  lo: number = 0,
+  hi: number = list.length,
+): number {
+  while (lo < hi) {
+    const mid = (lo + hi) >>> 1;
+    if (comparator(list[mid], x) < 0) {
+      // list[mid] < x
+      lo = mid + 1;
+    } else {
+      hi = mid;
     }
-    return lo;
+  }
+  return lo;
 }
 
-export function bisectRight<T>(list: T[], x: T, comparator: Comparator<T>, lo: number = 0, hi: number = list.length): number {
-    while (lo < hi) {
-        const mid = (lo + hi) >>> 1;
-        if (comparator(list[mid], x) > 0) { // list[mid] > x
-            hi = mid;
-        } else {
-            lo = mid + 1;
-        }
+export function bisectRight<T>(
+  list: T[],
+  x: T,
+  comparator: Comparator<T>,
+  lo: number = 0,
+  hi: number = list.length,
+): number {
+  while (lo < hi) {
+    const mid = (lo + hi) >>> 1;
+    if (comparator(list[mid], x) > 0) {
+      // list[mid] > x
+      hi = mid;
+    } else {
+      lo = mid + 1;
     }
-    return lo;
+  }
+  return lo;
 }
 
 /**
@@ -48,34 +62,46 @@ export function bisectRight<T>(list: T[], x: T, comparator: Comparator<T>, lo: n
  * @param lo
  * @param hi
  */
-export function complexBisectLeft<T, U>(list: T[], x: U, map: (item: T) => U, lo: number = 0, hi: number = list.length): number {
-    const comparator = ascendingComparator(map);
-    while (lo < hi) {
-        const mid = (lo + hi) >>> 1;
-        if (comparator(list[mid], x) < 0) {
-            lo = mid + 1;
-        } else {
-            hi = mid;
-        }
+export function complexBisectLeft<T, U>(
+  list: T[],
+  x: U,
+  map: (item: T) => U,
+  lo: number = 0,
+  hi: number = list.length,
+): number {
+  const comparator = ascendingComparator(map);
+  while (lo < hi) {
+    const mid = (lo + hi) >>> 1;
+    if (comparator(list[mid], x) < 0) {
+      lo = mid + 1;
+    } else {
+      hi = mid;
     }
-    return lo;
+  }
+  return lo;
 }
 
-export function complexBisectRight<T, U>(list: T[], x: U, map: (item: T) => U, lo: number = 0, hi: number = list.length): number {
-    const comparator = ascendingComparator(map);
-    while (lo < hi) {
-        const mid = (lo + hi) >>> 1;
-        if (comparator(list[mid], x) < 0) {
-            lo = mid + 1;
-        } else {
-            hi = mid;
-        }
+export function complexBisectRight<T, U>(
+  list: T[],
+  x: U,
+  map: (item: T) => U,
+  lo: number = 0,
+  hi: number = list.length,
+): number {
+  const comparator = ascendingComparator(map);
+  while (lo < hi) {
+    const mid = (lo + hi) >>> 1;
+    if (comparator(list[mid], x) < 0) {
+      lo = mid + 1;
+    } else {
+      hi = mid;
     }
-    return lo;
+  }
+  return lo;
 }
 
 function ascendingComparator<T, U>(map: (item: T) => U) {
-    return function (item: T, x: U) {
-        return ascending(map(item), x);
-    };
+  return function (item: T, x: U) {
+    return ascending(map(item), x);
+  };
 }

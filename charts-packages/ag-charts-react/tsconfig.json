@@ -5,16 +5,8 @@
     "experimentalDecorators": true,
     "module": "esnext",
     "target": "es5",
-    "types": [
-      "react",
-      "react-dom",
-      "jest"
-    ],
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "types": ["react", "react-dom", "jest"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -27,11 +19,6 @@
     "noEmit": true,
     "jsx": "preserve"
   },
-  "exclude": [
-    "node_modules",
-    "lib"
-  ],
-  "include": [
-    "src"
-  ]
+  "exclude": ["node_modules", "lib"],
+  "include": ["src"]
 }

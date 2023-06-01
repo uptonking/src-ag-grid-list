@@ -60,7 +60,8 @@ export class SetLeftFeature extends BeanStub {
   }
 
   private setLeftFirstTime(): void {
-    const suppressMoveAnimation = this.beans.gridOptionsWrapper.isSuppressColumnMoveAnimation();
+    const suppressMoveAnimation =
+      this.beans.gridOptionsWrapper.isSuppressColumnMoveAnimation();
     const oldLeftExists = _.exists(this.columnOrGroup.getOldLeft());
     const animateColumnMove =
       this.beans.columnAnimationService.isActive() &&
@@ -113,7 +114,8 @@ export class SetLeftFeature extends BeanStub {
     }
 
     if (colOrGroup.getPinned() === Constants.PINNED_RIGHT) {
-      const leftWidth = this.beans.columnController.getPinnedLeftContainerWidth();
+      const leftWidth =
+        this.beans.columnController.getPinnedLeftContainerWidth();
       const bodyWidth = this.beans.columnController.getBodyContainerWidth();
       return leftWidth + bodyWidth + leftPosition;
     }

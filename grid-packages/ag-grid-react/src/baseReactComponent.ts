@@ -1,7 +1,8 @@
 import { IComponent, WrapableInterface } from 'ag-grid-community';
 
 export abstract class BaseReactComponent
-  implements IComponent<any>, WrapableInterface {
+  implements IComponent<any>, WrapableInterface
+{
   hasMethod(name: string): boolean {
     let frameworkComponentInstance = this.getFrameworkComponentInstance();
     if (frameworkComponentInstance == null) {

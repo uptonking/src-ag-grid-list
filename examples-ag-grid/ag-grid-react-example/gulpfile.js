@@ -9,18 +9,14 @@ const tsConfig = '../ag-grid-react/tsconfig.json';
 const tsProject = gulpTypescript.createProject(tsConfig);
 
 function rebuildAgGridReact() {
-    const tsResult = gulp
-        .src('../ag-grid-react/src/**/*.ts')
-        .pipe(tsProject());
+  const tsResult = gulp.src('../ag-grid-react/src/**/*.ts').pipe(tsProject());
 
-    return merge([
-        tsResult.dts
-            .pipe(gulp.dest('node_modules/ag-grid-react/lib')),
-        tsResult.js
-            .pipe(gulp.dest('node_modules/ag-grid-react/lib'))
-    ]);
+  return merge([
+    tsResult.dts.pipe(gulp.dest('node_modules/ag-grid-react/lib')),
+    tsResult.js.pipe(gulp.dest('node_modules/ag-grid-react/lib')),
+  ]);
 }
 
 function watchTask() {
-    gulp.watch(['../ag-grid-react/src/**/*'], rebuildAgGridReact);
+  gulp.watch(['../ag-grid-react/src/**/*'], rebuildAgGridReact);
 }

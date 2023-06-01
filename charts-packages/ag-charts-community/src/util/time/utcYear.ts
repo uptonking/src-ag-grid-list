@@ -1,17 +1,17 @@
-import { CountableTimeInterval } from "./interval";
+import { CountableTimeInterval } from './interval';
 
 function floor(date: Date) {
-    date.setUTCMonth(0, 1);
-    date.setUTCHours(0, 0, 0, 0);
+  date.setUTCMonth(0, 1);
+  date.setUTCHours(0, 0, 0, 0);
 }
 function offset(date: Date, years: number) {
-    date.setUTCFullYear(date.getUTCFullYear() + years);
+  date.setUTCFullYear(date.getUTCFullYear() + years);
 }
 function count(start: Date, end: Date): number {
-    return end.getUTCFullYear() - start.getUTCFullYear();
+  return end.getUTCFullYear() - start.getUTCFullYear();
 }
 function field(date: Date): number {
-    return date.getUTCFullYear();
+  return date.getUTCFullYear();
 }
 
 export const utcYear = new CountableTimeInterval(floor, offset, count, field);

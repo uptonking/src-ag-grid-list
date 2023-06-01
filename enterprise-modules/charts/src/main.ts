@@ -1,1 +1,1 @@
-export { GridChartsModule } from "./gridChartsModule";
+export { GridChartsModule } from './gridChartsModule';

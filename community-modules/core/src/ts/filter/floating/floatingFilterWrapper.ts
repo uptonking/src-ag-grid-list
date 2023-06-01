@@ -331,11 +331,12 @@ export class FloatingFilterWrapper extends AbstractHeaderWrapper {
       this.column,
       this.column.getColDef(),
     );
-    const finalFilterParams: IFilterParams = this.userComponentFactory.createFinalParams(
-      colDef,
-      'filter',
-      filterParams,
-    );
+    const finalFilterParams: IFilterParams =
+      this.userComponentFactory.createFinalParams(
+        colDef,
+        'filter',
+        filterParams,
+      );
 
     const params: IFloatingFilterParams = {
       api: this.gridApi,
@@ -367,10 +368,11 @@ export class FloatingFilterWrapper extends AbstractHeaderWrapper {
         filterComponent.prototype.getModelAsString;
 
       if (getModelAsStringExists) {
-        const compInstance = this.userComponentFactory.createUserComponentFromConcreteClass(
-          ReadOnlyFloatingFilter,
-          params,
-        );
+        const compInstance =
+          this.userComponentFactory.createUserComponentFromConcreteClass(
+            ReadOnlyFloatingFilter,
+            params,
+          );
 
         promise = Promise.resolve(compInstance);
       }

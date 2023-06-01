@@ -162,9 +162,10 @@ export class CellComp extends Component implements TooltipParentComp {
   }
 
   public getCreateTemplate(): string {
-    const unselectable = !this.beans.gridOptionsWrapper.isEnableCellTextSelection()
-      ? 'unselectable="on"'
-      : '';
+    const unselectable =
+      !this.beans.gridOptionsWrapper.isEnableCellTextSelection()
+        ? 'unselectable="on"'
+        : '';
     const templateParts: string[] = [];
     const col = this.column;
 
@@ -238,7 +239,8 @@ export class CellComp extends Component implements TooltipParentComp {
       return '';
     }
 
-    const singleRowHeight = this.beans.gridOptionsWrapper.getRowHeightAsNumber();
+    const singleRowHeight =
+      this.beans.gridOptionsWrapper.getRowHeightAsNumber();
     const totalRowHeight = singleRowHeight * this.rowSpan;
 
     return `height: ${totalRowHeight}px; z-index: 1;`;
@@ -394,7 +396,8 @@ export class CellComp extends Component implements TooltipParentComp {
       cssClasses.push('ag-cell-auto-height');
     }
 
-    const doingFocusCss = !this.beans.gridOptionsWrapper.isSuppressCellSelection();
+    const doingFocusCss =
+      !this.beans.gridOptionsWrapper.isSuppressCellSelection();
 
     if (doingFocusCss && this.cellFocused) {
       // otherwise the class depends on the focus state
@@ -536,7 +539,8 @@ export class CellComp extends Component implements TooltipParentComp {
 
       // we don't want to flash the cells when processing a filter change, as otherwise the UI would
       // be to busy. see comment in FilterManager with regards processingFilterChange
-      const processingFilterChange = this.beans.filterManager.isSuppressFlashingCellsBecauseFiltering();
+      const processingFilterChange =
+        this.beans.filterManager.isSuppressFlashingCellsBecauseFiltering();
 
       const flashCell =
         !suppressFlash &&
@@ -921,7 +925,8 @@ export class CellComp extends Component implements TooltipParentComp {
     this.includeDndSourceComponent =
       dndSourceIsFunc || colDef.dndSource === true;
 
-    const enableTextSelection = this.beans.gridOptionsWrapper.isEnableCellTextSelection();
+    const enableTextSelection =
+      this.beans.gridOptionsWrapper.isEnableCellTextSelection();
 
     this.usingWrapper =
       enableTextSelection ||
@@ -942,16 +947,18 @@ export class CellComp extends Component implements TooltipParentComp {
     }
 
     const params = this.createCellRendererParams();
-    const cellRenderer = this.beans.userComponentFactory.lookupComponentClassDef(
-      colDef,
-      'cellRenderer',
-      params,
-    );
-    const pinnedRowCellRenderer = this.beans.userComponentFactory.lookupComponentClassDef(
-      colDef,
-      'pinnedRowCellRenderer',
-      params,
-    );
+    const cellRenderer =
+      this.beans.userComponentFactory.lookupComponentClassDef(
+        colDef,
+        'cellRenderer',
+        params,
+      );
+    const pinnedRowCellRenderer =
+      this.beans.userComponentFactory.lookupComponentClassDef(
+        colDef,
+        'pinnedRowCellRenderer',
+        params,
+      );
 
     if (pinnedRowCellRenderer && this.rowNode.rowPinned) {
       this.cellRendererType = CellComp.CELL_RENDERER_TYPE_PINNED;
@@ -974,8 +981,10 @@ export class CellComp extends Component implements TooltipParentComp {
     // is turned off.
     // and lastly we never use it if doing auto-height, as the auto-height service checks the
     // row height directly after the cell is created, it doesn't wait around for the tasks to complete
-    const angularCompileRows = this.beans.gridOptionsWrapper.isAngularCompileRows();
-    const suppressAnimationFrame = this.beans.gridOptionsWrapper.isSuppressAnimationFrame();
+    const angularCompileRows =
+      this.beans.gridOptionsWrapper.isAngularCompileRows();
+    const suppressAnimationFrame =
+      this.beans.gridOptionsWrapper.isSuppressAnimationFrame();
 
     if (angularCompileRows || suppressAnimationFrame || this.autoHeightCell) {
       useTaskService = false;
@@ -1123,10 +1132,12 @@ export class CellComp extends Component implements TooltipParentComp {
       !lockedClosedGroup;
 
     // are we showing group footers
-    const groupFootersEnabled = this.beans.gridOptionsWrapper.isGroupIncludeFooter();
+    const groupFootersEnabled =
+      this.beans.gridOptionsWrapper.isGroupIncludeFooter();
 
     // if doing footers, we normally don't show agg data at group level when group is open
-    const groupAlwaysShowAggData = this.beans.gridOptionsWrapper.isGroupSuppressBlankHeader();
+    const groupAlwaysShowAggData =
+      this.beans.gridOptionsWrapper.isGroupSuppressBlankHeader();
 
     // if doing grouping and footers, we don't want to include the agg value
     // in the header when the group is open
@@ -1415,7 +1426,8 @@ export class CellComp extends Component implements TooltipParentComp {
   private addPopupCellEditor(): void {
     const ePopupGui = this.cellEditor ? this.cellEditor.getGui() : null;
 
-    const useModelPopup = this.beans.gridOptionsWrapper.isStopEditingWhenGridLosesFocus();
+    const useModelPopup =
+      this.beans.gridOptionsWrapper.isStopEditingWhenGridLosesFocus();
     this.hideEditorPopup = this.beans.popupService.addPopup(
       useModelPopup,
       ePopupGui,
@@ -1660,9 +1672,8 @@ export class CellComp extends Component implements TooltipParentComp {
       return;
     }
 
-    const endCell = this.beans.rangeController.extendLatestRangeInDirection(
-      key,
-    );
+    const endCell =
+      this.beans.rangeController.extendLatestRangeInDirection(key);
 
     if (endCell) {
       this.beans.rowRenderer.ensureCellVisible(endCell);
@@ -1704,7 +1715,8 @@ export class CellComp extends Component implements TooltipParentComp {
       return;
     }
 
-    const enterMovesDownAfterEdit = this.beans.gridOptionsWrapper.isEnterMovesDownAfterEdit();
+    const enterMovesDownAfterEdit =
+      this.beans.gridOptionsWrapper.isEnterMovesDownAfterEdit();
 
     if (enterMovesDownAfterEdit) {
       this.beans.rowRenderer.navigateToNextCell(
@@ -1948,7 +1960,8 @@ export class CellComp extends Component implements TooltipParentComp {
     }
 
     if (this.column.getPinned() === Constants.PINNED_RIGHT) {
-      const leftWidth = this.beans.columnController.getPinnedLeftContainerWidth();
+      const leftWidth =
+        this.beans.columnController.getPinnedLeftContainerWidth();
       const bodyWidth = this.beans.columnController.getBodyContainerWidth();
 
       return leftWidth + bodyWidth + leftPosition;
@@ -2231,9 +2244,8 @@ export class CellComp extends Component implements TooltipParentComp {
     }
 
     if (!this.selectionHandle) {
-      this.selectionHandle = this.beans.selectionHandleFactory.createSelectionHandle(
-        type,
-      );
+      this.selectionHandle =
+        this.beans.selectionHandleFactory.createSelectionHandle(type);
     }
 
     this.selectionHandle.refresh(this);
@@ -2342,7 +2354,8 @@ export class CellComp extends Component implements TooltipParentComp {
   private addRowDragging(): void {
     const pagination = this.beans.gridOptionsWrapper.isPagination();
     const rowDragManaged = this.beans.gridOptionsWrapper.isRowDragManaged();
-    const clientSideRowModelActive = this.beans.gridOptionsWrapper.isRowModelDefault();
+    const clientSideRowModelActive =
+      this.beans.gridOptionsWrapper.isRowModelDefault();
 
     if (rowDragManaged) {
       // row dragging only available in default row model
@@ -2458,7 +2471,8 @@ export class CellComp extends Component implements TooltipParentComp {
     // see if we need to change the classes on this cell
     if (cellFocused !== this.cellFocused) {
       // if we are not doing cell selection, then the focus class does not change
-      const doingFocusCss = !this.beans.gridOptionsWrapper.isSuppressCellSelection();
+      const doingFocusCss =
+        !this.beans.gridOptionsWrapper.isSuppressCellSelection();
 
       if (doingFocusCss) {
         _.addOrRemoveCssClass(this.getGui(), 'ag-cell-focus', cellFocused);

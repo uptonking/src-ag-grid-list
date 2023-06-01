@@ -148,9 +148,7 @@ export function isElementChildOfClass(
   return false;
 }
 
-export function getElementSize(
-  el: HTMLElement,
-): {
+export function getElementSize(el: HTMLElement): {
   height: number;
   width: number;
   paddingTop: number;

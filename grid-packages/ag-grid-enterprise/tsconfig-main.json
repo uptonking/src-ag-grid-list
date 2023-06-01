@@ -6,9 +6,6 @@
     "declaration": true,
     "target": "es5",
     "noImplicitAny": true,
-    "lib": [
-      "es2015",
-      "dom"
-    ]
+    "lib": ["es2015", "dom"]
   }
 }

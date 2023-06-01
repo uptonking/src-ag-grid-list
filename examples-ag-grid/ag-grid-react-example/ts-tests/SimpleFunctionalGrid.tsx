@@ -1,4 +1,6 @@
 import React from 'react';
-import {AgGridReact} from '@ag-grid-community/react';
+import { AgGridReact } from '@ag-grid-community/react';
 
-export const App: React.FunctionComponent = () => <AgGridReact columnDefs={[]} rowData={[]}/>;
+export const App: React.FunctionComponent = () => (
+  <AgGridReact columnDefs={[]} rowData={[]} />
+);

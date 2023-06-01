@@ -27,7 +27,7 @@ export interface CacheUpdatedEvent extends AgEvent {}
 
 export abstract class RowNodeCache<
   T extends IRowNodeBlock,
-  P extends RowNodeCacheParams
+  P extends RowNodeCacheParams,
 > extends BeanStub {
   public static EVENT_CACHE_UPDATED = 'cacheUpdated';
 

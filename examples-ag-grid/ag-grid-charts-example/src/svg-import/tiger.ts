@@ -1,5 +1,4 @@
-export const tiger =
-`<svg width="100%" height="100%" viewBox="0 0 900 900" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;">
+export const tiger = `<svg width="100%" height="100%" viewBox="0 0 900 900" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;">
     <g id="g4" transform="matrix(1.76565,0,0,1.76565,324.907,255.009)">
         <path id="path8" d="M-122.3,84.285C-122.3,84.285 -122.2,86.179 -123.03,86.16C-123.85,86.141 -140.3,38.066 -160.83,40.309C-160.83,40.309 -143.05,32.956 -122.3,84.285Z" style="fill:white;fill-rule:nonzero;stroke:black;stroke-width:0.17px;"/>
         <path id="path12" d="M-118.77,81.262C-118.77,81.262 -119.32,83.078 -120.09,82.779C-120.86,82.481 -119.98,31.675 -140.04,26.801C-140.04,26.801 -120.82,25.937 -118.77,81.262Z" style="fill:white;fill-rule:nonzero;stroke:black;stroke-width:0.17px;"/>

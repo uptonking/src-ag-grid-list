@@ -47,10 +47,8 @@ export class HeaderRootComp extends ManagedFocusComponent {
 
   private gridPanel: GridPanel;
   private printLayout: boolean;
-  private headerContainers: Map<
-    HeaderContainerPosition,
-    HeaderContainer
-  > = new Map();
+  private headerContainers: Map<HeaderContainerPosition, HeaderContainer> =
+    new Map();
 
   constructor() {
     super(HeaderRootComp.TEMPLATE);

@@ -111,7 +111,7 @@ export interface ComponentSelectorResult {
 export interface ComponentClassDef<
   A extends IComponent<TParams> & B,
   B,
-  TParams
+  TParams,
 > {
   component: { new (): A } | { new (): B };
   componentFromFramework: boolean; // true if component came from framework eg React or Angular
@@ -433,7 +433,7 @@ export class UserComponentFactory extends BeanStub {
    */
   public createUserComponentFromConcreteClass<
     A extends IComponent<TParams>,
-    TParams
+    TParams,
   >(clazz: { new (): A }, agGridParams: TParams): A {
     const internalComponent = new clazz() as A;
 
@@ -497,7 +497,8 @@ export class UserComponentFactory extends BeanStub {
         ) {
           HardcodedJsComponent = componentPropertyValue as { new (): A };
         } else {
-          hardcodedJsFunction = componentPropertyValue as AgGridComponentFunctionInput;
+          hardcodedJsFunction =
+            componentPropertyValue as AgGridComponentFunctionInput;
         }
       }
       HardcodedFwComponent = (definitionObject as any)[
@@ -625,17 +626,15 @@ export class UserComponentFactory extends BeanStub {
   private lookupFromRegisteredComponents<
     A extends IComponent<TParams> & B,
     B,
-    TParams
+    TParams,
   >(
     propertyName: string,
     componentNameOpt?: string,
   ): ComponentClassDef<A, B, TParams> {
     const componentName: string =
       componentNameOpt != null ? componentNameOpt : propertyName;
-    const registeredComponent: RegisteredComponent<
-      A,
-      B
-    > = this.userComponentRegistry.retrieve(componentName);
+    const registeredComponent: RegisteredComponent<A, B> =
+      this.userComponentRegistry.retrieve(componentName);
 
     if (registeredComponent == null) {
       return null;
@@ -719,7 +718,7 @@ export class UserComponentFactory extends BeanStub {
   private createComponentInstance<
     A extends IComponent<TParams> & B,
     B,
-    TParams
+    TParams,
   >(
     holder: DefinitionObject,
     componentType: ComponentType,
@@ -728,16 +727,13 @@ export class UserComponentFactory extends BeanStub {
     optional: boolean,
   ): { componentInstance: A; paramsFromSelector: any } {
     const propertyName = componentType.propertyName;
-    const componentToUse: ComponentClassDef<
-      A,
-      B,
-      TParams
-    > = this.lookupComponentClassDef(
-      holder,
-      propertyName,
-      paramsForSelector,
-      defaultComponentName,
-    ) as ComponentClassDef<A, B, TParams>;
+    const componentToUse: ComponentClassDef<A, B, TParams> =
+      this.lookupComponentClassDef(
+        holder,
+        propertyName,
+        paramsForSelector,
+        defaultComponentName,
+      ) as ComponentClassDef<A, B, TParams>;
 
     const missing = !componentToUse || !componentToUse.component;
     if (missing) {
@@ -760,9 +756,8 @@ export class UserComponentFactory extends BeanStub {
     if (componentToUse.componentFromFramework) {
       // Using framework component
       const FrameworkComponentRaw: { new (): B } = componentToUse.component;
-      const thisComponentConfig: ComponentMetadata = this.componentMetadataProvider.retrieve(
-        propertyName,
-      );
+      const thisComponentConfig: ComponentMetadata =
+        this.componentMetadataProvider.retrieve(propertyName);
       componentInstance = this.frameworkComponentWrapper.wrap(
         FrameworkComponentRaw,
         thisComponentConfig.mandatoryMethodList,

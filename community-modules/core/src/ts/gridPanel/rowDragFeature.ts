@@ -145,7 +145,8 @@ export class RowDragFeature extends BeanStub implements DropTarget {
       return draggingEvent.dragItem.rowNodes;
     }
 
-    const enableMultiRowDragging = this.gridOptionsWrapper.isEnableMultiRowDragging();
+    const enableMultiRowDragging =
+      this.gridOptionsWrapper.isEnableMultiRowDragging();
     const selectedNodes = this.selectionController.getSelectedNodes();
     const currentNode = draggingEvent.dragItem.rowNode;
 
@@ -243,7 +244,8 @@ export class RowDragFeature extends BeanStub implements DropTarget {
   }
 
   private moveRowAndClearHighlight(draggingEvent: DraggingEvent): void {
-    const lastHighlightedRowNode = this.clientSideRowModel.getLastHighlightedRowNode();
+    const lastHighlightedRowNode =
+      this.clientSideRowModel.getLastHighlightedRowNode();
     const isBelow =
       lastHighlightedRowNode && lastHighlightedRowNode.highlighted === 'below';
     const pixel = this.mouseEventService.getNormalisedPosition(draggingEvent).y;
@@ -502,9 +504,8 @@ export class RowDragFeature extends BeanStub implements DropTarget {
     type: string,
     draggingEvent: DraggingEvent,
   ): RowDragEvent {
-    const yNormalised = this.mouseEventService.getNormalisedPosition(
-      draggingEvent,
-    ).y;
+    const yNormalised =
+      this.mouseEventService.getNormalisedPosition(draggingEvent).y;
     const mouseIsPastLastRow =
       yNormalised > this.rowModel.getCurrentPageHeight();
 

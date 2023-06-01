@@ -37,9 +37,8 @@ export class MouseEventService extends BeanStub {
   // so the grid can work out if the even came from this grid or a grid inside this one. see the ctrl+v logic
   // for where this is used.
   private stampDomElementWithGridInstance(): void {
-    (this.eGridDiv as any)[
-      MouseEventService.GRID_DOM_KEY
-    ] = this.gridInstanceId;
+    (this.eGridDiv as any)[MouseEventService.GRID_DOM_KEY] =
+      this.gridInstanceId;
   }
 
   public getRenderedCellForEvent(event: Event): CellComp {
@@ -71,9 +70,10 @@ export class MouseEventService extends BeanStub {
     return cellComp ? cellComp.getCellPosition() : null;
   }
 
-  getNormalisedPosition(
-    event: MouseEvent | DraggingEvent,
-  ): { x: number; y: number } {
+  getNormalisedPosition(event: MouseEvent | DraggingEvent): {
+    x: number;
+    y: number;
+  } {
     const gridPanelHasScrolls =
       this.gridOptionsWrapper.getDomLayout() === Constants.DOM_LAYOUT_NORMAL;
     const { x, y } = event;

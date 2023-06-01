@@ -33,9 +33,7 @@ export interface CsvSerializingParams extends GridSerializingParams {
   columnSeparator: string;
 }
 
-export class CsvSerializingSession extends BaseGridSerializingSession<
-  CsvCustomContent
-> {
+export class CsvSerializingSession extends BaseGridSerializingSession<CsvCustomContent> {
   private isFirstLine = true;
   private result: string = '';
   private suppressQuotes: boolean;
@@ -193,7 +191,7 @@ export interface BaseCreatorBeans {
 export abstract class BaseCreator<
   T,
   S extends GridSerializingSession<T>,
-  P extends ExportParams<T>
+  P extends ExportParams<T>,
 > {
   private beans: BaseCreatorBeans;
 
@@ -232,9 +230,10 @@ export abstract class BaseCreator<
     return this.getMergedParamsAndData(params).data;
   }
 
-  private getMergedParamsAndData(
-    userParams?: P,
-  ): { mergedParams: P; data: string } {
+  private getMergedParamsAndData(userParams?: P): {
+    mergedParams: P;
+    data: string;
+  } {
     const mergedParams = this.mergeDefaultParams(userParams);
     const data = this.beans.gridSerializer.serialize(
       this.createSerializingSession(mergedParams),
@@ -245,9 +244,8 @@ export abstract class BaseCreator<
   }
 
   private mergeDefaultParams(userParams?: P): P {
-    const baseParams:
-      | BaseExportParams
-      | undefined = this.beans.gridOptionsWrapper.getDefaultExportParams();
+    const baseParams: BaseExportParams | undefined =
+      this.beans.gridOptionsWrapper.getDefaultExportParams();
     const params: P = {} as any;
     _.assign(params, baseParams);
     _.assign(params, userParams);
@@ -276,7 +274,8 @@ export abstract class BaseCreator<
 @Bean('csvCreator')
 export class CsvCreator
   extends BaseCreator<CsvCustomContent, CsvSerializingSession, CsvExportParams>
-  implements ICsvCreator {
+  implements ICsvCreator
+{
   @Autowired('columnController') private columnController: ColumnController;
   @Autowired('valueService') private valueService: ValueService;
 

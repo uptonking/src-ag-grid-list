@@ -57,9 +57,8 @@ export function isEventFromPrintableCharacter(event: KeyboardEvent): boolean {
 
     // IE11 & Edge treat the numpad del key differently - with numlock on we get "Del" for key,
     // so this addition checks if its IE11/Edge and handles that specific case the same was as all other browsers
-    const numpadDelWithNumlockOnForEdgeOrIe = isNumpadDelWithNumlockOnForEdgeOrIe(
-      event,
-    );
+    const numpadDelWithNumlockOnForEdgeOrIe =
+      isNumpadDelWithNumlockOnForEdgeOrIe(event);
 
     return printableCharacter || numpadDelWithNumlockOnForEdgeOrIe;
   }

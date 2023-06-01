@@ -236,9 +236,10 @@ const filterExcludedRoots = (dependencyTree) => {
 };
 
 const getOrderedDependencies = async (packageName) => {
-  const lernaArgs = `ls --all --sort --toposort --json --scope ${packageName} --include-dependents`.split(
-    ' ',
-  );
+  const lernaArgs =
+    `ls --all --sort --toposort --json --scope ${packageName} --include-dependents`.split(
+      ' ',
+    );
   const { stdout } = await execa('./node_modules/.bin/lerna', lernaArgs);
   let dependenciesOrdered = JSON.parse(stdout);
   dependenciesOrdered = dependenciesOrdered.filter((dependency) =>
@@ -257,9 +258,10 @@ const getOrderedDependencies = async (packageName) => {
 };
 
 const generateBuildChain = async (packageName, allPackagesOrdered) => {
-  let lernaArgs = `ls --all --toposort --graph --scope ${packageName} --include-dependents`.split(
-    ' ',
-  );
+  let lernaArgs =
+    `ls --all --toposort --graph --scope ${packageName} --include-dependents`.split(
+      ' ',
+    );
   let { stdout } = await execa('./node_modules/.bin/lerna', lernaArgs);
   let dependencyTree = JSON.parse(stdout);
 

@@ -8,7 +8,8 @@ import { AgEvent } from '../events';
 
 /** 代表一个表头分组的类，无父类 */
 export class OriginalColumnGroup
-  implements OriginalColumnGroupChild, IEventEmitter {
+  implements OriginalColumnGroupChild, IEventEmitter
+{
   public static EVENT_EXPANDED_CHANGED = 'expandedChanged';
   public static EVENT_EXPANDABLE_CHANGED = 'expandableChanged';
 

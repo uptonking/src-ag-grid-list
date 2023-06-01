@@ -18,7 +18,8 @@ export class SelectableService extends BeanStub {
 
   @PostConstruct
   public init(): void {
-    this.groupSelectsChildren = this.gridOptionsWrapper.isGroupSelectsChildren();
+    this.groupSelectsChildren =
+      this.gridOptionsWrapper.isGroupSelectsChildren();
     this.isRowSelectableFunc = this.gridOptionsWrapper.getIsRowSelectableFunc();
   }
 

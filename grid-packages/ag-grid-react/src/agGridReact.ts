@@ -313,7 +313,8 @@ function addProperties(listOfProps: string[], propType: any) {
 
 class ReactFrameworkComponentWrapper
   extends BaseComponentWrapper<WrapableInterface>
-  implements FrameworkComponentWrapper {
+  implements FrameworkComponentWrapper
+{
   private readonly agGridReact!: AgGridReact;
 
   constructor(agGridReact: AgGridReact) {

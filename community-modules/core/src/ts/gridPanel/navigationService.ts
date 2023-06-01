@@ -47,9 +47,8 @@ export class NavigationService extends BeanStub {
     const alt = event.altKey;
     const ctrl = event.ctrlKey;
 
-    const currentCell: CellPosition = this.mouseEventService.getCellPositionForEvent(
-      event,
-    );
+    const currentCell: CellPosition =
+      this.mouseEventService.getCellPositionForEvent(event);
     if (!currentCell) {
       return false;
     }
@@ -142,8 +141,9 @@ export class NavigationService extends BeanStub {
     );
     let scrollIndex = currentPageBottomRow;
 
-    const currentCellPixel = this.paginationProxy.getRow(gridCell.rowIndex)
-      .rowTop;
+    const currentCellPixel = this.paginationProxy.getRow(
+      gridCell.rowIndex,
+    ).rowTop;
     const nextCellPixel =
       currentCellPixel + pixelsInOnePage - pagingPixelOffset;
     let focusIndex = this.paginationProxy.getRowIndexAtPixel(

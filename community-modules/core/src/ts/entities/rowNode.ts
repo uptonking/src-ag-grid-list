@@ -371,7 +371,8 @@ export class RowNode implements IEventEmitter {
   }
 
   private checkRowSelectable() {
-    const isRowSelectableFunc = this.gridOptionsWrapper.getIsRowSelectableFunc();
+    const isRowSelectableFunc =
+      this.gridOptionsWrapper.getIsRowSelectableFunc();
     const shouldInvokeIsRowSelectable = isRowSelectableFunc && _.exists(this);
 
     this.setRowSelectable(
@@ -802,7 +803,8 @@ export class RowNode implements IEventEmitter {
 
   // to make calling code more readable, this is the same method as setSelected except it takes names parameters
   public setSelectedParams(params: SetSelectedParams): number {
-    const groupSelectsChildren = this.gridOptionsWrapper.isGroupSelectsChildren();
+    const groupSelectsChildren =
+      this.gridOptionsWrapper.isGroupSelectsChildren();
     const newValue = params.newValue === true;
     const clearSelection = params.clearSelection === true;
     const suppressFinishActions = params.suppressFinishActions === true;
@@ -892,7 +894,8 @@ export class RowNode implements IEventEmitter {
   // not to be mixed up with 'cell range selection' where you drag the mouse, this is row range selection, by
   // holding down 'shift'.
   private doRowRangeSelection(): number {
-    const groupsSelectChildren = this.gridOptionsWrapper.isGroupSelectsChildren();
+    const groupsSelectChildren =
+      this.gridOptionsWrapper.isGroupSelectsChildren();
     const lastSelectedNode = this.selectionController.getLastSelectedNode();
     const nodesToSelect = this.rowModel.getNodesInRangeForSelection(
       this,
@@ -1042,7 +1045,8 @@ export class RowNode implements IEventEmitter {
   }
 
   public isFullWidthCell(): boolean {
-    const isFullWidthCellFunc = this.gridOptionsWrapper.getIsFullWidthCellFunc();
+    const isFullWidthCellFunc =
+      this.gridOptionsWrapper.getIsFullWidthCellFunc();
 
     return isFullWidthCellFunc ? isFullWidthCellFunc(this) : false;
   }

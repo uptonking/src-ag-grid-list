@@ -1,17 +1,17 @@
-import { CountableTimeInterval } from "./interval";
-import { durationDay, durationMinute } from "./duration";
+import { CountableTimeInterval } from './interval';
+import { durationDay, durationMinute } from './duration';
 
 function floor(date: Date) {
-    date.setUTCHours(0, 0, 0, 0);
+  date.setUTCHours(0, 0, 0, 0);
 }
 function offset(date: Date, days: number) {
-    date.setUTCDate(date.getUTCDate() + days);
+  date.setUTCDate(date.getUTCDate() + days);
 }
 function count(start: Date, end: Date): number {
-    return (end.getTime() - start.getTime()) / durationDay;
+  return (end.getTime() - start.getTime()) / durationDay;
 }
 function field(date: Date): number {
-    return date.getUTCDate() - 1;
+  return date.getUTCDate() - 1;
 }
 
 export const utcDay = new CountableTimeInterval(floor, offset, count, field);

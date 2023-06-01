@@ -369,7 +369,8 @@ export class HeaderWrapperComp extends AbstractHeaderWrapper {
 
     const weWantAutoSize =
       !this.gridOptionsWrapper.isSuppressAutoSize() && !colDef.suppressAutoSize;
-    const skipHeaderOnAutoSize = this.gridOptionsWrapper.isSkipHeaderOnAutoSize();
+    const skipHeaderOnAutoSize =
+      this.gridOptionsWrapper.isSkipHeaderOnAutoSize();
 
     if (weWantAutoSize) {
       this.addManagedListener(this.eResize, 'dblclick', () => {

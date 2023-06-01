@@ -56,13 +56,16 @@ export class BodyDropTarget extends BeanStub implements DropTarget {
 
     switch (this.pinned) {
       case Constants.PINNED_LEFT:
-        this.eSecondaryContainers = this.gridPanel.getDropTargetLeftContainers();
+        this.eSecondaryContainers =
+          this.gridPanel.getDropTargetLeftContainers();
         break;
       case Constants.PINNED_RIGHT:
-        this.eSecondaryContainers = this.gridPanel.getDropTargetRightContainers();
+        this.eSecondaryContainers =
+          this.gridPanel.getDropTargetRightContainers();
         break;
       default:
-        this.eSecondaryContainers = this.gridPanel.getDropTargetBodyContainers();
+        this.eSecondaryContainers =
+          this.gridPanel.getDropTargetBodyContainers();
         break;
     }
   }

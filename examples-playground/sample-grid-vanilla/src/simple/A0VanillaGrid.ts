@@ -16,10 +16,10 @@ export class SimpleGrid {
       debug: true,
     };
 
-    const eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#root');
+    const eGridDiv: HTMLElement = document.querySelector('#root');
     // console.log('==constructor in SimpleGrid');
 
-    new Grid(eGridDiv, this.gridOptions);
+    const grid = new Grid(eGridDiv, this.gridOptions);
   }
 
   // specify the columns

@@ -14,10 +14,10 @@ module.exports = merge(devConfig, {
     port: 8999,
     // open: true,
     compress: true,
-    inline: true,
     hot: true,
     historyApiFallback: true,
+    // inline: true,
     // clientLogLevel: 'silent',
-    clientLogLevel: 'debug',
+    // clientLogLevel: 'debug',
   },
 });

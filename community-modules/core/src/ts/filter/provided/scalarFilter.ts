@@ -28,16 +28,17 @@ export interface Comparator<T> {
 
 export abstract class ScalarFilter<
   M extends ISimpleFilterModel,
-  T
+  T,
 > extends SimpleFilter<M> {
   private scalarFilterParams: IScalarFilterParams;
 
   protected abstract comparator(): Comparator<T>;
 
   // because the date and number filter models have different attribute names, we have to map
-  protected abstract mapRangeFromModel(
-    filterModel: ISimpleFilterModel,
-  ): { from: T; to: T };
+  protected abstract mapRangeFromModel(filterModel: ISimpleFilterModel): {
+    from: T;
+    to: T;
+  };
 
   protected setParams(params: IScalarFilterParams): void {
     super.setParams(params);
@@ -53,9 +54,12 @@ export abstract class ScalarFilter<
           'filterParams.includeBlanksInGreaterThan instead.',
       );
 
-      this.scalarFilterParams.includeBlanksInEquals = this.scalarFilterParams.nullComparator.equals;
-      this.scalarFilterParams.includeBlanksInLessThan = this.scalarFilterParams.nullComparator.lessThan;
-      this.scalarFilterParams.includeBlanksInGreaterThan = this.scalarFilterParams.nullComparator.greaterThan;
+      this.scalarFilterParams.includeBlanksInEquals =
+        this.scalarFilterParams.nullComparator.equals;
+      this.scalarFilterParams.includeBlanksInLessThan =
+        this.scalarFilterParams.nullComparator.lessThan;
+      this.scalarFilterParams.includeBlanksInGreaterThan =
+        this.scalarFilterParams.nullComparator.greaterThan;
     }
   }
 

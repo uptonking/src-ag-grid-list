@@ -1,7 +1,10 @@
 // Note: Assumes working directory is the root of the mono-repo
 const fs = require('fs');
 
-const pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x);
+const pipe =
+  (...fns) =>
+  (x) =>
+    fns.reduce((v, f) => f(v), x);
 
 const LERNA_JSON = 'lerna.json';
 

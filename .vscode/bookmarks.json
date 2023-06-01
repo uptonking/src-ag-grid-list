@@ -1,142 +1,144 @@
-[
-	{
-		"path": "$ROOTPATH$/community-modules/all-modules/src/main.ts",
-		"bookmarks": [
-			{
-				"line": 5,
-				"column": 13,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/grid-packages/ag-grid-community/src/main.ts",
-		"bookmarks": [
-			{
-				"line": 9,
-				"column": 0,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/core/src/ts/grid.ts",
-		"bookmarks": [
-			{
-				"line": 116,
-				"column": 0,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/scripts/release/copy-community-dist-to-root.sh",
-		"bookmarks": [
-			{
-				"line": 9,
-				"column": 0,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/core/src/ts/main.ts",
-		"bookmarks": [
-			{
-				"line": 236,
-				"column": 0,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/client-side-row-model/src/clientSideRowModel/clientSideRowModel.ts",
-		"bookmarks": [
-			{
-				"line": 54,
-				"column": 0,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/core/src/ts/entities/rowNode.ts",
-		"bookmarks": [
-			{
-				"line": 65,
-				"column": 0,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/core/src/ts/eventKeys.ts",
-		"bookmarks": [
-			{
-				"line": 4,
-				"column": 0,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/examples-modules/sample-vanilla-js/src/simple/A0VanillaGrid.ts",
-		"bookmarks": [
-			{
-				"line": 8,
-				"column": 13,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/core/src/ts/headerRendering/headerContainer.ts",
-		"bookmarks": [
-			{
-				"line": 187,
-				"column": 10,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/core/src/ts/rendering/rowRenderer.ts",
-		"bookmarks": [
-			{
-				"line": 495,
-				"column": 10,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/core/src/ts/gridPanel/gridPanel.ts",
-		"bookmarks": [
-			{
-				"line": 58,
-				"column": 0,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/core/src/ts/entities/column.ts",
-		"bookmarks": [
-			{
-				"line": 41,
-				"column": 0,
-				"label": ""
-			}
-		]
-	},
-	{
-		"path": "$ROOTPATH$/community-modules/core/src/ts/gridCore.ts",
-		"bookmarks": [
-			{
-				"line": 183,
-				"column": 19,
-				"label": ""
-			}
-		]
-	}
-]
+{
+  "files": [
+    {
+      "path": "community-modules/all-modules/src/main.ts",
+      "bookmarks": [
+        {
+          "line": 5,
+          "column": 13,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "grid-packages/ag-grid-community/src/main.ts",
+      "bookmarks": [
+        {
+          "line": 9,
+          "column": 0,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "community-modules/core/src/ts/grid.ts",
+      "bookmarks": [
+        {
+          "line": 116,
+          "column": 0,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "scripts/release/copy-community-dist-to-root.sh",
+      "bookmarks": [
+        {
+          "line": 9,
+          "column": 0,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "community-modules/core/src/ts/main.ts",
+      "bookmarks": [
+        {
+          "line": 236,
+          "column": 0,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "community-modules/client-side-row-model/src/clientSideRowModel/clientSideRowModel.ts",
+      "bookmarks": [
+        {
+          "line": 54,
+          "column": 0,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "community-modules/core/src/ts/entities/rowNode.ts",
+      "bookmarks": [
+        {
+          "line": 65,
+          "column": 0,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "community-modules/core/src/ts/eventKeys.ts",
+      "bookmarks": [
+        {
+          "line": 4,
+          "column": 0,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "examples-modules/sample-vanilla-js/src/simple/A0VanillaGrid.ts",
+      "bookmarks": [
+        {
+          "line": 8,
+          "column": 13,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "community-modules/core/src/ts/headerRendering/headerContainer.ts",
+      "bookmarks": [
+        {
+          "line": 187,
+          "column": 10,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "community-modules/core/src/ts/rendering/rowRenderer.ts",
+      "bookmarks": [
+        {
+          "line": 495,
+          "column": 10,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "community-modules/core/src/ts/gridPanel/gridPanel.ts",
+      "bookmarks": [
+        {
+          "line": 58,
+          "column": 0,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "community-modules/core/src/ts/entities/column.ts",
+      "bookmarks": [
+        {
+          "line": 41,
+          "column": 0,
+          "label": ""
+        }
+      ]
+    },
+    {
+      "path": "community-modules/core/src/ts/gridCore.ts",
+      "bookmarks": [
+        {
+          "line": 183,
+          "column": 19,
+          "label": ""
+        }
+      ]
+    }
+  ]
+}

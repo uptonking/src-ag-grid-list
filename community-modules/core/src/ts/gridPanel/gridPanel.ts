@@ -347,7 +347,8 @@ export class GridPanel extends Component {
 
   private showOrHideOverlay(): void {
     const isEmpty = this.paginationProxy.isEmpty();
-    const isSuppressNoRowsOverlay = this.gridOptionsWrapper.isSuppressNoRowsOverlay();
+    const isSuppressNoRowsOverlay =
+      this.gridOptionsWrapper.isSuppressNoRowsOverlay();
     const method =
       isEmpty && !isSuppressNoRowsOverlay ? 'showNoRowsOverlay' : 'hideOverlay';
 
@@ -913,7 +914,8 @@ export class GridPanel extends Component {
         rowEnd = pinnedRowModel.getPinnedBottomRowData().length - 1;
       }
 
-      const allDisplayedColumns = beans.columnController.getAllDisplayedColumns();
+      const allDisplayedColumns =
+        beans.columnController.getAllDisplayedColumns();
       if (_.missingOrEmpty(allDisplayedColumns)) {
         return;
       }
@@ -1053,7 +1055,8 @@ export class GridPanel extends Component {
   }
 
   public isVerticalScrollShowing(): boolean {
-    const isAlwaysShowVerticalScroll = this.gridOptionsWrapper.isAlwaysShowVerticalScroll();
+    const isAlwaysShowVerticalScroll =
+      this.gridOptionsWrapper.isAlwaysShowVerticalScroll();
     _.addOrRemoveCssClass(
       this.eBodyViewport,
       'ag-force-vertical-scroll',
@@ -1123,7 +1126,8 @@ export class GridPanel extends Component {
   }
 
   private setHorizontalScrollVisible(visible: boolean): void {
-    const isSuppressHorizontalScroll = this.gridOptionsWrapper.isSuppressHorizontalScroll();
+    const isSuppressHorizontalScroll =
+      this.gridOptionsWrapper.isSuppressHorizontalScroll();
     const scrollSize = visible
       ? this.gridOptionsWrapper.getScrollbarWidth() || 0
       : 0;

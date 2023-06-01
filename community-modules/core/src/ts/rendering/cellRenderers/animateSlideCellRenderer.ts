@@ -6,7 +6,8 @@ import { _ } from '../../utils';
 
 export class AnimateSlideCellRenderer
   extends Component
-  implements ICellRenderer {
+  implements ICellRenderer
+{
   private static TEMPLATE =
     '<span>' + '<span class="ag-value-slide-current"></span>' + '</span>';
 

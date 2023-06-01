@@ -51,7 +51,8 @@ export class AnimationFrameService extends BeanStub {
 
   @PostConstruct
   private init(): void {
-    this.useAnimationFrame = !this.gridOptionsWrapper.isSuppressAnimationFrame();
+    this.useAnimationFrame =
+      !this.gridOptionsWrapper.isSuppressAnimationFrame();
   }
 
   // this method is for our ag-Grid sanity only - if animation frames are turned off,

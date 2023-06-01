@@ -24,7 +24,8 @@ export interface WrapableInterface {
 }
 
 export abstract class BaseComponentWrapper<F extends WrapableInterface>
-  implements FrameworkComponentWrapper {
+  implements FrameworkComponentWrapper
+{
   wrap<A extends IComponent<any>>(
     OriginalConstructor: { new (): any },
     mandatoryMethodList: string[],
@@ -46,7 +47,7 @@ export abstract class BaseComponentWrapper<F extends WrapableInterface>
       this.createMethod(wrapper, methodName, false);
     });
 
-    return (wrapper as any) as A;
+    return wrapper as any as A;
   }
 
   abstract createWrapper(

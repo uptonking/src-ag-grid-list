@@ -37,9 +37,10 @@ export class NumberFilter extends ScalarFilter<NumberFilterModel, number> {
   @RefSelector('eValueTo1') private eValueTo1: AgInputNumberField;
   @RefSelector('eValueTo2') private eValueTo2: AgInputNumberField;
 
-  protected mapRangeFromModel(
-    filterModel: NumberFilterModel,
-  ): { from: number; to: number } {
+  protected mapRangeFromModel(filterModel: NumberFilterModel): {
+    from: number;
+    to: number;
+  } {
     return {
       from: filterModel.filter,
       to: filterModel.filterTo,

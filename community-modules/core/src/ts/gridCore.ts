@@ -241,9 +241,8 @@ export class GridCore extends ManagedFocusComponent {
   }
 
   private focusGridHeader(): boolean {
-    let firstColumn:
-      | Column
-      | ColumnGroup = this.columnController.getAllDisplayedColumns()[0];
+    let firstColumn: Column | ColumnGroup =
+      this.columnController.getAllDisplayedColumns()[0];
     if (!firstColumn) {
       return false;
     }

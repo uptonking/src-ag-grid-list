@@ -58,11 +58,11 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      // template: path.resolve(process.cwd(), 'public/index.html'),
-      // template: './public/demo.html',
-      // filename: 'index.html',
-    }),
+    // new HtmlWebpackPlugin({
+    //   // template: path.resolve(process.cwd(), 'public/index.html'),
+    //   // template: './public/demo.html',
+    //   // filename: 'index.html',
+    // }),
   ],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', 'jsx'],

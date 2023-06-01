@@ -12,8 +12,8 @@ module.exports = merge(devServerConfig, {
   plugins: [
     new HtmlWebpackPlugin({
       // template: path.resolve(process.cwd(), 'demo.html'),
-      template: 'demo.html',
-      // filename: 'index.html',
+      template: './demo.html',
+      filename: 'index.html',
     }),
   ],
   // devServer: {

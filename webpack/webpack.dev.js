@@ -15,6 +15,6 @@ module.exports = merge(commonConfig, {
   target: 'web',
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new ReactRefreshWebpackPlugin(),
+    // new ReactRefreshWebpackPlugin(),
   ],
 });

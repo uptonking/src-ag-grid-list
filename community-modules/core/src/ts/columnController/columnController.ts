@@ -228,7 +228,8 @@ export class ColumnController extends BeanStub {
   @PostConstruct
   public init(): void {
     // 默认false，即会对列进行virtualize
-    this.suppressColumnVirtualisation = this.gridOptionsWrapper.isSuppressColumnVirtualisation();
+    this.suppressColumnVirtualisation =
+      this.gridOptionsWrapper.isSuppressColumnVirtualisation();
     const pivotMode = this.gridOptionsWrapper.isPivotMode();
 
     if (this.isPivotSettingAllowed(pivotMode)) {
@@ -559,10 +560,11 @@ export class ColumnController extends BeanStub {
             return false;
           }
           // get how wide this col should be
-          const preferredWidth = this.autoWidthCalculator.getPreferredWidthForColumn(
-            column,
-            skipHeader,
-          );
+          const preferredWidth =
+            this.autoWidthCalculator.getPreferredWidthForColumn(
+              column,
+              skipHeader,
+            );
           // preferredWidth = -1 if this col is not on the screen
           if (preferredWidth > 0) {
             const newWidth = this.normaliseColumnWidth(column, preferredWidth);
@@ -1938,7 +1940,8 @@ export class ColumnController extends BeanStub {
     let groupPointerLevel: number;
 
     while (true) {
-      const groupPointerOriginalColumnGroup = groupPointer.getOriginalColumnGroup();
+      const groupPointerOriginalColumnGroup =
+        groupPointer.getOriginalColumnGroup();
       originalGroupLevel = groupPointerOriginalColumnGroup.getLevel();
       groupPointerLevel = groupPointer.getPaddingLevel();
 
@@ -2958,9 +2961,8 @@ export class ColumnController extends BeanStub {
     stateItems.forEach((stateItem) => {
       const groupKey = stateItem.groupId;
       const newValue = stateItem.open;
-      const originalColumnGroup: OriginalColumnGroup | null = this.getOriginalColumnGroup(
-        groupKey,
-      );
+      const originalColumnGroup: OriginalColumnGroup | null =
+        this.getOriginalColumnGroup(groupKey);
 
       if (!originalColumnGroup) {
         return;
@@ -3167,8 +3169,10 @@ export class ColumnController extends BeanStub {
   private processSecondaryColumnDefinitions(
     colDefs: (ColDef | ColGroupDef)[] | null,
   ): (ColDef | ColGroupDef)[] | undefined {
-    const columnCallback = this.gridOptionsWrapper.getProcessSecondaryColDefFunc();
-    const groupCallback = this.gridOptionsWrapper.getProcessSecondaryColGroupDefFunc();
+    const columnCallback =
+      this.gridOptionsWrapper.getProcessSecondaryColDefFunc();
+    const groupCallback =
+      this.gridOptionsWrapper.getProcessSecondaryColGroupDefFunc();
 
     if (!columnCallback && !groupCallback) {
       return undefined;
@@ -3526,7 +3530,8 @@ export class ColumnController extends BeanStub {
       this.allDisplayedCenterVirtualColumns = this.displayedCenterColumns;
     } else {
       // filter out what should be visible
-      this.allDisplayedCenterVirtualColumns = this.filterOutColumnsWithinViewport();
+      this.allDisplayedCenterVirtualColumns =
+        this.filterOutColumnsWithinViewport();
     }
 
     this.allDisplayedVirtualColumns = this.allDisplayedCenterVirtualColumns
@@ -3843,27 +3848,30 @@ export class ColumnController extends BeanStub {
 
     const groupInstanceIdCreator = new GroupInstanceIdCreator();
 
-    this.displayedLeftColumnTree = this.displayedGroupCreator.createDisplayedGroups(
-      leftVisibleColumns,
-      this.gridBalancedTree,
-      groupInstanceIdCreator,
-      Constants.PINNED_LEFT,
-      this.displayedLeftColumnTree,
-    );
-    this.displayedRightColumnTree = this.displayedGroupCreator.createDisplayedGroups(
-      rightVisibleColumns,
-      this.gridBalancedTree,
-      groupInstanceIdCreator,
-      Constants.PINNED_RIGHT,
-      this.displayedRightColumnTree,
-    );
-    this.displayedCentreColumnTree = this.displayedGroupCreator.createDisplayedGroups(
-      centerVisibleColumns,
-      this.gridBalancedTree,
-      groupInstanceIdCreator,
-      null,
-      this.displayedCentreColumnTree,
-    );
+    this.displayedLeftColumnTree =
+      this.displayedGroupCreator.createDisplayedGroups(
+        leftVisibleColumns,
+        this.gridBalancedTree,
+        groupInstanceIdCreator,
+        Constants.PINNED_LEFT,
+        this.displayedLeftColumnTree,
+      );
+    this.displayedRightColumnTree =
+      this.displayedGroupCreator.createDisplayedGroups(
+        rightVisibleColumns,
+        this.gridBalancedTree,
+        groupInstanceIdCreator,
+        Constants.PINNED_RIGHT,
+        this.displayedRightColumnTree,
+      );
+    this.displayedCentreColumnTree =
+      this.displayedGroupCreator.createDisplayedGroups(
+        centerVisibleColumns,
+        this.gridBalancedTree,
+        groupInstanceIdCreator,
+        null,
+        this.displayedCentreColumnTree,
+      );
   }
 
   private updateOpenClosedVisibilityInColumnGroups(): void {

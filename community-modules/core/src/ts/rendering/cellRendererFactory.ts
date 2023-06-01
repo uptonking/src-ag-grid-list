@@ -31,12 +31,10 @@ export class CellRendererFactory {
 
   @PostConstruct
   private init(): void {
-    this.cellRendererMap[
-      CellRendererFactory.ANIMATE_SLIDE
-    ] = AnimateSlideCellRenderer;
-    this.cellRendererMap[
-      CellRendererFactory.ANIMATE_SHOW_CHANGE
-    ] = AnimateShowChangeCellRenderer;
+    this.cellRendererMap[CellRendererFactory.ANIMATE_SLIDE] =
+      AnimateSlideCellRenderer;
+    this.cellRendererMap[CellRendererFactory.ANIMATE_SHOW_CHANGE] =
+      AnimateShowChangeCellRenderer;
     this.cellRendererMap[CellRendererFactory.GROUP] = GroupCellRenderer;
 
     // this.registerRenderersFromGridOptions();

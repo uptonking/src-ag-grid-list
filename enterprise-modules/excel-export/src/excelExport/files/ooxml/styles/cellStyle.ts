@@ -1,26 +1,26 @@
 import { ExcelOOXMLTemplate } from '@ag-grid-community/core';
 
 const borderFactory: ExcelOOXMLTemplate = {
-    getTemplate(cellStyle: CellStyle) {
-        const {builtinId, name, xfId} = cellStyle;
+  getTemplate(cellStyle: CellStyle) {
+    const { builtinId, name, xfId } = cellStyle;
 
-        return {
-            name: "cellStyle",
-            properties: {
-                rawMap: {
-                    builtinId,
-                    name,
-                    xfId
-                }
-            }
-        };
-    }
+    return {
+      name: 'cellStyle',
+      properties: {
+        rawMap: {
+          builtinId,
+          name,
+          xfId,
+        },
+      },
+    };
+  },
 };
 
 export default borderFactory;
 
 export interface CellStyle {
-    builtinId: number;
-    name: string;
-    xfId: number;
+  builtinId: number;
+  name: string;
+  xfId: number;
 }

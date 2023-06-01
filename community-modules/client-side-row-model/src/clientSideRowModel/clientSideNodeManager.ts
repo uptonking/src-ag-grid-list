@@ -93,8 +93,10 @@ export class ClientSideNodeManager {
   // @PostConstruct - this is not a bean, so postConstruct called by constructor
   public postConstruct(): void {
     // func below doesn't have 'this' pointer, so need to pull out these bits
-    this.getNodeChildDetails = this.gridOptionsWrapper.getNodeChildDetailsFunc();
-    this.suppressParentsInRowNodes = this.gridOptionsWrapper.isSuppressParentsInRowNodes();
+    this.getNodeChildDetails =
+      this.gridOptionsWrapper.getNodeChildDetailsFunc();
+    this.suppressParentsInRowNodes =
+      this.gridOptionsWrapper.isSuppressParentsInRowNodes();
     this.doesDataFlower = this.gridOptionsWrapper.getDoesDataFlowerFunc();
     this.isRowMasterFunc = this.gridOptionsWrapper.getIsRowMasterFunc();
 

@@ -81,7 +81,8 @@ export class FilterManager extends BeanStub {
     );
     this.setQuickFilterParts();
 
-    this.allowShowChangeAfterFilter = this.gridOptionsWrapper.isAllowShowChangeAfterFilter();
+    this.allowShowChangeAfterFilter =
+      this.gridOptionsWrapper.isAllowShowChangeAfterFilter();
 
     // check this here, in case there is a filter from the start
     this.checkExternalFilter();
@@ -314,7 +315,8 @@ export class FilterManager extends BeanStub {
   }
 
   private checkExternalFilter(): void {
-    this.externalFilterPresent = this.gridOptionsWrapper.isExternalFilterPresent();
+    this.externalFilterPresent =
+      this.gridOptionsWrapper.isExternalFilterPresent();
   }
 
   /** 触发 filterChanged 事件 */

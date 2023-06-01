@@ -10,7 +10,8 @@ export interface ILoadingCellRenderer extends ICellRenderer {}
 
 export class LoadingCellRenderer
   extends Component
-  implements ILoadingCellRenderer {
+  implements ILoadingCellRenderer
+{
   private static TEMPLATE = `<div class="ag-loading">
             <span class="ag-loading-icon" ref="eLoadingIcon"></span>
             <span class="ag-loading-text" ref="eLoadingText"></span>

@@ -148,9 +148,8 @@ export class Component extends BeanStub {
     const componentParams = paramsMap
       ? paramsMap[element.getAttribute('ref')]
       : undefined;
-    const ComponentClass = this.agStackComponentsRegistry.getComponentClass(
-      key,
-    );
+    const ComponentClass =
+      this.agStackComponentsRegistry.getComponentClass(key);
     // console.log('key-ComponentClass, ', ComponentClass);
 
     if (ComponentClass) {

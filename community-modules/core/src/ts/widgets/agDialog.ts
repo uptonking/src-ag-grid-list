@@ -137,8 +137,10 @@ export class AgDialog extends AgPanel {
     }
 
     const parser = new DOMParser();
-    const resizers = parser.parseFromString(this.RESIZE_TEMPLATE, 'text/html')
-      .body;
+    const resizers = parser.parseFromString(
+      this.RESIZE_TEMPLATE,
+      'text/html',
+    ).body;
 
     eGui.appendChild(resizers.firstChild);
     this.createMap();
@@ -390,7 +392,10 @@ export class AgDialog extends AgPanel {
 
       if (this.maximizeButtonComp) {
         this.destroyBean(this.maximizeButtonComp);
-        this.maximizeButtonComp = this.maximizeIcon = this.minimizeIcon = undefined;
+        this.maximizeButtonComp =
+          this.maximizeIcon =
+          this.minimizeIcon =
+            undefined;
       }
       return;
     }

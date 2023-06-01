@@ -59,7 +59,7 @@ module.exports = {
     '@typescript-eslint/no-duplicate-imports': 1,
     // '@typescript-eslint/interface-name-prefix': 1,
     '@typescript-eslint/explicit-function-return-type': 1,
-    '@typescript-eslint/explicit-member-accessibility': 1,
+    '@typescript-eslint/explicit-member-accessibility': 0,
     '@typescript-eslint/member-ordering': 0,
     '@typescript-eslint/consistent-type-definitions': 1,
     '@typescript-eslint/prefer-for-of': 0,

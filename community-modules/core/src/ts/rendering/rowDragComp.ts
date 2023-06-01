@@ -64,7 +64,8 @@ export class RowDragComp extends Component {
   }
 
   private getSelectedCount(): number {
-    const multiRowEnabled = this.beans.gridOptionsWrapper.isEnableMultiRowDragging();
+    const multiRowEnabled =
+      this.beans.gridOptionsWrapper.isEnableMultiRowDragging();
     if (!multiRowEnabled) {
       return 1;
     }
@@ -266,7 +267,8 @@ class ManagedVisibilityStrategy extends VisibilityStrategy {
     const shouldPreventRowMove =
       rowDragFeature && rowDragFeature.shouldPreventRowMove();
     const suppressRowDrag = this.beans.gridOptionsWrapper.isSuppressRowDrag();
-    const hasExternalDropZones = this.beans.dragAndDropService.hasExternalDropZones();
+    const hasExternalDropZones =
+      this.beans.dragAndDropService.hasExternalDropZones();
     const neverDisplayed =
       (shouldPreventRowMove && !hasExternalDropZones) || suppressRowDrag;
 

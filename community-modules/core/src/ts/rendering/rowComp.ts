@@ -183,7 +183,8 @@ export class RowComp extends Component {
     const businessKeySanitised = _.escape(businessKey);
     const rowTopStyle = this.getInitialRowTopStyle();
     const rowIdx = this.rowNode.getRowIndexString();
-    const headerRowCount = this.beans.headerNavigationService.getHeaderRowCount();
+    const headerRowCount =
+      this.beans.headerNavigationService.getHeaderRowCount();
 
     templateParts.push(`<div`);
     templateParts.push(` role="row"`);
@@ -255,10 +256,10 @@ export class RowComp extends Component {
       ? this.roundRowTopToBounds(this.rowNode.oldRowTop)
       : this.rowNode.rowTop;
     const afterPaginationPixels = this.applyPaginationOffset(pixels);
-    const afterScalingPixels = this.beans.maxDivHeightScaler.getRealPixelPosition(
-      afterPaginationPixels,
-    );
-    const isSuppressRowTransform = this.beans.gridOptionsWrapper.isSuppressRowTransform();
+    const afterScalingPixels =
+      this.beans.maxDivHeightScaler.getRealPixelPosition(afterPaginationPixels);
+    const isSuppressRowTransform =
+      this.beans.gridOptionsWrapper.isSuppressRowTransform();
 
     return isSuppressRowTransform
       ? `top: ${afterScalingPixels}px; `
@@ -266,7 +267,8 @@ export class RowComp extends Component {
   }
 
   private getRowBusinessKey(): string {
-    const businessKeyForNodeFunc = this.beans.gridOptionsWrapper.getBusinessKeyForNodeFunc();
+    const businessKeyForNodeFunc =
+      this.beans.gridOptionsWrapper.getBusinessKeyForNodeFunc();
     if (typeof businessKeyForNodeFunc !== 'function') {
       return;
     }
@@ -330,7 +332,8 @@ export class RowComp extends Component {
   }
 
   private createChildScopeOrNull(data: any) {
-    const isAngularCompileRows = this.beans.gridOptionsWrapper.isAngularCompileRows();
+    const isAngularCompileRows =
+      this.beans.gridOptionsWrapper.isAngularCompileRows();
 
     if (!isAngularCompileRows) {
       return null;
@@ -394,9 +397,10 @@ export class RowComp extends Component {
     if (this.printLayout) {
       centerCols = this.beans.columnController.getAllDisplayedColumns();
     } else {
-      centerCols = this.beans.columnController.getAllDisplayedCenterVirtualColumnsForRow(
-        this.rowNode,
-      );
+      centerCols =
+        this.beans.columnController.getAllDisplayedCenterVirtualColumnsForRow(
+          this.rowNode,
+        );
       leftCols = this.beans.columnController.getDisplayedLeftColumnsForRow(
         this.rowNode,
       );
@@ -818,7 +822,8 @@ export class RowComp extends Component {
       return;
     }
 
-    const suppressAnimationFrame = this.beans.gridOptionsWrapper.isSuppressAnimationFrame();
+    const suppressAnimationFrame =
+      this.beans.gridOptionsWrapper.isSuppressAnimationFrame();
     const skipAnimationFrame = suppressAnimationFrame || this.printLayout;
 
     if (skipAnimationFrame) {
@@ -852,9 +857,10 @@ export class RowComp extends Component {
       leftCols = [];
       rightCols = [];
     } else {
-      centerCols = this.beans.columnController.getAllDisplayedCenterVirtualColumnsForRow(
-        this.rowNode,
-      );
+      centerCols =
+        this.beans.columnController.getAllDisplayedCenterVirtualColumnsForRow(
+          this.rowNode,
+        );
       leftCols = this.beans.columnController.getDisplayedLeftColumnsForRow(
         this.rowNode,
       );
@@ -902,7 +908,8 @@ export class RowComp extends Component {
   }
 
   private isCellEligibleToBeRemoved(indexStr: string): boolean {
-    const displayedColumns = this.beans.columnController.getAllDisplayedColumns();
+    const displayedColumns =
+      this.beans.columnController.getAllDisplayedColumns();
 
     const REMOVE_CELL = true;
     const KEEP_CELL = false;
@@ -1126,8 +1133,10 @@ export class RowComp extends Component {
       return;
     }
 
-    const multiSelectOnClick = this.beans.gridOptionsWrapper.isRowMultiSelectWithClick();
-    const rowDeselectionWithCtrl = this.beans.gridOptionsWrapper.isRowDeselection();
+    const multiSelectOnClick =
+      this.beans.gridOptionsWrapper.isRowMultiSelectWithClick();
+    const rowDeselectionWithCtrl =
+      this.beans.gridOptionsWrapper.isRowDeselection();
 
     if (this.rowNode.isSelected()) {
       if (multiSelectOnClick) {
@@ -1586,9 +1595,10 @@ export class RowComp extends Component {
     return _.assign({}, rowStyle, rowStyleFuncResult);
   }
 
-  private createCells(
-    cols: Column[],
-  ): { template: string; cellComps: CellComp[] } {
+  private createCells(cols: Column[]): {
+    template: string;
+    cellComps: CellComp[];
+  } {
     const templateParts: string[] = [];
     const newCellComps: CellComp[] = [];
 
@@ -1869,9 +1879,10 @@ export class RowComp extends Component {
     // visible (ie parent group was expanded) but is now not visible
     if (_.exists(pixels)) {
       const afterPaginationPixels = this.applyPaginationOffset(pixels);
-      const afterScalingPixels = this.beans.maxDivHeightScaler.getRealPixelPosition(
-        afterPaginationPixels,
-      );
+      const afterScalingPixels =
+        this.beans.maxDivHeightScaler.getRealPixelPosition(
+          afterPaginationPixels,
+        );
       const topPx = `${afterScalingPixels}px`;
 
       if (this.beans.gridOptionsWrapper.isSuppressRowTransform()) {
@@ -1923,7 +1934,8 @@ export class RowComp extends Component {
     const rowIndexStr = this.rowNode.getRowIndexString();
     const rowIsEven = this.rowNode.rowIndex % 2 === 0;
     const rowIsEvenChanged = this.rowIsEven !== rowIsEven;
-    const headerRowCount = this.beans.headerNavigationService.getHeaderRowCount();
+    const headerRowCount =
+      this.beans.headerNavigationService.getHeaderRowCount();
 
     if (rowIsEvenChanged) {
       this.rowIsEven = rowIsEven;

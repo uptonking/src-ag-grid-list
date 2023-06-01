@@ -50,7 +50,8 @@ export class SelectionController extends BeanStub {
 
   @PostConstruct
   private init(): void {
-    this.groupSelectsChildren = this.gridOptionsWrapper.isGroupSelectsChildren();
+    this.groupSelectsChildren =
+      this.gridOptionsWrapper.isGroupSelectsChildren();
     this.addManagedListener(
       this.eventService,
       Events.EVENT_ROW_SELECTED,

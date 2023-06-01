@@ -57,9 +57,10 @@ export class DateFilter extends ScalarFilter<DateFilterModel, Date> {
 
   private dateFilterParams: IDateFilterParams;
 
-  protected mapRangeFromModel(
-    filterModel: DateFilterModel,
-  ): { from: Date; to: Date } {
+  protected mapRangeFromModel(filterModel: DateFilterModel): {
+    from: Date;
+    to: Date;
+  } {
     // unlike the other filters, we do two things here:
     // 1) allow for different attribute names (same as done for other filters) (eg the 'from' and 'to'
     //    are in different locations in Date and Number filter models)

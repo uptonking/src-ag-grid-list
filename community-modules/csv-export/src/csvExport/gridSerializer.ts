@@ -71,7 +71,8 @@ export interface GridSerializingParams {
 }
 
 export abstract class BaseGridSerializingSession<T>
-  implements GridSerializingSession<T> {
+  implements GridSerializingSession<T>
+{
   public columnController: ColumnController;
   public valueService: ValueService;
   public gridOptionsWrapper: GridOptionsWrapper;
@@ -244,8 +245,10 @@ export class GridSerializer extends BeanStub {
       params.shouldRowBeSkipped || (() => false);
     const api = this.gridOptionsWrapper.getApi();
     const columnApi = this.gridOptionsWrapper.getColumnApi();
-    const skipSingleChildrenGroup = this.gridOptionsWrapper.isGroupRemoveSingleChildren();
-    const skipLowestSingleChildrenGroup = this.gridOptionsWrapper.isGroupRemoveLowestSingleChildren();
+    const skipSingleChildrenGroup =
+      this.gridOptionsWrapper.isGroupRemoveSingleChildren();
+    const skipLowestSingleChildrenGroup =
+      this.gridOptionsWrapper.isGroupRemoveLowestSingleChildren();
     const context = this.gridOptionsWrapper.getContext();
 
     // when in pivot mode, we always render cols on screen, never 'all columns'
@@ -282,13 +285,15 @@ export class GridSerializer extends BeanStub {
 
     // first pass, put in the header names of the cols
     if (params.columnGroups) {
-      const groupInstanceIdCreator: GroupInstanceIdCreator = new GroupInstanceIdCreator();
-      const displayedGroups: ColumnGroupChild[] = this.displayedGroupCreator.createDisplayedGroups(
-        columnsToExport,
-        this.columnController.getGridBalancedTree(),
-        groupInstanceIdCreator,
-        null,
-      );
+      const groupInstanceIdCreator: GroupInstanceIdCreator =
+        new GroupInstanceIdCreator();
+      const displayedGroups: ColumnGroupChild[] =
+        this.displayedGroupCreator.createDisplayedGroups(
+          columnsToExport,
+          this.columnController.getGridBalancedTree(),
+          groupInstanceIdCreator,
+          null,
+        );
       this.recursivelyAddHeaderGroups(
         displayedGroups,
         gridSerializingSession,
@@ -382,7 +387,8 @@ export class GridSerializer extends BeanStub {
         return;
       }
 
-      const rowAccumulator: RowAccumulator = gridSerializingSession.onNewBodyRow();
+      const rowAccumulator: RowAccumulator =
+        gridSerializingSession.onNewBodyRow();
       columnsToExport.forEach((column: Column, index: number) => {
         rowAccumulator.onColumn(column, index, node);
       });
@@ -444,7 +450,8 @@ export class GridSerializer extends BeanStub {
     displayedGroups: ColumnGroupChild[],
     processGroupHeaderCallback: ProcessGroupHeaderCallback | undefined,
   ) {
-    const gridRowIterator: RowSpanningAccumulator = gridSerializingSession.onNewHeaderGroupingRow();
+    const gridRowIterator: RowSpanningAccumulator =
+      gridSerializingSession.onNewHeaderGroupingRow();
     let columnIndex: number = 0;
     displayedGroups.forEach((columnGroupChild: ColumnGroupChild) => {
       const columnGroup: ColumnGroup = columnGroupChild as ColumnGroup;

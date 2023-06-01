@@ -39,9 +39,8 @@ export class AgComponentUtils extends BeanStub {
       };
     }
 
-    const metadata: ComponentMetadata = this.componentMetadataProvider.retrieve(
-      propertyName,
-    );
+    const metadata: ComponentMetadata =
+      this.componentMetadataProvider.retrieve(propertyName);
     if (metadata && metadata.functionAdapter) {
       return {
         componentFromFramework: componentFromFramework,
@@ -55,9 +54,9 @@ export class AgComponentUtils extends BeanStub {
     return null;
   }
 
-  public adaptCellRendererFunction(
-    callback: AgGridComponentFunctionInput,
-  ): { new (): IComponent<ICellRendererParams> } {
+  public adaptCellRendererFunction(callback: AgGridComponentFunctionInput): {
+    new (): IComponent<ICellRendererParams>;
+  } {
     class Adapter implements ICellRendererComp {
       private params: ICellRendererParams;
 

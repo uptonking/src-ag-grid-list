@@ -223,7 +223,8 @@ export class RowRenderer extends BeanStub {
       },
     );
 
-    const rangeSelectionEnabled = this.gridOptionsWrapper.isEnableRangeSelection();
+    const rangeSelectionEnabled =
+      this.gridOptionsWrapper.isEnableRangeSelection();
     if (rangeSelectionEnabled) {
       this.addManagedListener(
         this.eventService,
@@ -585,9 +586,8 @@ export class RowRenderer extends BeanStub {
     // 执行锁定，这里设置实例属性this.refreshInProgress为true
     this.getLockOnRefresh();
 
-    const focusedCell: CellPosition = this.getCellToRestoreFocusToAfterRefresh(
-      params,
-    );
+    const focusedCell: CellPosition =
+      this.getCellToRestoreFocusToAfterRefresh(params);
 
     this.sizeContainerToPageHeight();
     this.scrollToTopIfNewData(params);
@@ -598,9 +598,8 @@ export class RowRenderer extends BeanStub {
     const recycleRows = !this.printLayout && params.recycleRows;
     const animate = params.animate && this.gridOptionsWrapper.isAnimateRows();
 
-    const rowsToRecycle: { [key: string]: RowComp } = this.binRowComps(
-      recycleRows,
-    );
+    const rowsToRecycle: { [key: string]: RowComp } =
+      this.binRowComps(recycleRows);
 
     // 重新创建行组件，或更新旧的行组件
     this.redraw(rowsToRecycle, animate);
@@ -615,7 +614,8 @@ export class RowRenderer extends BeanStub {
 
   private scrollToTopIfNewData(params: RefreshViewParams): void {
     const scrollToTop = params.newData || params.newPage;
-    const suppressScrollToTop = this.gridOptionsWrapper.isSuppressScrollOnNewData();
+    const suppressScrollToTop =
+      this.gridOptionsWrapper.isSuppressScrollOnNewData();
 
     if (scrollToTop && !suppressScrollToTop) {
       this.gridPanel.scrollToTop();
@@ -1252,7 +1252,8 @@ export class RowRenderer extends BeanStub {
     // of, we also have a property to not do this operation.
     const rowLayoutNormal =
       this.gridOptionsWrapper.getDomLayout() === Constants.DOM_LAYOUT_NORMAL;
-    const suppressRowCountRestriction = this.gridOptionsWrapper.isSuppressMaxRenderedRowRestriction();
+    const suppressRowCountRestriction =
+      this.gridOptionsWrapper.isSuppressMaxRenderedRowRestriction();
     const rowBufferMaxSize = Math.max(
       this.gridOptionsWrapper.getRowBuffer(),
       500,
@@ -1367,7 +1368,8 @@ export class RowRenderer extends BeanStub {
     animate: boolean,
     afterScroll: boolean,
   ): RowComp {
-    const suppressAnimationFrame = this.gridOptionsWrapper.isSuppressAnimationFrame();
+    const suppressAnimationFrame =
+      this.gridOptionsWrapper.isSuppressAnimationFrame();
 
     // we don't use animations frames for printing, so the user can put the grid into print mode
     // and immediately print - otherwise the user would have to wait for the rows to draw in the background
@@ -1542,9 +1544,8 @@ export class RowRenderer extends BeanStub {
     // full width rows cannot be focused, so if it's a group and using full width rows,
     // we need to skip over the row
     const pivotMode = this.columnController.isPivotMode();
-    const usingFullWidthRows = this.gridOptionsWrapper.isGroupUseEntireRow(
-      pivotMode,
-    );
+    const usingFullWidthRows =
+      this.gridOptionsWrapper.isGroupUseEntireRow(pivotMode);
 
     if (!usingFullWidthRows) {
       return true;

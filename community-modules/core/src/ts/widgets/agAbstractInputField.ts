@@ -10,7 +10,7 @@ export interface IInputField extends IAgLabel {
 
 export abstract class AgAbstractInputField<
   T extends FieldElement,
-  K
+  K,
 > extends AgAbstractField<K> {
   protected abstract inputType: string;
 

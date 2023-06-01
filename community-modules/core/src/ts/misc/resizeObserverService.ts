@@ -63,7 +63,8 @@ export class ResizeObserverService extends BeanStub {
       return () => (running = false);
     };
 
-    const suppressResize = this.gridOptionsWrapper.isSuppressBrowserResizeObserver();
+    const suppressResize =
+      this.gridOptionsWrapper.isSuppressBrowserResizeObserver();
     const resizeObserverExists = !!(window as any).ResizeObserver;
 
     if (resizeObserverExists && !suppressResize) {

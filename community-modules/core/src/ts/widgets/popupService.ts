@@ -157,9 +157,10 @@ export class PopupService extends BeanStub {
     );
   }
 
-  private calculatePointerAlign(
-    e: MouseEvent | Touch,
-  ): { x: number; y: number } {
+  private calculatePointerAlign(e: MouseEvent | Touch): {
+    x: number;
+    y: number;
+  } {
     const parentRect = this.getParentRect();
 
     return {

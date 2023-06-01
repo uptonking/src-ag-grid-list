@@ -72,7 +72,8 @@ export class FlattenStage extends BeanStub implements IRowNodeStage {
     const groupSuppressRow = this.gridOptionsWrapper.isGroupSuppressRow();
     const hideOpenParents = this.gridOptionsWrapper.isGroupHideOpenParents();
     // these two are mutually exclusive, so if first set, we don't set the second
-    const groupRemoveSingleChildren = this.gridOptionsWrapper.isGroupRemoveSingleChildren();
+    const groupRemoveSingleChildren =
+      this.gridOptionsWrapper.isGroupRemoveSingleChildren();
     const groupRemoveLowestSingleChildren =
       !groupRemoveSingleChildren &&
       this.gridOptionsWrapper.isGroupRemoveLowestSingleChildren();
@@ -160,7 +161,8 @@ export class FlattenStage extends BeanStub implements IRowNodeStage {
     nextRowTop: NumberWrapper,
     uiLevel: number,
   ): void {
-    const isGroupMultiAutoColumn = this.gridOptionsWrapper.isGroupMultiAutoColumn();
+    const isGroupMultiAutoColumn =
+      this.gridOptionsWrapper.isGroupMultiAutoColumn();
 
     result.push(rowNode);
     rowNode.setUiLevel(isGroupMultiAutoColumn ? 0 : uiLevel);

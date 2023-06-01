@@ -76,9 +76,8 @@ export class TabbedLayout extends ManagedFocusComponent {
         focusController.focusFirstFocusableElement(eBody);
       }
     } else {
-      const isFocusManaged = focusController.isFocusUnderManagedComponent(
-        eBody,
-      );
+      const isFocusManaged =
+        focusController.isFocusUnderManagedComponent(eBody);
 
       if (isFocusManaged) {
         activeItem.eHeaderButton.focus();

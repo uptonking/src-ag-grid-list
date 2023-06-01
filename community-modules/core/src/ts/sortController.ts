@@ -146,7 +146,8 @@ export class SortController extends BeanStub {
     // first up, clear any previous sort
     const sortModelProvided = sortModel && sortModel.length > 0;
 
-    const allColumnsIncludingAuto = this.columnController.getPrimaryAndSecondaryAndAutoColumns();
+    const allColumnsIncludingAuto =
+      this.columnController.getPrimaryAndSecondaryAndAutoColumns();
     allColumnsIncludingAuto.forEach((column: Column) => {
       let sortForCol: any = null;
       let sortedAt = -1;
@@ -182,7 +183,8 @@ export class SortController extends BeanStub {
 
   public getColumnsWithSortingOrdered(): Column[] {
     // pull out all the columns that have sorting set
-    const allColumnsIncludingAuto = this.columnController.getPrimaryAndSecondaryAndAutoColumns();
+    const allColumnsIncludingAuto =
+      this.columnController.getPrimaryAndSecondaryAndAutoColumns();
     const columnsWithSorting = allColumnsIncludingAuto.filter(
       (column) => !!column.getSort(),
     );

@@ -3,10 +3,13 @@ import { EnterpriseCoreModule } from '@ag-grid-enterprise/core';
 import { DateTimeCellEditor } from './dateTimeCellEditor/dateTimeCellEditor';
 
 export const DateTimeCellEditorModule: Module = {
-    moduleName: ModuleNames.DateTimeCellEditorModule,
-    beans: [],
-    userComponents: [
-        { componentName: 'agDateTimeCellEditor', componentClass: DateTimeCellEditor },
-    ],
-    dependantModules: [EnterpriseCoreModule],
+  moduleName: ModuleNames.DateTimeCellEditorModule,
+  beans: [],
+  userComponents: [
+    {
+      componentName: 'agDateTimeCellEditor',
+      componentClass: DateTimeCellEditor,
+    },
+  ],
+  dependantModules: [EnterpriseCoreModule],
 };

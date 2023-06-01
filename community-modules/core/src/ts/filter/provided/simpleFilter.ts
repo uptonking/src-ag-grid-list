@@ -80,7 +80,7 @@ const DEFAULT_TRANSLATIONS: ISimpleFilterTranslations = {
  * 1 SimpleFilter, 1.1 TextFilter, 1.2 ScalarFilter, 1.2.1 NumberFilter, 1.2.2 DateFilter
  */
 export abstract class SimpleFilter<
-  M extends ISimpleFilterModel
+  M extends ISimpleFilterModel,
 > extends ProvidedFilter {
   public static EMPTY = 'empty';
   public static EQUALS = 'equals';

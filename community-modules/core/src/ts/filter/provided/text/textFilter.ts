@@ -236,9 +236,8 @@ export class TextFilter extends SimpleFilter<TextFilterModel> {
     const filterOption = filterModel.type;
     const cellValue = this.textFilterParams.valueGetter(params.node);
     const cellValueFormatted = this.formatter(cellValue);
-    const customFilterOption = this.optionsFactory.getCustomOption(
-      filterOption,
-    );
+    const customFilterOption =
+      this.optionsFactory.getCustomOption(filterOption);
 
     if (customFilterOption) {
       // only execute the custom filter if a value exists or a value isn't required, i.e. input is hidden

@@ -2050,9 +2050,8 @@ export class GridOptionsWrapper {
       if (allowEstimate) {
         return { height: rowHeight, estimated: true };
       }
-      const autoHeight = this.autoHeightCalculator.getPreferredHeightForRow(
-        rowNode,
-      );
+      const autoHeight =
+        this.autoHeightCalculator.getPreferredHeightForRow(rowNode);
       // never return less than the default row height - covers when auto height
       // cells are blank.
       return { height: Math.max(autoHeight, minRowHeight), estimated: false };

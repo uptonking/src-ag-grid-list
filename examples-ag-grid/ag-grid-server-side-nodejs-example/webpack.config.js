@@ -1,37 +1,43 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import LiveReloadPlugin from 'webpack-livereload-plugin'
-export default  {
+import LiveReloadPlugin from 'webpack-livereload-plugin';
+export default {
   entry: './client/index.js',
   output: {
     path: '/',
-    filename: 'bundle.js'
+    filename: 'bundle.js',
   },
   module: {
     rules: [
       {
         use: 'babel-loader',
         test: /\.js$/,
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         use: ['style-loader', 'css-loader'],
-        test: /\.css$/
+        test: /\.css$/,
       },
       {
-      	test: /\.scss$/,
-        use: [{
-            loader: "style-loader"
-        }, {
-            loader: "css-loader", options: {
-                sourceMap: true
-            }
-        }, {
-            loader: "sass-loader", options: {
-                sourceMap: true
-            }
-        }]
-      }
-    ]
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
+      },
+    ],
   },
 
   // devServer: {
@@ -72,9 +78,8 @@ export default  {
 
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'client/index.html'
+      template: 'client/index.html',
     }),
-    new LiveReloadPlugin()
-  ]
+    new LiveReloadPlugin(),
+  ],
 };
-

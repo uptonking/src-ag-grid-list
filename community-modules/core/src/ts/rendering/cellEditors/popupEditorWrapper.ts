@@ -9,7 +9,8 @@ import { _ } from '../../utils';
 
 export class PopupEditorWrapper
   extends PopupComponent
-  implements ICellEditorComp {
+  implements ICellEditorComp
+{
   private cellEditor: ICellEditorComp;
   private params: any;
   private getGuiCalledOnChild = false;

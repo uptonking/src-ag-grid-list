@@ -24,7 +24,7 @@ function getCircularReplacer() {
  * @param obj 要打印的对象
  */
 export function logObjSer(
-  msg: string = '',
+  msg = '',
   obj: any = { WARNING: '： 未传入obj参数让logObjSer(msg,obj)方法打印' },
   ...restArgs: any[]
 ) {

@@ -16,7 +16,8 @@ export interface ILargeTextEditorParams extends ICellEditorParams {
 
 export class LargeTextCellEditor
   extends PopupComponent
-  implements ICellEditorComp {
+  implements ICellEditorComp
+{
   private static TEMPLATE /* html */ = `<div class="ag-large-text" tabindex="0">
             <ag-input-text-area ref="eTextArea" class="ag-large-text-input"></ag-input-text-area>
         </div>`;

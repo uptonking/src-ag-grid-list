@@ -244,8 +244,10 @@ export class InfiniteRowModel extends BeanStub implements IInfiniteRowModel {
     // if not first time creating a cache, need to destroy the old one
     this.destroyCache();
 
-    const maxConcurrentRequests = this.gridOptionsWrapper.getMaxConcurrentDatasourceRequests();
-    const blockLoadDebounceMillis = this.gridOptionsWrapper.getBlockLoadDebounceMillis();
+    const maxConcurrentRequests =
+      this.gridOptionsWrapper.getMaxConcurrentDatasourceRequests();
+    const blockLoadDebounceMillis =
+      this.gridOptionsWrapper.getBlockLoadDebounceMillis();
 
     // there is a bi-directional dependency between the loader and the cache,
     // so we create loader here, and then pass dependencies in setDependencies() method later

@@ -40,7 +40,8 @@ import { ModuleRegistry } from '../modules/moduleRegistry';
  * All events fired by the column are synchronous
  */
 export class Column
-  implements ColumnGroupChild, OriginalColumnGroupChild, IEventEmitter {
+  implements ColumnGroupChild, OriginalColumnGroupChild, IEventEmitter
+{
   /** renderedHeaderCell - for making header cell transparent when moving */
   public static EVENT_MOVING_CHANGED = 'movingChanged';
   /** renderedCell - changing left position */
@@ -162,7 +163,8 @@ export class Column
     // 计算一列的初始宽度，并赋值到 this.actualWidth
     this.resetActualWidth();
 
-    const suppressDotNotation = this.gridOptionsWrapper.isSuppressFieldDotNotation();
+    const suppressDotNotation =
+      this.gridOptionsWrapper.isSuppressFieldDotNotation();
     this.fieldContainsDots =
       _.exists(this.colDef.field) &&
       this.colDef.field.indexOf('.') >= 0 &&

@@ -16,7 +16,8 @@ import { FilterChangedEvent } from '../../../events';
  */
 export abstract class SimpleFloatingFilter
   extends Component
-  implements IFloatingFilterComp {
+  implements IFloatingFilterComp
+{
   // this method is on IFloatingFilterComp. because it's not implemented at this level, we have to
   // define it as an abstract method. it gets implemented in sub classes.
   public abstract onParentModelChanged(

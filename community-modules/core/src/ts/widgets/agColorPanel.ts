@@ -122,7 +122,8 @@ export class AgColorPanel extends Component {
   }
 
   private refreshAlphaRect() {
-    return (this.spectrumAlphaRect = this.spectrumAlpha.getBoundingClientRect());
+    return (this.spectrumAlphaRect =
+      this.spectrumAlpha.getBoundingClientRect());
   }
 
   private onSpectrumDraggerDown(e: MouseEvent) {

@@ -209,13 +209,13 @@ export class FocusController extends BeanStub {
       return false;
     }
     const column = headerWrapper.getColumn();
-    const headerRowIndex = (headerWrapper.getParentComponent() as HeaderRowComp).getRowIndex();
+    const headerRowIndex = (
+      headerWrapper.getParentComponent() as HeaderRowComp
+    ).getRowIndex();
     const pinned = headerWrapper.getPinned();
 
-    const {
-      column: focusedColumn,
-      headerRowIndex: focusedHeaderRowIndex,
-    } = this.focusedHeaderPosition;
+    const { column: focusedColumn, headerRowIndex: focusedHeaderRowIndex } =
+      this.focusedHeaderPosition;
 
     return (
       column === focusedColumn &&

@@ -56,7 +56,8 @@ export class ChangeDetectionService extends BeanStub {
 
     // step 1 of change detection is to update the aggregated values
     if (this.clientSideRowModel && !rowNode.isRowPinned()) {
-      const onlyChangedColumns = this.gridOptionsWrapper.isAggregateOnlyChangedColumns();
+      const onlyChangedColumns =
+        this.gridOptionsWrapper.isAggregateOnlyChangedColumns();
       const changedPath = new ChangedPath(
         onlyChangedColumns,
         this.clientSideRowModel.getRootNode(),

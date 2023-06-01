@@ -100,7 +100,8 @@ export class AlignedGridsService extends BeanStub {
     if (otherGrids) {
       otherGrids.forEach((otherGridOptions: GridOptions) => {
         if (otherGridOptions.api) {
-          const alignedGridService = otherGridOptions.api.__getAlignedGridService();
+          const alignedGridService =
+            otherGridOptions.api.__getAlignedGridService();
           callback(alignedGridService);
         }
       });

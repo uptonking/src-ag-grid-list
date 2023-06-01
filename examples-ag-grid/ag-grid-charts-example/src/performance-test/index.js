@@ -22,44 +22,57 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 
 (async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setViewport({
-        width: 650,
-        height: 650,
-        deviceScaleFactor: 2
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.setViewport({
+    width: 650,
+    height: 650,
+    deviceScaleFactor: 2,
+  });
+
+  await page.goto(
+    `file:${path.join(
+      __dirname,
+      '../../dist/performance-test-data/index.html',
+    )}`,
+  );
+  const dataTestResults = await page.evaluate(async () => {
+    return await new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        const results = window.chartTestResults;
+        if (results) {
+          clearInterval(interval);
+          resolve(results);
+        }
+      }, 100);
     });
+  });
+  console.log(
+    'performance-test-data results:',
+    JSON.stringify(dataTestResults, null, 4),
+  );
 
-
-    await page.goto(`file:${path.join(__dirname, '../../dist/performance-test-data/index.html')}`);
-    const dataTestResults = await page.evaluate(async () => {
-        return await new Promise((resolve, reject) => {
-            const interval = setInterval(() => {
-                const results = window.chartTestResults;
-                if (results) {
-                    clearInterval(interval);
-                    resolve(results);
-                }
-            }, 100);
-        });
+  await page.goto(
+    `file:${path.join(
+      __dirname,
+      '../../dist/performance-test-size/index.html',
+    )}`,
+  );
+  const sizeTestResults = await page.evaluate(async () => {
+    return await new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        const results = window.chartTestResults;
+        if (results) {
+          clearInterval(interval);
+          resolve(results);
+        }
+      }, 100);
     });
-    console.log('performance-test-data results:', JSON.stringify(dataTestResults, null, 4));
+  });
+  console.log(
+    'performance-test-size results:',
+    JSON.stringify(sizeTestResults, null, 4),
+  );
 
-
-    await page.goto(`file:${path.join(__dirname, '../../dist/performance-test-size/index.html')}`);
-    const sizeTestResults = await page.evaluate(async () => {
-        return await new Promise((resolve, reject) => {
-            const interval = setInterval(() => {
-                const results = window.chartTestResults;
-                if (results) {
-                    clearInterval(interval);
-                    resolve(results);
-                }
-            }, 100);
-        });
-    });
-    console.log('performance-test-size results:', JSON.stringify(sizeTestResults, null, 4));
-
-
-    await browser.close();
+  await browser.close();
 })();

@@ -2,18 +2,6 @@
   "name": "@ag-grid-community/client-side-row-model",
   "version": "23.2.1",
   "description": "Advanced Data Grid / Data Table supporting Javascript / React / AngularJS / Web Components",
-  "keywords": [
-    "web-components",
-    "grid",
-    "data",
-    "table",
-    "angular",
-    "angular-component",
-    "react",
-    "react-component",
-    "angularjs",
-    "reactjs"
-  ],
   "homepage": "http://www.ag-grid.com/",
   "bugs": {
     "url": "https://github.com/ag-grid/ag-grid/issues"
@@ -46,7 +34,7 @@
     "@ag-grid-community/core": "23.2.1"
   },
   "devDependencies": {
-    "typescript": "^4.1.2"
+    "typescript": "^4.9.0"
   },
   "publishConfig": {
     "access": "public"

@@ -1,100 +1,123 @@
-import { _, BarSeriesOptions, CartesianChartOptions, ChartType } from "@ag-grid-community/core";
 import {
-    BarSeriesOptions as InternalBarSeriesOptions,
-    CartesianChart,
-    ChartBuilder,
-    BarSeries
-} from "ag-charts-community";
-import { ChartProxyParams, UpdateChartParams } from "../chartProxy";
-import { CartesianChartProxy } from "./cartesianChartProxy";
+  _,
+  BarSeriesOptions,
+  CartesianChartOptions,
+  ChartType,
+} from '@ag-grid-community/core';
+import {
+  BarSeriesOptions as InternalBarSeriesOptions,
+  CartesianChart,
+  ChartBuilder,
+  BarSeries,
+} from 'ag-charts-community';
+import { ChartProxyParams, UpdateChartParams } from '../chartProxy';
+import { CartesianChartProxy } from './cartesianChartProxy';
 
 export class BarChartProxy extends CartesianChartProxy<BarSeriesOptions> {
+  public constructor(params: ChartProxyParams) {
+    super(params);
 
-    public constructor(params: ChartProxyParams) {
-        super(params);
+    this.initChartOptions();
+    this.recreateChart();
+  }
 
-        this.initChartOptions();
-        this.recreateChart();
+  protected createChart(
+    options?: CartesianChartOptions<BarSeriesOptions>,
+  ): CartesianChart {
+    const { grouping, parentElement } = this.chartProxyParams;
+    let builderFunction: keyof typeof ChartBuilder;
+
+    if (this.isColumnChart()) {
+      builderFunction = grouping
+        ? 'createGroupedColumnChart'
+        : 'createColumnChart';
+    } else {
+      builderFunction = grouping ? 'createGroupedBarChart' : 'createBarChart';
     }
 
-    protected createChart(options?: CartesianChartOptions<BarSeriesOptions>): CartesianChart {
-        const { grouping, parentElement } = this.chartProxyParams;
-        let builderFunction: keyof typeof ChartBuilder;
+    const chart = ChartBuilder[builderFunction](
+      parentElement,
+      options || this.chartOptions,
+    );
+    const barSeries = ChartBuilder.createSeries(this.getSeriesDefaults());
 
-        if (this.isColumnChart()) {
-            builderFunction = grouping ? 'createGroupedColumnChart' : 'createColumnChart';
-        } else {
-            builderFunction = grouping ? 'createGroupedBarChart' : 'createBarChart';
-        }
-
-        const chart = ChartBuilder[builderFunction](parentElement, options || this.chartOptions);
-        const barSeries = ChartBuilder.createSeries(this.getSeriesDefaults());
-
-        if (barSeries) {
-            (barSeries as BarSeries).flipXY = !this.isColumnChart();
-            chart.addSeries(barSeries);
-        }
-
-        return chart;
+    if (barSeries) {
+      (barSeries as BarSeries).flipXY = !this.isColumnChart();
+      chart.addSeries(barSeries);
     }
 
-    public update(params: UpdateChartParams): void {
-        this.chartProxyParams.grouping = params.grouping;
+    return chart;
+  }
 
-        this.updateAxes('category', !this.isColumnChart());
+  public update(params: UpdateChartParams): void {
+    this.chartProxyParams.grouping = params.grouping;
 
-        const chart = this.chart;
-        const barSeries = chart.series[0] as BarSeries;
-        const { fills, strokes } = this.getPalette();
+    this.updateAxes('category', !this.isColumnChart());
 
-        barSeries.data = this.transformData(params.data, params.category.id);
-        barSeries.xKey = params.category.id;
-        barSeries.xName = params.category.name;
-        barSeries.yKeys = params.fields.map(f => f.colId);
-        barSeries.yNames = params.fields.map(f => f.displayName);
-        barSeries.fills = fills;
-        barSeries.strokes = strokes;
+    const chart = this.chart;
+    const barSeries = chart.series[0] as BarSeries;
+    const { fills, strokes } = this.getPalette();
 
-        this.updateLabelRotation(params.category.id, !this.isColumnChart());
-    }
+    barSeries.data = this.transformData(params.data, params.category.id);
+    barSeries.xKey = params.category.id;
+    barSeries.xName = params.category.name;
+    barSeries.yKeys = params.fields.map((f) => f.colId);
+    barSeries.yNames = params.fields.map((f) => f.displayName);
+    barSeries.fills = fills;
+    barSeries.strokes = strokes;
 
-    protected getDefaultOptions(): CartesianChartOptions<BarSeriesOptions> {
-        const isColumnChart = this.isColumnChart();
-        const fontOptions = this.getDefaultFontOptions();
-        const options = this.getDefaultCartesianChartOptions() as CartesianChartOptions<BarSeriesOptions>;
+    this.updateLabelRotation(params.category.id, !this.isColumnChart());
+  }
 
-        options.xAxis.label.rotation = isColumnChart ? 335 : 0;
-        options.yAxis.label.rotation = isColumnChart ? 0 : 335;
+  protected getDefaultOptions(): CartesianChartOptions<BarSeriesOptions> {
+    const isColumnChart = this.isColumnChart();
+    const fontOptions = this.getDefaultFontOptions();
+    const options =
+      this.getDefaultCartesianChartOptions() as CartesianChartOptions<BarSeriesOptions>;
 
-        options.seriesDefaults = {
-            ...options.seriesDefaults,
-            tooltip: {
-                enabled: true,
-            },
-            label: {
-                ...fontOptions,
-                enabled: false,
-            },
-            shadow: this.getDefaultDropShadowOptions(),
-        };
+    options.xAxis.label.rotation = isColumnChart ? 335 : 0;
+    options.yAxis.label.rotation = isColumnChart ? 0 : 335;
 
-        return options;
-    }
+    options.seriesDefaults = {
+      ...options.seriesDefaults,
+      tooltip: {
+        enabled: true,
+      },
+      label: {
+        ...fontOptions,
+        enabled: false,
+      },
+      shadow: this.getDefaultDropShadowOptions(),
+    };
 
-    private isColumnChart(): boolean {
-        return _.includes([ChartType.GroupedColumn, ChartType.StackedColumn, ChartType.NormalizedColumn], this.chartType);
-    }
+    return options;
+  }
 
-    private getSeriesDefaults(): InternalBarSeriesOptions {
-        const { chartType } = this;
-        const isGrouped = chartType === ChartType.GroupedColumn || chartType === ChartType.GroupedBar;
-        const isNormalized = chartType === ChartType.NormalizedColumn || chartType === ChartType.NormalizedBar;
+  private isColumnChart(): boolean {
+    return _.includes(
+      [
+        ChartType.GroupedColumn,
+        ChartType.StackedColumn,
+        ChartType.NormalizedColumn,
+      ],
+      this.chartType,
+    );
+  }
 
-        return {
-            ...this.chartOptions.seriesDefaults,
-            type: 'bar',
-            grouped: isGrouped,
-            normalizedTo: isNormalized ? 100 : undefined,
-        };
-    }
+  private getSeriesDefaults(): InternalBarSeriesOptions {
+    const { chartType } = this;
+    const isGrouped =
+      chartType === ChartType.GroupedColumn ||
+      chartType === ChartType.GroupedBar;
+    const isNormalized =
+      chartType === ChartType.NormalizedColumn ||
+      chartType === ChartType.NormalizedBar;
+
+    return {
+      ...this.chartOptions.seriesDefaults,
+      type: 'bar',
+      grouped: isGrouped,
+      normalizedTo: isNormalized ? 100 : undefined,
+    };
+  }
 }

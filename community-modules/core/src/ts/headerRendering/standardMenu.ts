@@ -104,9 +104,8 @@ export class StandardMenuFactory extends BeanStub implements IMenuFactory {
       }
 
       if (isKeyboardEvent && eventSource && _.isVisible(eventSource)) {
-        const focusableEl = this.focusController.findTabbableParent(
-          eventSource,
-        );
+        const focusableEl =
+          this.focusController.findTabbableParent(eventSource);
 
         if (focusableEl) {
           focusableEl.focus();

@@ -1,13 +1,11 @@
 {
-    "defaultSeverity": "error",
-    "jsRules": {},
-    "rules": {
-        "incorrect-ag-community-import": true,
-        "semicolon": { "options": ["always"] },
-        "no-eval": true,
-        "no-angle-bracket-type-assertion": true
-    },
-    "rulesDirectory": [
-        "./ts-lint-rules/dist"
-    ]
+  "defaultSeverity": "error",
+  "jsRules": {},
+  "rules": {
+    "incorrect-ag-community-import": true,
+    "semicolon": { "options": ["always"] },
+    "no-eval": true,
+    "no-angle-bracket-type-assertion": true
+  },
+  "rulesDirectory": ["./ts-lint-rules/dist"]
 }

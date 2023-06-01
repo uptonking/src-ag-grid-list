@@ -1,1 +1,1 @@
-export const agGridAllModule = { };
+export const agGridAllModule = {};

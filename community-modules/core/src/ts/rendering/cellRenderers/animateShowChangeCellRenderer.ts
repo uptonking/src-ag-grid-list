@@ -9,7 +9,8 @@ const ARROW_DOWN = '\u2193';
 
 export class AnimateShowChangeCellRenderer
   extends Component
-  implements ICellRenderer {
+  implements ICellRenderer
+{
   private static TEMPLATE =
     '<span>' +
     '<span class="ag-value-change-delta"></span>' +

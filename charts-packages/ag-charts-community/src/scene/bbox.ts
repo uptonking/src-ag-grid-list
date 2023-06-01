@@ -8,59 +8,71 @@
 // https://jsperf.com/array-vs-object-create-access
 
 export class BBox {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 
-    private static noParams = {};
+  private static noParams = {};
 
-    constructor(x: number, y: number, width: number, height: number) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+  constructor(x: number, y: number, width: number, height: number) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+
+  isValid(): boolean {
+    return (
+      isFinite(this.x) &&
+      isFinite(this.y) &&
+      isFinite(this.width) &&
+      isFinite(this.height)
+    );
+  }
+
+  dilate(value: number) {
+    this.x -= value;
+    this.y -= value;
+    this.width += value * 2;
+    this.height += value * 2;
+  }
+
+  containsPoint(x: number, y: number): boolean {
+    return (
+      x >= this.x &&
+      x <= this.x + this.width &&
+      y >= this.y &&
+      y <= this.y + this.height
+    );
+  }
+
+  render(
+    ctx: CanvasRenderingContext2D,
+    params: {
+      resetTransform?: boolean;
+      label?: string;
+      fillStyle?: string;
+      lineWidth?: number;
+      strokeStyle?: string;
+    } = BBox.noParams,
+  ) {
+    ctx.save();
+
+    if (params.resetTransform) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
-    isValid(): boolean {
-        return isFinite(this.x) && isFinite(this.y) && isFinite(this.width) && isFinite(this.height);
+    ctx.strokeStyle = params.strokeStyle || 'cyan';
+    ctx.lineWidth = params.lineWidth || 1;
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+    if (params.label) {
+      ctx.fillStyle = params.fillStyle || 'black';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(params.label, this.x, this.y);
     }
 
-    dilate(value: number) {
-        this.x -= value;
-        this.y -= value;
-        this.width += value * 2;
-        this.height += value * 2;
-    }
-
-    containsPoint(x: number, y: number): boolean {
-        return x >= this.x && x <= (this.x + this.width)
-            && y >= this.y && y <= (this.y + this.height);
-    }
-
-    render(ctx: CanvasRenderingContext2D, params: {
-        resetTransform?: boolean,
-        label?: string,
-        fillStyle?: string,
-        lineWidth?: number,
-        strokeStyle?: string
-    } = BBox.noParams) {
-        ctx.save();
-
-        if (params.resetTransform) {
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-        }
-
-        ctx.strokeStyle = params.strokeStyle || 'cyan';
-        ctx.lineWidth = params.lineWidth || 1;
-        ctx.strokeRect(this.x, this.y, this.width, this.height);
-
-        if (params.label) {
-            ctx.fillStyle = params.fillStyle || 'black';
-            ctx.textBaseline = 'bottom';
-            ctx.fillText(params.label, this.x, this.y);
-        }
-
-        ctx.restore();
-    }
+    ctx.restore();
+  }
 }

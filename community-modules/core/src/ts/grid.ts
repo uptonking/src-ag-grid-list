@@ -105,7 +105,7 @@ export interface GridParams {
   /** bean instances to add to the context */
   providedBeanInstances?: { [key: string]: any };
   /** Alternative UI root class. Default is GridCore. */
-  rootComponent?: { new (): Component };
+  rootComponent?: new () => Component;
   /** modules to be registered to ag-grid */
   modules?: Module[];
 }
@@ -135,7 +135,7 @@ export class Grid {
    * @param gridOptions ag-grid的各种配置
    * @param params ag-grid ag-grid module及第3方框架相关配置
    */
-  constructor(
+  public constructor(
     eGridDiv: HTMLElement,
     gridOptions: GridOptions,
     params?: GridParams,
@@ -184,11 +184,11 @@ export class Grid {
     this.registerStackComponents(registeredModules);
     logObjSer('====registerComp, ', this.context);
 
-    const gridCoreClass = (params && params.rootComponent) || GridCore;
-    const gridCore = new gridCoreClass();
+    const GridCoreClass = (params && params.rootComponent) || GridCore;
+    const gridCore = new GridCoreClass();
 
     // 给gridCore对象注入属性，会从Context的bean容器中查找bean来初始化gridCore的属性，
-    // 执行gridCore的postConstruct时，会将grid的最外层dom元素及部分内部结构渲染到页面。
+    // 💡 执行gridCore的postConstruct时，会将grid的最外层dom元素及部分内部结构渲染到页面。
     // 这里会创建ag-grid-comp、ag-header-root、ag-overlay-wrapper、ag-pagination自
     // 定义html标签对应的Component组件类对象，并添加各种事件监听器
     this.context.createBean(gridCore);
@@ -298,9 +298,8 @@ export class Grid {
   /** 将默认使用的AgXx组件和注册模块暴露的agStackComponents，都添加到AgStackComponentsRegistry */
   private registerStackComponents(registeredModules: Module[]): void {
     // 获取ag-grid内部默认使用的以Ag开头的组件，以及module暴露的agStackComponents
-    const agStackComponents = this.createAgStackComponentsList(
-      registeredModules,
-    );
+    const agStackComponents =
+      this.createAgStackComponentsList(registeredModules);
     const agStackComponentsRegistry = this.context.getBean(
       'agStackComponentsRegistry',
     ) as AgStackComponentsRegistry;
@@ -451,12 +450,10 @@ export class Grid {
 
   /** 根据columnDefs计算表头结构并创建表头组件，再将rowData计算处理成rowModel结构 */
   private setColumnsAndData(): void {
-    const gridOptionsWrapper: GridOptionsWrapper = this.context.getBean(
-      'gridOptionsWrapper',
-    );
-    const columnController: ColumnController = this.context.getBean(
-      'columnController',
-    );
+    const gridOptionsWrapper: GridOptionsWrapper =
+      this.context.getBean('gridOptionsWrapper');
+    const columnController: ColumnController =
+      this.context.getBean('columnController');
 
     const columnDefs = gridOptionsWrapper.getColumnDefs();
     if (_.exists(columnDefs)) {
@@ -486,7 +483,7 @@ export class Grid {
   private getRowModelClass(registeredModules: Module[]): any {
     let rowModelType = this.gridOptions.rowModelType;
 
-    //TODO: temporary measure before 'enterprise' is completely removed (similar handling in gridOptionsWrapper is also required)
+    // TODO: temporary measure before 'enterprise' is completely removed (similar handling in gridOptionsWrapper is also required)
     if (rowModelType === 'enterprise') {
       console.warn(
         `ag-Grid: enterprise rowModel deprecated. Should now be called server side row model instead.`,
@@ -506,13 +503,13 @@ export class Grid {
       rowModelType = Constants.ROW_MODEL_TYPE_CLIENT_SIDE;
     }
 
-    const rowModelClasses: { [name: string]: { new (): IRowModel } } = {};
+    const rowModelClasses: { [name: string]: new () => IRowModel } = {};
 
     // 获取注册过的module的rowModels，并保存到rowModelClasses
     registeredModules.forEach((module) => {
       _.iterateObject(
         module.rowModels,
-        (key: string, value: { new (): IRowModel }) => {
+        (key: string, value: new () => IRowModel) => {
           rowModelClasses[key] = value;
         },
       );

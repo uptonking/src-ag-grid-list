@@ -96,7 +96,8 @@ export class HeaderGroupComp extends Component implements IHeaderGroupComp {
 
     this.updateIconVisibility();
 
-    const originalColumnGroup = this.params.columnGroup.getOriginalColumnGroup();
+    const originalColumnGroup =
+      this.params.columnGroup.getOriginalColumnGroup();
     this.addManagedListener(
       originalColumnGroup,
       OriginalColumnGroup.EVENT_EXPANDED_CHANGED,

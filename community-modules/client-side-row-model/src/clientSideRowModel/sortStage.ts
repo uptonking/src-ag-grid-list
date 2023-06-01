@@ -22,7 +22,8 @@ export class SortStage extends BeanStub {
   @Autowired('columnController') private columnController: ColumnController;
 
   public execute(params: StageExecuteParams): void {
-    const sortOptions: SortOption[] = this.sortController.getSortForRowController();
+    const sortOptions: SortOption[] =
+      this.sortController.getSortForRowController();
 
     const sortActive = _.exists(sortOptions) && sortOptions.length > 0;
     const deltaSort =
@@ -52,9 +53,9 @@ export class SortStage extends BeanStub {
     );
   }
 
-  private calculateDirtyNodes(
-    rowNodeTransactions: RowNodeTransaction[],
-  ): { [nodeId: string]: boolean } {
+  private calculateDirtyNodes(rowNodeTransactions: RowNodeTransaction[]): {
+    [nodeId: string]: boolean;
+  } {
     const dirtyNodes: { [nodeId: string]: boolean } = {};
 
     const addNodesFunc = (rowNodes: RowNode[]) => {

@@ -1,5 +1,5 @@
 {
-    "rules": {
-        "no-restricted-globals": ["name", "length", "event"]
-    }
+  "rules": {
+    "no-restricted-globals": ["name", "length", "event"]
+  }
 }

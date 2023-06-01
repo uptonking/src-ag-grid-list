@@ -433,7 +433,8 @@ export class HeaderGroupWrapperComp extends AbstractHeaderWrapper {
     this.addDestroyFunc(finishedWithResizeFunc);
 
     if (!this.gridOptionsWrapper.isSuppressAutoSize()) {
-      const skipHeaderOnAutoSize = this.gridOptionsWrapper.isSkipHeaderOnAutoSize();
+      const skipHeaderOnAutoSize =
+        this.gridOptionsWrapper.isSkipHeaderOnAutoSize();
 
       this.eHeaderCellResize.addEventListener(
         'dblclick',

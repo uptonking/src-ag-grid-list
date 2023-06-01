@@ -10,7 +10,8 @@ import { ColumnController } from '../../../columnController/columnController';
 // the string returned from getModelAsString()
 export class ReadOnlyFloatingFilter
   extends Component
-  implements IFloatingFilterComp {
+  implements IFloatingFilterComp
+{
   @RefSelector('eFloatingFilterText')
   private eFloatingFilterText: AgInputTextField;
   @Autowired('columnController') private columnController: ColumnController;

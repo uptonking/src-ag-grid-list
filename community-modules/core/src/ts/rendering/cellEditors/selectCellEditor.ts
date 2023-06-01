@@ -17,7 +17,8 @@ export interface ISelectCellEditorParams extends ICellEditorParams {
 
 export class SelectCellEditor
   extends PopupComponent
-  implements ICellEditorComp {
+  implements ICellEditorComp
+{
   private focusAfterAttached: boolean;
 
   @Autowired('gridOptionsWrapper')

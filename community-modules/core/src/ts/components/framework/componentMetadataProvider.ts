@@ -7,9 +7,9 @@ import { BeanStub } from '../../context/beanStub';
 export interface ComponentMetadata {
   mandatoryMethodList: string[];
   optionalMethodList: string[];
-  functionAdapter?: (
-    callback: AgGridComponentFunctionInput,
-  ) => { new (): IComponent<any> };
+  functionAdapter?: (callback: AgGridComponentFunctionInput) => {
+    new (): IComponent<any>;
+  };
 }
 
 /**

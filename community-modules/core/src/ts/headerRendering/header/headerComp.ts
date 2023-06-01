@@ -342,7 +342,8 @@ export class HeaderComp extends Component implements IHeaderComp {
     }
 
     const col = this.params.column;
-    const allColumnsWithSorting = this.sortController.getColumnsWithSortingOrdered();
+    const allColumnsWithSorting =
+      this.sortController.getColumnsWithSortingOrdered();
     const indexThisCol = allColumnsWithSorting.indexOf(col);
     const moreThanOneColSorting = allColumnsWithSorting.length > 1;
     const showIndex = col.isSorting() && moreThanOneColSorting;
